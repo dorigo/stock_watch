@@ -154,10 +154,19 @@ section.block h2{font-size:22px;margin:0 0 12px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media (max-width:820px){.grid2{grid-template-columns:1fr}}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
-.card table{min-width:0;font-size:14px}
-.card td{text-align:left;padding:8px 6px}
-.card td:last-child{text-align:right;font-family:var(--mono)}
-.card td:first-child{position:static}
+#method .card table{min-width:0;font-size:14px}
+#method .card td{text-align:left;padding:8px 6px}
+#method .card td:last-child{text-align:right;font-family:var(--mono)}
+#method .card td:first-child{position:static}
+.hold .card,.divs .card{padding:0}
+.hold th:first-child,.hold td:first-child,.divs th:first-child,.divs td:first-child{text-align:left}
+.divs td:nth-child(2),.divs td:nth-child(3),.divs th:nth-child(2),.divs th:nth-child(3){text-align:left}
+th[data-sort]{cursor:pointer;user-select:none;white-space:nowrap}
+th[data-sort]:hover{color:var(--ink)}
+th[data-sort].asc::after,th[data-sort].desc::after{display:inline-block;margin-left:3px;font-size:10px;color:var(--accent)}
+th[data-sort].asc::after{content:"▲"}
+th[data-sort].desc::after{content:"▼"}
+th[data-sort].asc,th[data-sort].desc{color:var(--ink)}
 .card p,.card li{color:var(--ink-2);font-size:14px}
 .card ul,.card ol{margin:0;padding-left:20px}
 .disclaimer li{margin-bottom:8px}
@@ -324,7 +333,8 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
         <button data-v="all" class="on">全部</button><button data-v="上市">上市</button><button data-v="上櫃">上櫃</button>
       </div>
       <select id="sortSel" aria-label="排序">
-        <option value="score">排序：分數</option>
+        <option value="" hidden>排序：依點選的欄位</option>
+        <option value="score" selected>排序：分數</option>
         <option value="chgPct">排序：漲跌幅</option>
         <option value="vol">排序：成交量</option>
         <option value="inst">排序：法人買超</option>
@@ -341,9 +351,9 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
     <div class="table-wrap">
       <table>
         <thead><tr>
-          <th data-tip="tags">股票與訊號</th><th data-tip="close">收盤</th><th data-tip="chg">漲跌幅</th><th data-tip="vol">成交量(張)</th>
-          <th data-tip="foreign">外資</th><th data-tip="trust">投信</th><th data-tip="dealer">自營商</th><th data-tip="inst">法人合計</th><th data-tip="sum5">5 日累計</th>
-          <th data-tip="spark">近 10 日法人</th><th data-tip="big">千張大戶</th><th data-tip="margin">融資增減</th><th data-tip="per">本益比</th><th data-tip="score">分數</th>
+          <th data-tip="tags" data-sort="code">股票與訊號</th><th data-tip="close" data-sort="close">收盤</th><th data-tip="chg" data-sort="chgPct">漲跌幅</th><th data-tip="vol" data-sort="vol">成交量(張)</th>
+          <th data-tip="foreign" data-sort="foreign">外資</th><th data-tip="trust" data-sort="trust">投信</th><th data-tip="dealer" data-sort="dealer">自營商</th><th data-tip="inst" data-sort="inst">法人合計</th><th data-tip="sum5" data-sort="sum5">5 日累計</th>
+          <th data-tip="spark">近 10 日法人</th><th data-tip="big" data-sort="bigPct">千張大戶</th><th data-tip="margin" data-sort="marginChg">融資增減</th><th data-tip="per" data-sort="per">本益比</th><th data-tip="score" data-sort="score">分數</th>
         </tr></thead>
         <tbody id="tbody"><tr><td colspan="14" class="empty">載入中…</td></tr></tbody>
       </table>
@@ -452,7 +462,7 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
 (function(){
   "use strict";
   const $ = s => document.querySelector(s);
-  const state = { data:null, market:"all", sort:"score", q:"", open:null, tab:"kline", charts:null, fund:null, holdings:{} };
+  const state = { data:null, market:"all", sort:"score", dir:"desc", hsort:{key:"pnl",dir:"desc"}, dsort:{key:"ex",dir:"asc"}, q:"", open:null, tab:"kline", charts:null, fund:null, holdings:{} };
 
   // ── 深淺色 ──
   const root = document.documentElement;
@@ -596,10 +606,28 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
     let list = d.stocks.filter(s => (state.market === "all" || s.market === state.market) &&
       (!q || s.code.toLowerCase().includes(q) || (s.name||"").toLowerCase().includes(q)));
     const k = state.sort;
-    if (k === "perAsc") list.sort((a,b) => (a.per ?? Infinity) - (b.per ?? Infinity));
-    else list.sort((a,b) => k === "code" ? a.code.localeCompare(b.code) : ((b[k] ?? -Infinity) - (a[k] ?? -Infinity)));
+    if (k === "perAsc") list.sort(cmpBy(s => s.per, "asc"));
+    else if (k === "code") list.sort(cmpBy(s => s.code, state.dir === "desc" && state.sortClicked ? "desc" : "asc"));
+    else list.sort(cmpBy(s => s[k], state.dir));
     return list;
   }
+
+  // 排序：空值永遠排最後；字串用中文排序
+  function cmpBy(get, dir){
+    const m = dir === "asc" ? 1 : -1;
+    return (a, b) => {
+      const x = get(a), y = get(b), nx = x == null || (typeof x === "number" && isNaN(x)), ny = y == null || (typeof y === "number" && isNaN(y));
+      if (nx || ny) return nx === ny ? 0 : nx ? 1 : -1;
+      return (typeof x === "string" ? x.localeCompare(y, "zh-Hant") : x - y) * m;
+    };
+  }
+  function markSort(scope, key, dir){
+    document.querySelectorAll(scope + " th[data-sort]").forEach(th => {
+      th.classList.toggle("asc", th.dataset.sort === key && dir === "asc");
+      th.classList.toggle("desc", th.dataset.sort === key && dir === "desc");
+    });
+  }
+  function nextDir(curKey, curDir, key, firstDir){ return curKey === key ? (curDir === "asc" ? "desc" : "asc") : firstDir; }
 
   function render(){
     if (!state.data) return;
@@ -609,6 +637,7 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
     renderHoldings();
     renderDivs();
     renderRisers(all);
+    markSort("#list", state.sort === "perAsc" ? "per" : state.sort, state.sort === "perAsc" ? "asc" : (state.sort === "code" && !state.sortClicked ? "asc" : state.dir));
     const list = filtered();
     if (!list.length){ $("#tbody").innerHTML = `<tr><td colspan="14" class="empty">沒有符合條件的股票</td></tr>`; return; }
     $("#tbody").innerHTML = list.map(s => {
@@ -744,6 +773,7 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
       toStop: h.stop ? (close - h.stop) / close * 100 : null, risk: h.stop ? (h.cost - h.stop) * h.shares : null };
   }
   function renderHoldings(){
+    setTimeout(() => markSort("#holdings", state.hsort.key, state.hsort.dir));
     const H = state.holdings, codes = Object.keys(H), el = $("#holdings");
     const head = `<div class="hold-head"><h2>我的持股</h2>
       <button class="btn" data-hact="export" title="下載持股資料，可在其他裝置匯入">匯出</button>
@@ -754,8 +784,11 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
       return;
     }
     let tc = 0, tv = 0, hits = 0;
-    const rows = codes.map(c => {
-      const h = H[c], s = stockOf(c), k = holdCalc(s && s.close, h);
+    const items = codes.map(c => { const h = H[c], s = stockOf(c), k = holdCalc(s && s.close, h); return { c, h, s, k }; });
+    const HG = { name: x => x.s ? x.s.name : (x.h.name || x.c), shares: x => x.h.shares, cost: x => x.h.cost, close: x => x.s && x.s.close,
+      val: x => x.k && x.k.val, pnl: x => x.k && x.k.pnl, pct: x => x.k && x.k.pct, stop: x => x.h.stop, toStop: x => x.k && x.k.toStop };
+    items.sort(cmpBy(HG[state.hsort.key] || HG.pnl, state.hsort.dir));
+    const rows = items.map(({ c, h, s, k }) => {
       if (k){ tc += k.cost; tv += k.val; if (k.stopHit) hits++; }
       return `<tr data-code="${esc(c)}" class="hrow" style="cursor:pointer">
         <td><b>${esc(s ? s.name : (h.name || c))}</b> <span class="num" style="color:var(--ink-3);font-size:12px">${esc(c)}</span>${k && k.stopHit ? ` <span class="tag stop" data-tip="t_stop">跌破停損</span>` : ""}</td>
@@ -778,11 +811,13 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
         ${hits ? `<div>停損警示<b class="up">${hits} 檔跌破</b></div>` : ""}
       </div>
       <div class="table-wrap"><table>
-        <thead><tr><th>股票</th><th>股數</th><th>買進均價</th><th>最新收盤</th><th>市值</th><th data-tip="pnl">損益</th><th data-tip="pnl">報酬率</th><th data-tip="stop">停損價</th><th>距停損</th></tr></thead>
+        <thead><tr><th data-sort="name">股票</th><th data-sort="shares">股數</th><th data-sort="cost">買進均價</th><th data-sort="close">最新收盤</th><th data-sort="val">市值</th><th data-tip="pnl" data-sort="pnl">損益</th><th data-tip="pnl" data-sort="pct">報酬率</th><th data-tip="stop" data-sort="stop">停損價</th><th data-sort="toStop">距停損</th></tr></thead>
         <tbody>${rows}</tbody></table></div>
-      <div class="hint2" style="padding:0 16px 14px">以最新收盤價計算，未扣手續費與證交稅。點任一列可修改。資料只存在這台裝置的瀏覽器，換裝置請用「匯出／匯入」。</div></div>`;
+      <div class="hint2" style="padding:0 16px 14px">以最新收盤價計算，未扣手續費與證交稅。點標題可排序，點任一列可修改。資料只存在這台裝置的瀏覽器，換裝置請用「匯出／匯入」。</div></div>`;
   }
   $("#holdings").addEventListener("click", e => {
+    const th = e.target.closest("th[data-sort]");
+    if (th){ const k = th.dataset.sort; state.hsort = { key: k, dir: nextDir(state.hsort.key, state.hsort.dir, k, k === "name" ? "asc" : "desc") }; renderHoldings(); return; }
     const act = e.target.closest("[data-hact]");
     if (act && act.dataset.hact === "export"){
       const blob = new Blob([JSON.stringify(state.holdings, null, 1)], {type:"application/json"});
@@ -828,7 +863,10 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
       const d = F[s.code] && F[s.code].div; if (!d) return;
       (d.upcoming || []).forEach(e => (e.ex ? ev : pending).push({ ...e, s }));
     });
-    ev.sort((a, b) => a.ex.localeCompare(b.ex));
+    const DG = { ex: e => e.ex, name: e => e.s.name, cash: e => e.type === "息" ? e.cash : e.stock, yld: e => e.type === "息" && e.s.close ? e.cash / e.s.close : null,
+      pay: e => e.pay, mine: e => { const h = state.holdings[e.s.code]; return h ? (e.type === "息" ? e.cash * h.shares : e.stock * h.shares / 10) : null; } };
+    ev.sort(cmpBy(DG[state.dsort.key] || DG.ex, state.dsort.dir));
+    setTimeout(() => markSort("#divs", state.dsort.key, state.dsort.dir));
     const head = `<div class="hold-head"><h2>除權息日曆</h2><span style="font-size:13px;color:var(--ink-3)">自選股已公布的除權息日期</span></div>`;
     const tips = `<div class="hint2" style="padding:0 16px 14px">想領股利，最晚要在除權息日的<b>前一個交易日</b>收盤時持有（遇到國定假日請再往前推）。除息當天股價會扣掉股利，剛買就除息並不會因此多賺，而且股利要繳所得稅、單筆 2 萬元以上還會扣 2.11% 二代健保。殖利率以最新收盤價計算。</div>`;
     if (!ev.length && !pending.length){
@@ -850,7 +888,7 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
         <td class="num">${mine}</td></tr>`;
     };
     el.innerHTML = `<div class="card">${head}<div class="table-wrap"><table>
-      <thead><tr><th data-tip="div">除權息日</th><th style="text-align:left">股票</th><th style="text-align:left">類型／期別</th><th>每股配發</th><th data-tip="yield">殖利率</th><th data-tip="exlast">最晚持有日</th><th data-tip="paydate">發放日</th><th>你預計領到</th></tr></thead>
+      <thead><tr><th data-tip="div" data-sort="ex">除權息日</th><th data-sort="name">股票</th><th>類型／期別</th><th data-sort="cash">每股配發</th><th data-tip="yield" data-sort="yld">殖利率</th><th data-tip="exlast">最晚持有日</th><th data-tip="paydate" data-sort="pay">發放日</th><th data-sort="mine">你預計領到</th></tr></thead>
       <tbody>${ev.concat(pending).map(row).join("")}</tbody></table></div>${tips}</div>`;
   }
   function divHistory(d){
@@ -861,6 +899,13 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
       all.map(e => `<tr><td class="num">${e.ex ? esc(e.ex) : "未定"}${e.up ? ` <span class="tag div">即將</span>` : ""}</td><td>${esc(e.period || "")}</td><td>除${e.type}</td><td class="num">${e.type === "息" ? fmt(e.cash, 2) + " 元" : fmt(e.stock, 2) + " 元（股票）"}</td><td class="num">${e.pay ? esc(e.pay) : "—"}</td></tr>`).join("") +
       `</tbody></table><div class="hint2">近一年現金股利合計 <b class="num">${fmt(d.ttmCash, 2)}</b> 元／股。</div>`;
   }
+
+  $("#divs").addEventListener("click", e => {
+    const th = e.target.closest("th[data-sort]"); if (!th) return;
+    const k = th.dataset.sort;
+    state.dsort = { key: k, dir: nextDir(state.dsort.key, state.dsort.dir, k, k === "ex" || k === "name" || k === "pay" ? "asc" : "desc") };
+    renderDivs();
+  });
 
   // ════════ 估值標籤 ════════
   function valLabel(pct, inverse){
@@ -1066,7 +1111,15 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
     document.querySelectorAll("#mktSeg button").forEach(x => x.classList.toggle("on", x === b));
     state.market = b.dataset.v; render();
   });
-  $("#sortSel").addEventListener("change", e => { state.sort = e.target.value; render(); });
+  $("#sortSel").addEventListener("change", e => { state.sort = e.target.value; state.dir = "desc"; state.sortClicked = false; render(); });
+  document.querySelector("#list thead").addEventListener("click", e => {
+    const th = e.target.closest("th[data-sort]"); if (!th) return;
+    const key = th.dataset.sort, cur = state.sort === "perAsc" ? "per" : state.sort, curDir = state.sort === "perAsc" ? "asc" : state.dir;
+    state.dir = nextDir(cur, curDir, key, key === "code" || key === "per" ? "asc" : "desc");
+    state.sort = key; state.sortClicked = true;
+    const sel = $("#sortSel"); sel.value = [...sel.options].some(o => o.value === key) ? key : "";
+    render();
+  });
   $("#q").addEventListener("input", e => { state.q = e.target.value; render(); });
   $("#risers").addEventListener("click", e => {
     const b = e.target.closest(".riser"); if (!b) return;

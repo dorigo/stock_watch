@@ -284,6 +284,41 @@ def build_charts():
     return out
 
 
+# ───────────────────────── 均線交叉（週線／月線 vs 季線）─────────────────────────
+CROSS_WINDOW = 10   # 只回報近 N 個交易日內發生的交叉
+
+
+def ma_cross(code):
+    days = RAW.get(code) or {}
+    ds = sorted(days)
+    closes = [days[d].get("close") for d in ds]
+    if len(closes) < 62 or not all(closes[-62:]):
+        return None
+
+    def ma(n):
+        return [sum(closes[i - n + 1:i + 1]) / n if i >= n - 1 and all(closes[i - n + 1:i + 1]) else None
+                for i in range(len(closes))]
+    m5, m20, m60 = ma(5), ma(20), ma(60)
+
+    def last_cross(fast, up):
+        for i in range(len(ds) - 1, max(len(ds) - 1 - CROSS_WINDOW, 60), -1):
+            a0, b0, a1, b1 = fast[i - 1], m60[i - 1], fast[i], m60[i]
+            if None in (a0, b0, a1, b1):
+                continue
+            if (up and a0 <= b0 and a1 > b1) or (not up and a0 >= b0 and a1 < b1):
+                return {"date": ds[i], "ago": len(ds) - 1 - i}
+        return None
+    last = len(ds) - 1
+    r = lambda v: None if v is None else round(v, 2)  # noqa: E731
+    return {
+        "ma5": r(m5[last]), "ma20": r(m20[last]), "ma60": r(m60[last]),
+        "above5": m5[last] > m60[last], "above20": m20[last] > m60[last],
+        "vs60": round((closes[last] / m60[last] - 1) * 100, 2),
+        "up5": last_cross(m5, True), "up20": last_cross(m20, True),
+        "dn5": last_cross(m5, False), "dn20": last_cross(m20, False),
+    }
+
+
 # ───────────────────────── 基本面（估值、月營收）─────────────────────────
 def pct_rank(hist, v):
     hist = [h for h in hist if h is not None]
@@ -644,6 +679,15 @@ def main():
         d = (fund.get(s["code"]) or {}).get("div") or {}
         nxt = next((e for e in d.get("upcoming", []) if e.get("ex")), None)
         s["nextEx"] = {"date": nxt["ex"], "type": nxt["type"], "cash": nxt.get("cash"), "stock": nxt.get("stock")} if nxt else None
+    for s in stocks:
+        s["ma"] = ma_cross(s["code"])
+        mc = s["ma"] or {}
+        if mc.get("up20") and mc["up20"]["ago"] <= 5:
+            s["tags"].insert(0, "月線突破季線")
+        elif mc.get("up5") and mc["up5"]["ago"] <= 5:
+            s["tags"].insert(0, "週線突破季線")
+        if mc.get("dn20") and mc["dn20"]["ago"] <= 5:
+            s["tags"].insert(0, "月線跌破季線")
     save_json(DATA / "charts.json", {"date": report["date"], "stocks": build_charts()})
     write_outputs(report)
     log(f"✓ 完成：{report['date']}，{len(stocks)} 檔" + ("" if report["complete"] else "（部分資料尚未公布，稍後會再更新）"))

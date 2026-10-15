@@ -263,6 +263,34 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
 .fixhead table{min-width:0;table-layout:fixed;width:auto}
 .fixhead th{position:relative;top:auto;background:var(--panel)}
 .fixhead th:first-child{z-index:2;box-shadow:1px 0 0 var(--line-2)}
+/* 突破季線警示 */
+.xalert{margin:0 0 22px}
+.xbox{border-radius:16px;border:2px solid var(--up);background:linear-gradient(135deg,var(--up-soft),var(--panel) 70%);padding:16px 18px;box-shadow:var(--shadow)}
+.xbox h2{margin:0;font-size:18px;display:flex;align-items:center;gap:8px}
+.xbox h2 .bell{width:26px;height:26px;border-radius:50%;background:var(--up);color:#fff;display:inline-grid;place-items:center;font-size:14px;animation:ring 1.6s ease-in-out 2}
+@keyframes ring{0%,100%{transform:rotate(0)}20%{transform:rotate(-14deg)}40%{transform:rotate(12deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(4deg)}}
+.xbox .xs{font-size:13px;color:var(--ink-2);margin:4px 0 12px}
+.xgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.xcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;text-align:left;font:inherit;color:inherit;display:flex;flex-direction:column;gap:4px}
+.xcard:hover{border-color:var(--up)}
+.xcard .top{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.xcard .nm{font-weight:700}
+.xcard .cd{font-size:12px;color:var(--ink-3);font-family:var(--mono)}
+.xcard .meta{font-size:12.5px;color:var(--ink-2)}
+.xcard .meta b{font-family:var(--mono);color:var(--ink)}
+.xcard .meta b.up,.xquiet b.up{color:var(--up)} .xcard .meta b.down,.xquiet b.down{color:var(--down)}
+.xbadge{font-size:12px;font-weight:700;padding:2px 8px;border-radius:6px;background:var(--up);color:#fff}
+.xbadge.w{background:var(--up-soft);color:var(--up);border:1px solid var(--up)}
+.xbadge.dn{background:var(--down);color:#fff}
+.xquiet{border:1px dashed var(--line);border-radius:14px;padding:12px 16px;font-size:13.5px;color:var(--ink-2);background:var(--panel)}
+.xquiet b{font-family:var(--mono);color:var(--ink)}
+.xdown{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+.xdown h3{font-size:14px;margin:0 0 8px;color:var(--down)}
+.tag.xup{background:var(--up);color:#fff;font-weight:700}
+.tag.xupw{background:var(--up-soft);color:var(--up);border:1px solid var(--up);font-weight:700}
+.tag.xdn{background:var(--down);color:#fff;font-weight:700}
+tr.row.xrow td:first-child{box-shadow:inset 4px 0 0 var(--up)}
+tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
 /* 除權息 */
 .divs{margin:0 0 22px}
 .divs .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
@@ -324,6 +352,8 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
   </section>
 
   <div class="stats" id="stats"></div>
+
+  <section class="xalert" id="xalert"></section>
 
   <section class="hold" id="holdings"></section>
 
@@ -596,6 +626,8 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
 
   function tagHTML(t){
     const pos = /買超|連買|增持|融資減少|分數連升|分數大增/.test(t), neg = /賣超|減持|分數大減/.test(t), alert = /隔日沖|融資大增|量增/.test(t);
+    const xc = t === "月線突破季線" ? "xup" : t === "週線突破季線" ? "xupw" : t === "月線跌破季線" ? "xdn" : null;
+    if (xc) return `<span class="tag ${xc}" data-tip="${tagKey(t)}">${t.includes("突破") ? "▲ " : "▼ "}${esc(t)}</span>`;
     return `<span class="tag ${alert?"alert":pos?"pos":neg?"neg":""}" data-tip="${tagKey(t)}">${esc(t)}</span>`;
   }
   function holdTags(s){
@@ -685,6 +717,7 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
     renderMeta();
     const all = state.data.stocks.filter(s => state.market === "all" || s.market === state.market);
     renderStats(all);
+    renderXAlert();
     renderHoldings();
     renderDivs();
     renderRisers(all);
@@ -692,7 +725,8 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
     const list = filtered();
     if (!list.length){ $("#tbody").innerHTML = `<tr><td colspan="14" class="empty">沒有符合條件的股票</td></tr>`; return; }
     $("#tbody").innerHTML = list.map(s => {
-      const row = `<tr class="row${state.open===s.code?" open":""}" data-code="${esc(s.code)}">
+      const tg = s.tags || [], xr = tg.includes("月線突破季線") || tg.includes("週線突破季線") ? " xrow" : tg.includes("月線跌破季線") ? " xrowdn" : "";
+      const row = `<tr class="row${state.open===s.code?" open":""}${xr}" data-code="${esc(s.code)}">
         <td><div class="stock"><span class="rank ${s.rank<=3?"top":""}">${s.rank}</span><div>
           <div><span class="nm">${esc(s.name)}</span> <span class="cd">${esc(s.code)}</span><span class="mk">${esc(s.market)}</span></div>
           <div class="tags">${holdTags(s)}${(s.tags||[]).map(tagHTML).join("")}</div></div></div></td>
@@ -748,6 +782,8 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
     },
     "技術面": {
       kline: ["K 線", "每一根代表一天：實體的上下緣是開盤價和收盤價，上下的細線是當天最高和最低價。紅 K 是收盤比開盤高，綠 K 是收盤比開盤低。"],
+      ma60: ["季線（MA60）", "過去 60 個交易日（約一季）收盤價的平均，常被視為中期多空的分水嶺。股價、週線、月線站上季線，代表中期趨勢偏多；跌破則偏空。"],
+      cross: ["黃金交叉／死亡交叉", "短天期均線由下往上穿過長天期均線叫「黃金交叉」，代表走勢轉強；由上往下穿過叫「死亡交叉」，代表轉弱。月線（MA20）穿過季線（MA60）比週線（MA5）穿過季線更有份量。要注意：均線是落後指標，盤整時常常出現假訊號。"],
       ma: ["均線（MA）", "過去 N 天收盤價的平均。MA5 約一週、MA20 約一個月（月線）、MA60 約一季（季線）。股價在均線之上通常代表趨勢偏多，在之下偏空。"]
     },
     "風險管理": {
@@ -773,6 +809,9 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
       t_dt: ["隔日沖賣壓", "推估用標籤：當天大漲 5% 以上、爆量、收在高點附近，但法人沒有買。這種情況常有短線客隔天獲利了結，容易開高走低。"],
       t_su: ["分數連升／分數大增", "籌碼分數連續上升 3 天以上，或 5 日內上升 20 分以上，代表買盤正在聚集。"],
       t_sd: ["分數大減", "籌碼分數 5 日內下降 20 分以上，代表原本的買盤明顯減弱。"],
+      t_xup20: ["月線突破季線", "近 5 個交易日內，20 日均線由下往上穿過 60 日均線（中期黃金交叉）。代表中期走勢轉強，但均線落後，常發生在已經漲一段之後。"],
+      t_xup5: ["週線突破季線", "近 5 個交易日內，5 日均線由下往上穿過 60 日均線。短線轉強的初步訊號，比月線突破更容易出現假訊號。"],
+      t_xdn: ["月線跌破季線", "近 5 個交易日內，20 日均線由上往下穿過 60 日均線（中期死亡交叉）。如果你持有這檔股票，值得重新檢視持股理由與停損。"],
       t_held: ["持有", "你在「我的持股」記錄了這檔股票。"],
       t_stop: ["跌破停損", "最新收盤價已經低於你設定的停損價，請依照自己的計畫處理。"]
     }
@@ -790,6 +829,9 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
     if (/分數連升|分數大增/.test(t)) return "t_su";
     if (/分數大減/.test(t)) return "t_sd";
     if (/除(息|權)$/.test(t)) return "t_div";
+    if (t === "月線突破季線") return "t_xup20";
+    if (t === "週線突破季線") return "t_xup5";
+    if (t === "月線跌破季線") return "t_xdn";
     return "";
   }
   function renderGlossary(){
@@ -901,6 +943,54 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
     e.target.value = "";
   });
 
+  // ════════ 突破季線警示 ════════
+  const FRESH = 5;
+  function renderXAlert(){
+    const el = $("#xalert"), L = state.data ? state.data.stocks : [];
+    const ups = [], dns = [];
+    L.forEach(s => {
+      const m = s.ma; if (!m) return;
+      const u20 = m.up20 && m.up20.ago <= FRESH ? m.up20 : null, u5 = m.up5 && m.up5.ago <= FRESH ? m.up5 : null;
+      if (u20 || u5) ups.push({ s, m, u20, u5, ago: Math.min(u20 ? u20.ago : 99, u5 ? u5.ago : 99) });
+      if (m.dn20 && m.dn20.ago <= FRESH) dns.push({ s, m, d: m.dn20 });
+    });
+    ups.sort((a, b) => (b.u20 ? 1 : 0) - (a.u20 ? 1 : 0) || a.ago - b.ago);
+    const agoTxt = n => n === 0 ? "今天" : n + " 個交易日前";
+    const fdate = d => d.slice(5).replace("-", "/");
+    const align = m => m.ma5 > m.ma20 && m.ma20 > m.ma60 ? "均線多頭排列（5 > 20 > 60）" : m.above20 ? "月線在季線之上" : "月線仍在季線之下";
+    const card = x => `<button class="xcard" data-code="${esc(x.s.code)}">
+        <div class="top"><span class="nm">${esc(x.s.name)}</span><span class="cd">${esc(x.s.code)}</span>
+          ${x.u20 ? `<span class="xbadge">月線突破季線</span>` : ""}${x.u5 ? `<span class="xbadge w">週線突破季線</span>` : ""}</div>
+        <div class="meta">${x.u20 ? `月線：<b>${fdate(x.u20.date)}</b>（${agoTxt(x.u20.ago)}）　` : ""}${x.u5 ? `週線：<b>${fdate(x.u5.date)}</b>（${agoTxt(x.u5.ago)}）` : ""}</div>
+        <div class="meta">股價${x.m.vs60 >= 0 ? "高於" : "低於"}季線 <b class="${cls(x.m.vs60)}">${sgn(x.m.vs60, 1)}%</b>　法人 5 日 <b class="${cls(x.s.sum5)}">${sgn(x.s.sum5)}</b> 張</div>
+        <div class="meta">${align(x.m)}${x.s.perPct != null ? `　本益比位置 <b>${fmt(x.s.perPct, 0)}%</b>` : ""}</div>
+      </button>`;
+    const dcard = x => `<button class="xcard" data-code="${esc(x.s.code)}">
+        <div class="top"><span class="nm">${esc(x.s.name)}</span><span class="cd">${esc(x.s.code)}</span><span class="xbadge dn">月線跌破季線</span>${state.holdings[x.s.code] ? `<span class="tag held">持有</span>` : ""}</div>
+        <div class="meta"><b>${fdate(x.d.date)}</b>（${agoTxt(x.d.ago)}）　股價${x.m.vs60 >= 0 ? "高於" : "低於"}季線 <b class="${cls(x.m.vs60)}">${sgn(x.m.vs60, 1)}%</b></div>
+      </button>`;
+    const above = L.filter(s => s.ma && s.ma.above20).length, total = L.filter(s => s.ma).length;
+    if (!ups.length){
+      el.innerHTML = `<div class="xquiet"><span data-tip="cross" style="text-decoration:underline dotted">突破季線警示</span>：近 ${FRESH} 個交易日沒有自選股出現週線或月線突破季線。目前月線在季線之上的有 <b>${above}</b> / ${total} 檔。
+        ${dns.length ? `<div class="xdown" style="border-top:0;padding-top:6px;margin-top:6px"><h3>▼ 月線跌破季線（留意）</h3><div class="xgrid">${dns.map(dcard).join("")}</div></div>` : ""}</div>`;
+      return;
+    }
+    el.innerHTML = `<div class="xbox">
+      <h2><span class="bell">!</span>突破季線警示 · ${ups.length} 檔</h2>
+      <div class="xs">近 ${FRESH} 個交易日內，週線（MA5）或月線（MA20）由下往上穿過季線（MA60）。點卡片可查看 K 線圖。均線是落後指標，突破後也常回測，進場前請搭配成交量、法人動向與停損計畫一起判斷。</div>
+      <div class="xgrid">${ups.map(card).join("")}</div>
+      ${dns.length ? `<div class="xdown"><h3>▼ 月線跌破季線（留意）</h3><div class="xgrid">${dns.map(dcard).join("")}</div></div>` : ""}
+    </div>`;
+  }
+  $("#xalert").addEventListener("click", e => {
+    const c = e.target.closest(".xcard"); if (!c) return;
+    state.open = c.dataset.code; state.tab = "kline"; state.q = ""; $("#q").value = "";
+    state.market = "all"; document.querySelectorAll("#mktSeg button").forEach(x => x.classList.toggle("on", x.dataset.v === "all"));
+    render();
+    const tr = document.querySelector(`tr.row[data-code="${CSS.escape(c.dataset.code)}"]`);
+    if (tr) tr.scrollIntoView({behavior:"smooth", block:"start"});
+  });
+
   // ════════ 除權息日曆 ════════
   const WD = "日一二三四五六";
   function todayTW(){ return new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Taipei" })); }
@@ -1001,10 +1091,23 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
     const hl = (v, col, t) => v > 0 ? `<line x1="${L}" x2="${W-R}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" stroke="${col}" stroke-dasharray="5 4"/><text x="${L+4}" y="${(y(v)-4).toFixed(1)}" font-size="11" fill="${col}">${t} ${fmt(v,2)}</text>` : "";
     const iy0 = PT + PH + GAP, imid = iy0 + IH / 2, imax = Math.max(1, ...rows.map(r => Math.abs(r[6] || 0)));
     const ibars = rows.map((r, i) => { const v = r[6]; if (!v) return ""; const h = Math.abs(v) / imax * (IH / 2 - 2); return `<rect x="${(x(i)-Math.max(1,bw*0.62)/2).toFixed(1)}" y="${(v > 0 ? imid - h : imid).toFixed(1)}" width="${Math.max(1,bw*0.62).toFixed(1)}" height="${h.toFixed(1)}" fill="var(${v > 0 ? "--up" : "--down"})" opacity=".8"/>`; }).join("");
+    const xmarks = rows.map((r, i) => {
+      if (i === 0) return "";
+      const p = rows[i - 1], out = [];
+      [[7, "週"], [8, "月"]].forEach(([k, lab]) => {
+        if ([p[k], p[9], r[k], r[9]].some(v => v == null)) return;
+        const up = p[k] <= p[9] && r[k] > r[9], dn = p[k] >= p[9] && r[k] < r[9];
+        if (!up && !dn) return;
+        const cx = x(i).toFixed(1), yy = up ? y(r[3]) + 14 : y(r[2]) - 14, col = `var(${up ? "--up" : "--down"})`;
+        out.push(up ? `<path d="M${cx} ${(yy-6).toFixed(1)} l5 8 h-10z" fill="${col}"/><text x="${cx}" y="${(yy+13).toFixed(1)}" font-size="10.5" text-anchor="middle" fill="${col}" font-weight="700">${lab}</text>`
+                    : `<path d="M${cx} ${(yy+6).toFixed(1)} l5 -8 h-10z" fill="${col}"/><text x="${cx}" y="${(yy-6).toFixed(1)}" font-size="10.5" text-anchor="middle" fill="${col}" font-weight="700">${lab}</text>`);
+      });
+      return out.join("");
+    }).join("");
     const step = Math.ceil(n / (small ? 4 : 6)), dates = rows.map((r, i) => i % step === 0 ? `<text x="${x(i).toFixed(1)}" y="${H-4}" font-size="10" text-anchor="middle" fill="var(--ink-3)" font-family="IBM Plex Mono,monospace">${esc(r[0].slice(5))}</text>` : "").join("");
     return `<svg class="kline" data-code="${esc(code)}" viewBox="0 0 ${W} ${H}" role="img" aria-label="近 ${n} 日 K 線圖">
       ${grid}${candles}${maLine(7, "var(--warn)")}${maLine(8, "var(--accent)")}${maLine(9, "#9b7bd6")}
-      ${hold ? hl(hold.cost, "var(--accent)", "成本") + hl(hold.stop, "var(--up)", "停損") : ""}
+      ${hold ? hl(hold.cost, "var(--accent)", "成本") + hl(hold.stop, "var(--up)", "停損") : ""}${xmarks}
       <text x="${L}" y="${iy0 - 6}" font-size="11" fill="var(--ink-3)">三大法人買賣超（張）</text>
       <line x1="${L}" x2="${W-R}" y1="${imid}" y2="${imid}" stroke="var(--line)"/>${ibars}
       <text x="${W-R+6}" y="${iy0+10}" font-size="10" fill="var(--ink-3)" font-family="IBM Plex Mono,monospace">+${fmt(imax)}</text>
@@ -1037,7 +1140,7 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
     const note = state.charts && state.data && state.charts.date !== state.data.date ? `<div class="hint2">K 線為最新資料（${esc(state.charts.date)}），非你目前選擇的日期。</div>` : "";
     return `<div class="kinfo">${rows && rows.length ? kinfoText(rows, rows.length - 1) : ""}</div>
       ${klineSVG(s.code, rows, hold)}
-      <div class="legend"><span><i style="background:var(--warn)"></i>MA5 週線</span><span><i style="background:var(--accent)"></i>MA20 月線</span><span><i style="background:#9b7bd6"></i>MA60 季線</span>${hold ? `<span><i style="background:var(--up)"></i>你的停損價</span>` : ""}</div>
+      <div class="legend"><span><i style="background:var(--warn)"></i>MA5 週線</span><span><i style="background:var(--accent)"></i>MA20 月線</span><span><i style="background:#9b7bd6"></i>MA60 季線</span><span style="color:var(--up)">▲週／▲月：週線、月線突破季線</span><span style="color:var(--down)">▼：跌破季線</span>${hold ? `<span><i style="background:var(--up)"></i>你的停損價</span>` : ""}</div>
       <div class="hint2">紅 K：收盤比開盤高；綠 K：收盤比開盤低。滑鼠移到圖上（手機用手指滑）可以看每天的數字。下方長條是三大法人買賣超，對照看看法人買的時候股價怎麼走。</div>${note}`;
   }
 

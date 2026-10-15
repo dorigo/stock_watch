@@ -164,20 +164,25 @@ def finmind(dataset, data_id=None, start=None):
 
 
 def stock_info(codes):
-    """代號 → (名稱, 市場)，快取在 data/stock_info.json"""
-    path = DATA / "stock_info.json"
+    """代號 → [名稱, 市場]。全市場清單存在 data/all_stocks.json（每 7 天更新），也供網頁搜尋新增自選股。"""
+    path = DATA / "all_stocks.json"
     cache = load_json(path, {})
-    if all(c in cache for c in codes):
-        return cache
-    log("• 更新股票名稱與市場對照表")
+    stocks = cache.get("stocks", {})
+    age_ok = cache.get("updated", "") >= (now_tw().date() - dt.timedelta(days=7)).isoformat()
+    if stocks and age_ok and all(c in stocks for c in codes):
+        return stocks
+    log("• 更新全市場股票清單")
     rows = finmind("TaiwanStockInfo")
     if rows:
+        fresh = {}
         for r in rows:
-            sid = r.get("stock_id")
-            if sid in codes:
-                cache[sid] = [r.get("stock_name"), {"twse": "上市", "tpex": "上櫃"}.get(r.get("type"), r.get("type"))]
-        save_json(path, cache, compact=False)
-    return cache
+            sid, mk = r.get("stock_id", ""), {"twse": "上市", "tpex": "上櫃"}.get(r.get("type"))
+            if mk and re.fullmatch(r"[0-9]{4,6}[A-Z]?", sid):
+                fresh[sid] = [r.get("stock_name") or sid, mk]
+        if fresh:
+            stocks = dict(sorted(fresh.items()))
+            save_json(path, {"updated": now_tw().date().isoformat(), "stocks": stocks})
+    return stocks
 
 
 def fetch_stock(code, start):

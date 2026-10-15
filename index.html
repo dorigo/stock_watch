@@ -29,6 +29,7 @@
   --shadow:none;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC",system-ui,sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
 a{color:var(--accent)}
@@ -45,7 +46,7 @@ nav.links{display:flex;gap:18px;margin-left:auto;font-size:14px}
 nav.links a{color:var(--ink-2);text-decoration:none}
 nav.links a:hover{color:var(--ink)}
 .theme-btn{border:1px solid var(--line);background:var(--panel);color:var(--ink-2);border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:15px}
-@media (max-width:720px){nav.links{display:none}.theme-btn{margin-left:auto}}
+@media (max-width:720px){nav.links{display:none}#openMgr{margin-left:auto!important}}
 
 /* 主視覺 */
 .hero{padding:36px 0 20px}
@@ -133,6 +134,53 @@ section.block h2{font-size:22px;margin:0 0 12px}
 .card ul,.card ol{margin:0;padding-left:20px}
 .disclaimer li{margin-bottom:8px}
 footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);font-size:13px}
+
+/* 管理自選股 */
+.btn{font:inherit;font-size:13.5px;height:34px;padding:0 14px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.btn:hover{border-color:var(--ink-3)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--panel);font-weight:600}
+.btn.primary:disabled{opacity:.5;cursor:default}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--ink-2)}
+.modal-bg{position:fixed;inset:0;background:rgba(10,12,18,.45);z-index:50;display:none;align-items:flex-start;justify-content:center;padding:6vh 16px 16px;overflow-y:auto}
+.modal-bg.show{display:flex}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:16px;width:100%;max-width:560px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.modal header{display:flex;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line)}
+.modal header h3{margin:0;font-size:17px;flex:1}
+.modal .body{padding:16px 18px}
+.modal footer.mf{display:flex;gap:8px;justify-content:flex-end;align-items:center;padding:12px 18px;border-top:1px solid var(--line);flex-wrap:wrap}
+.modal .x{border:0;background:transparent;font-size:20px;color:var(--ink-3);cursor:pointer;width:32px;height:32px;border-radius:8px}
+.modal .x:hover{background:var(--line-2)}
+.steps{margin:0 0 14px;padding-left:20px;font-size:14px;color:var(--ink-2)}
+.steps li{margin-bottom:6px}
+.steps code{font-family:var(--mono);font-size:12.5px;background:var(--line-2);padding:1px 5px;border-radius:4px;color:var(--ink)}
+.field{display:flex;gap:8px}
+.field input{flex:1;font:inherit;font-size:14px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:0 10px;height:38px;min-width:0}
+.field input:focus,.search-box input:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.hint{font-size:12.5px;color:var(--ink-3);margin-top:8px}
+.msg{font-size:13.5px;margin-top:10px;padding:8px 12px;border-radius:9px;display:none}
+.msg.show{display:block}
+.msg.err{background:var(--up-soft);color:var(--up)}
+.msg.ok{background:var(--down-soft);color:var(--down)}
+.msg.info{background:var(--accent-soft);color:var(--accent)}
+.search-box{position:relative}
+.search-box input{width:100%;font:inherit;font-size:14px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:0 12px;height:40px}
+.suggest{position:absolute;left:0;right:0;top:44px;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow),0 10px 30px rgba(0,0,0,.12);max-height:260px;overflow-y:auto;z-index:5;display:none}
+.suggest.show{display:block}
+.suggest button{display:flex;width:100%;gap:10px;align-items:center;border:0;background:transparent;font:inherit;font-size:14px;color:var(--ink);padding:8px 12px;cursor:pointer;text-align:left}
+.suggest button.act,.suggest button:hover{background:var(--line-2)}
+.suggest .c{font-family:var(--mono);color:var(--ink-2);width:60px}
+.suggest .m{margin-left:auto;font-size:12px;color:var(--ink-3)}
+.wl{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;min-height:40px}
+.wl .it{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:9px;padding:4px 4px 4px 10px;font-size:14px;background:var(--bg)}
+.wl .it.new{border-color:var(--accent);background:var(--accent-soft)}
+.wl .it .c{font-family:var(--mono);font-size:12.5px;color:var(--ink-3)}
+.wl .it button{border:0;background:transparent;color:var(--ink-3);cursor:pointer;width:24px;height:24px;border-radius:6px;font-size:15px;line-height:1}
+.wl .it button:hover{background:var(--up-soft);color:var(--up)}
+.wl-head{display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;font-size:13px;color:var(--ink-3)}
+.progress{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--ink-2);margin-right:auto}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--accent);animation:sp .8s linear infinite;display:none}
+.spin.on{display:inline-block}
+@keyframes sp{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -142,7 +190,8 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
     <nav class="links">
       <a href="#list">追蹤清單</a><a href="#method">評分方式</a><a href="#sources">資料來源</a><a href="#disclaimer">免責聲明</a>
     </nav>
-    <button class="theme-btn" id="themeBtn" title="切換深淺色" aria-label="切換深淺色">◐</button>
+    <button class="btn" id="openMgr" style="margin-left:4px">＋ 管理自選股</button>
+    <button class="theme-btn" id="themeBtn" title="切換深淺色" aria-label="切換深淺色"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
   </div>
 </header>
 
@@ -235,6 +284,45 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
   </section>
 </main>
 
+
+<div class="modal-bg" id="mgrBg" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mgrTitle">
+    <header><h3 id="mgrTitle">管理自選股</h3><button class="x" id="mgrClose" aria-label="關閉">×</button></header>
+
+    <!-- 第一次：設定金鑰 -->
+    <div class="body" id="setupView" hidden>
+      <p style="margin:0 0 10px;font-size:14px;color:var(--ink-2)">修改自選股需要一組 GitHub 金鑰，只要設定一次，金鑰只存在這台裝置的瀏覽器中。</p>
+      <ol class="steps">
+        <li>打開 <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub 建立金鑰頁面</a>（Fine-grained token）</li>
+        <li>Token name 隨意填，例如 <code>stock_watch</code>；Expiration 可選 <code>No expiration</code> 或一年</li>
+        <li>Repository access 選 <b>Only select repositories</b>，勾選 <code id="repoName">stock_watch</code></li>
+        <li>Permissions → Repository permissions → <b>Contents</b> 設為 <code>Read and write</code></li>
+        <li>按 Generate token，複製以 <code>github_pat_</code> 開頭的金鑰貼到下方</li>
+      </ol>
+      <div class="field"><input type="password" id="tokenIn" placeholder="github_pat_…" autocomplete="off" spellcheck="false"><button class="btn primary" id="tokenSave">驗證並儲存</button></div>
+      <div class="hint">這組金鑰只能修改這個 repo。換裝置時需要重新貼一次，也可以隨時到 GitHub 刪除它。</div>
+      <div class="msg" id="setupMsg"></div>
+    </div>
+
+    <!-- 編輯清單 -->
+    <div class="body" id="editView" hidden>
+      <div class="search-box">
+        <input type="search" id="addIn" placeholder="輸入代號或名稱，例如 2330 或 台積電" autocomplete="off">
+        <div class="suggest" id="suggest"></div>
+      </div>
+      <div class="wl-head"><span id="wlCount"></span><span>點 × 移除</span></div>
+      <div class="wl" id="wl"></div>
+      <div class="msg" id="editMsg"></div>
+    </div>
+
+    <footer class="mf" id="editFoot" hidden>
+      <div class="progress"><span class="spin" id="spin"></span><span id="progText"></span></div>
+      <button class="btn ghost" id="logout" title="從這台裝置移除金鑰">移除金鑰</button>
+      <button class="btn primary" id="wlSave" disabled>儲存並更新資料</button>
+    </footer>
+  </div>
+</div>
+
 <footer><div class="wrap">資料每個交易日盤後自動更新 · <span id="footUpd"></span></div></footer>
 
 <script>
@@ -281,7 +369,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
       if ([...sel.options].some(o => o.value === state.data.date)) sel.value = state.data.date;
       render();
     } catch(e){
-      $("#tbody").innerHTML = `<tr><td colspan="13" class="empty">尚無資料。請到 GitHub 的 Actions 頁面手動執行「更新籌碼資料」。</td></tr>`;
+      $("#tbody").innerHTML = `<tr><td colspan="13" class="empty">尚無資料。請點右上角「管理自選股」新增股票，或到 GitHub 的 Actions 頁面手動執行「更新籌碼資料」。</td></tr>`;
     }
   }
 
@@ -404,6 +492,178 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
     const tr = e.target.closest("tr.row"); if (!tr) return;
     state.open = state.open === tr.dataset.code ? null : tr.dataset.code; render();
   });
+
+  // ════════ 管理自選股（透過 GitHub API 修改 watchlist.txt） ════════
+  const REPO = (() => {
+    const m = location.hostname.match(/^([^.]+)\.github\.io$/);
+    const seg = location.pathname.split("/").filter(Boolean)[0];
+    return { owner: m ? m[1] : "dorigo", repo: m && seg ? seg : "stock_watch" };
+  })();
+  const API = `https://api.github.com/repos/${REPO.owner}/${REPO.repo}`;
+  const TOKEN_KEY = "gh_token_" + REPO.repo;
+  const mgr = { token:null, sha:null, orig:[], list:[], all:null, active:-1, polling:false };
+  $("#repoName").textContent = REPO.repo;
+
+  function getToken(){ try { return localStorage.getItem(TOKEN_KEY); } catch(e){ return mgr.token; } }
+  function setToken(t){ mgr.token = t; try { t ? localStorage.setItem(TOKEN_KEY, t) : localStorage.removeItem(TOKEN_KEY); } catch(e){} }
+
+  async function gh(path, opt={}){
+    const r = await fetch(API + path, { ...opt, headers: {
+      "Accept":"application/vnd.github+json", "X-GitHub-Api-Version":"2022-11-28",
+      "Authorization":"Bearer " + (mgr.token || getToken()), ...(opt.body ? {"Content-Type":"application/json"} : {}) }});
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { const e = new Error(j.message || ("HTTP " + r.status)); e.status = r.status; throw e; }
+    return j;
+  }
+  const b64dec = b => new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\n/g,"")), c => c.charCodeAt(0)));
+  const b64enc = t => { let s = ""; new TextEncoder().encode(t).forEach(b => s += String.fromCharCode(b)); return btoa(s); };
+  function msg(id, text, kind){ const el = $(id); el.className = "msg" + (text ? " show " + kind : ""); el.textContent = text || ""; }
+
+  async function loadAll(){
+    if (mgr.all) return mgr.all;
+    try { mgr.all = (await getJSON("data/all_stocks.json")).stocks || {}; } catch(e){ mgr.all = {}; }
+    return mgr.all;
+  }
+  const nameOf = c => (mgr.all && mgr.all[c] ? mgr.all[c][0] : (state.data?.stocks.find(s=>s.code===c)?.name || ""));
+
+  function openMgr(){
+    $("#mgrBg").classList.add("show"); $("#mgrBg").setAttribute("aria-hidden","false");
+    mgr.token = getToken();
+    loadAll();
+    if (mgr.token) showEdit(); else showSetup();
+  }
+  function closeMgr(){ $("#mgrBg").classList.remove("show"); $("#mgrBg").setAttribute("aria-hidden","true"); }
+  function showSetup(){ $("#setupView").hidden = false; $("#editView").hidden = true; $("#editFoot").hidden = true; msg("#setupMsg"); setTimeout(()=>$("#tokenIn").focus(), 50); }
+  async function showEdit(){
+    $("#setupView").hidden = true; $("#editView").hidden = false; $("#editFoot").hidden = false;
+    msg("#editMsg", "讀取目前清單…", "info");
+    try {
+      const f = await gh("/contents/watchlist.txt");
+      mgr.sha = f.sha;
+      const codes = [];
+      b64dec(f.content).split(/\r?\n/).forEach(line => {
+        const m = line.split("#")[0].trim().match(/^([0-9]{4,6}[A-Z]?)\b/);
+        if (m && !codes.includes(m[1])) codes.push(m[1]);
+      });
+      mgr.orig = codes.slice(); mgr.list = codes.slice();
+      await loadAll();
+      msg("#editMsg"); renderWL(); setTimeout(()=>$("#addIn").focus(), 50);
+    } catch(e){
+      if (e.status === 401 || e.status === 403 || e.status === 404){ setToken(null); showSetup(); msg("#setupMsg", "金鑰無效或已過期，請重新設定。", "err"); }
+      else msg("#editMsg", "讀取失敗：" + e.message, "err");
+    }
+  }
+
+  $("#tokenSave").addEventListener("click", async () => {
+    const t = $("#tokenIn").value.trim();
+    if (!t) return;
+    mgr.token = t; msg("#setupMsg", "驗證中…", "info");
+    try {
+      const repo = await gh("");
+      if (repo.permissions && !repo.permissions.push) throw Object.assign(new Error("這組金鑰沒有寫入權限，請確認 Contents 設為 Read and write"), {status:0});
+      setToken(t); $("#tokenIn").value = ""; showEdit();
+    } catch(e){
+      mgr.token = null;
+      msg("#setupMsg", e.status === 401 ? "金鑰錯誤，請重新複製。" : e.status === 404 ? `這組金鑰沒有存取 ${REPO.repo} 的權限，請確認 Repository access 有勾選它。` : e.message, "err");
+    }
+  });
+  $("#tokenIn").addEventListener("keydown", e => { if (e.key === "Enter") $("#tokenSave").click(); });
+
+  function changed(){ return mgr.list.join(",") !== mgr.orig.join(","); }
+  function renderWL(){
+    $("#wl").innerHTML = mgr.list.length ? mgr.list.map(c => `<span class="it${mgr.orig.includes(c) ? "" : " new"}">${esc(nameOf(c) || "未知")} <span class="c">${esc(c)}</span><button data-c="${esc(c)}" aria-label="移除 ${esc(c)}">×</button></span>`).join("")
+      : `<span class="hint">清單是空的，從上方搜尋新增</span>`;
+    $("#wlCount").textContent = `共 ${mgr.list.length} 檔` + (changed() ? "（尚未儲存）" : "");
+    $("#wlSave").disabled = !changed() || mgr.polling || !mgr.list.length;
+  }
+  $("#wl").addEventListener("click", e => {
+    const b = e.target.closest("button[data-c]"); if (!b) return;
+    mgr.list = mgr.list.filter(c => c !== b.dataset.c); renderWL();
+  });
+
+  function matches(q){
+    q = q.trim().toUpperCase(); if (!q) return [];
+    const out = [];
+    for (const [c, [n, m]] of Object.entries(mgr.all || {})){
+      if (c.startsWith(q) || n.toUpperCase().includes(q)) out.push([c, n, m]);
+      if (out.length >= 40) break;
+    }
+    out.sort((a,b) => (a[0] === q ? -1 : b[0] === q ? 1 : 0) || (a[0].startsWith(q) ? 0 : 1) - (b[0].startsWith(q) ? 0 : 1) || a[0].length - b[0].length || a[0].localeCompare(b[0]));
+    return out.slice(0, 12);
+  }
+  function renderSuggest(){
+    const q = $("#addIn").value, list = matches(q), box = $("#suggest");
+    const raw = q.trim().toUpperCase();
+    if (/^[0-9]{4,6}[A-Z]?$/.test(raw) && !list.some(x => x[0] === raw)) list.unshift([raw, "直接加入此代號", ""]);
+    mgr.sugg = list; mgr.active = list.length ? 0 : -1;
+    box.innerHTML = list.map(([c,n,m],i) => `<button data-i="${i}" class="${i===mgr.active?"act":""}"><span class="c">${esc(c)}</span>${esc(n)}<span class="m">${mgr.list.includes(c) ? "已在清單" : esc(m)}</span></button>`).join("");
+    box.classList.toggle("show", list.length > 0);
+  }
+  function pick(i){
+    const it = mgr.sugg && mgr.sugg[i]; if (!it) return;
+    if (!mgr.list.includes(it[0])) mgr.list.push(it[0]);
+    $("#addIn").value = ""; $("#suggest").classList.remove("show"); renderWL(); $("#addIn").focus();
+  }
+  $("#addIn").addEventListener("input", renderSuggest);
+  $("#addIn").addEventListener("keydown", e => {
+    const n = (mgr.sugg || []).length;
+    if (e.key === "ArrowDown" && n){ e.preventDefault(); mgr.active = (mgr.active + 1) % n; }
+    else if (e.key === "ArrowUp" && n){ e.preventDefault(); mgr.active = (mgr.active - 1 + n) % n; }
+    else if (e.key === "Enter"){ e.preventDefault(); if (mgr.active >= 0) pick(mgr.active); return; }
+    else if (e.key === "Escape"){ $("#suggest").classList.remove("show"); return; }
+    else return;
+    document.querySelectorAll("#suggest button").forEach((b,i) => b.classList.toggle("act", i === mgr.active));
+  });
+  $("#suggest").addEventListener("mousedown", e => { const b = e.target.closest("button"); if (b){ e.preventDefault(); pick(+b.dataset.i); } });
+  $("#addIn").addEventListener("blur", () => setTimeout(() => $("#suggest").classList.remove("show"), 150));
+
+  function progress(text, on){ $("#progText").textContent = text || ""; $("#spin").classList.toggle("on", !!on); }
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  $("#wlSave").addEventListener("click", async () => {
+    const lines = ["# 自選股清單：一行一檔（可在網站上的「管理自選股」修改）", ""]
+      .concat(mgr.list.map(c => (c.padEnd(6) + " # " + (nameOf(c) || "")).trim()));
+    mgr.polling = true; renderWL(); msg("#editMsg");
+    progress("儲存中…", true);
+    try {
+      const res = await gh("/contents/watchlist.txt", { method:"PUT", body: JSON.stringify({
+        message: "更新自選股（網頁）", content: b64enc(lines.join("\n") + "\n"), sha: mgr.sha })});
+      mgr.sha = res.content.sha; mgr.orig = mgr.list.slice(); renderWL();
+      const before = state.data ? state.data.updated : "";
+      progress("已儲存，正在抓取資料（約 1 分鐘）…", true);
+      // 等 Actions 跑完
+      let run = null;
+      for (let i = 0; i < 60; i++){
+        await sleep(6000);
+        try {
+          const r = await gh(`/actions/runs?head_sha=${res.commit.sha}&per_page=1`);
+          run = r.workflow_runs && r.workflow_runs[0];
+          if (run && run.status === "completed") break;
+        } catch(e){}
+      }
+      if (!run || run.conclusion !== "success"){
+        progress("", false);
+        msg("#editMsg", "清單已儲存，但抓資料沒有成功，可稍後重新整理，或查看 repo 中的 data/debug.log。", "err");
+        return;
+      }
+      progress("資料已更新，等待網站發布…", true);
+      for (let i = 0; i < 30; i++){
+        await sleep(8000);
+        try { const d = await getJSON("data/latest.json"); if (d.updated !== before){ state.data = d; render(); break; } } catch(e){}
+      }
+      progress("", false);
+      msg("#editMsg", "完成！清單與資料都已更新。", "ok");
+    } catch(e){
+      progress("", false);
+      msg("#editMsg", e.status === 409 ? "清單在別處被修改過，請關閉後重新開啟再試一次。" : "儲存失敗：" + e.message, "err");
+    } finally { mgr.polling = false; renderWL(); }
+  });
+
+  $("#logout").addEventListener("click", () => { if (confirm("要從這台裝置移除 GitHub 金鑰嗎？")){ setToken(null); showSetup(); } });
+  $("#openMgr").addEventListener("click", openMgr);
+  $("#mgrClose").addEventListener("click", closeMgr);
+  $("#mgrBg").addEventListener("click", e => { if (e.target.id === "mgrBg") closeMgr(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && $("#mgrBg").classList.contains("show") && !$("#suggest").classList.contains("show")) closeMgr(); });
 
   init();
 })();

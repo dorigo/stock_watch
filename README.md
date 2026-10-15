@@ -11,7 +11,7 @@ scripts/fetch.py              ← 抓資料＋計分（只用 Python 標準函�
 .github/workflows/update.yml  ← 排程：台北 17:17、22:07（週一至週五）
 data/latest.json              ← 最新結果（頁面讀這個）
 data/report/YYYY-MM-DD.json   ← 每日結果（歷史清單）
-data/stock_info.json          ← 股票名稱與市場對照
+data/all_stocks.json          ← 全市場股票清單（網頁搜尋用）
 data/debug.log                ← 最近一次執行紀錄（除錯用）
 data/tdcc/                    ← 每週千張大戶資料
 ```
@@ -19,15 +19,17 @@ data/tdcc/                    ← 每週千張大戶資料
 ## 部署步驟
 
 1. 在 GitHub 建立新的 repository（例如 `stock_watch`），把整個資料夾內容上傳到 `main` 分支（包含 `.github` 與 `.nojekyll` 這兩個隱藏項目）。
-2. **Settings → Actions → General → Workflow permissions**，選「Read and write permissions」並儲存。
-3. **Settings → Pages**，Source 選「Deploy from a branch」，分支選 `main`、資料夾選 `/ (root)`，儲存。
-4. **Actions → 更新籌碼資料 → Run workflow**，手動執行第一次。大約 1 分鐘完成。
-5. 完成後打開 `https://你的帳號.github.io/stock_watch/`。
+2. **Settings → Pages**，Source 選「Deploy from a branch」，分支選 `main`、資料夾選 `/ (root)`，儲存。
+3. **Actions → 更新籌碼資料 → Run workflow**，手動執行第一次。大約 1 分鐘完成。
+4. 完成後打開 `https://你的帳號.github.io/stock_watch/`。
 
 
 ## 修改自選股
 
-直接編輯 `watchlist.txt` 並 commit，Actions 會自動重新抓資料。上市、上櫃、ETF 都可以填，系統會自動判斷市場。
+**網頁上修改（建議）**：點網站右上角「管理自選股」，可以用代號或名稱搜尋新增、點 × 移除，按「儲存並更新資料」後約 1～2 分鐘網站就會更新。
+第一次使用需要貼一組 GitHub 金鑰（Fine-grained token，只勾選這個 repo，Contents 設為 Read and write），金鑰只存在你的瀏覽器中，不會上傳到任何地方。
+
+**直接改檔案**：編輯 `watchlist.txt` 並 commit，Actions 也會自動重新抓資料。上市、上櫃、ETF 都可以填，系統會自動判斷市場。
 
 ## 調整計分
 

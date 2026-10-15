@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>籌碼分數回測</title>
+<meta name="description" content="用歷史資料檢驗籌碼分數的買進訊號與賣出警示，統計之後 5 日、20 日的報酬。">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#1f3a5f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f3ee; --panel:#ffffff; --ink:#1b1d22; --ink-2:#5b6070; --ink-3:#8b90a0;
+  --line:#e4e1d8; --line-2:#efece5; --accent:#1f3a5f; --accent-soft:#e6ecf4;
+  --up:#d1342f; --up-soft:#fbe9e8; --down:#11865a; --down-soft:#e3f3eb; --warn:#b7791f; --warn-soft:#fbf1df;
+  --shadow:0 1px 2px rgba(20,24,35,.05),0 6px 20px rgba(20,24,35,.05);
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#13151a; --panel:#1b1e25; --ink:#eceef3; --ink-2:#a6abb9; --ink-3:#727889;
+  --line:#2b2f39; --line-2:#23262e; --accent:#8fb3e6; --accent-soft:#1f2a3b;
+  --up:#ff6b63; --up-soft:#3a1f20; --down:#3fcf8e; --down-soft:#173326; --warn:#e7b25a; --warn-soft:#3a2d17; --shadow:none;
+}}
+:root[data-theme="dark"]{
+  --bg:#13151a; --panel:#1b1e25; --ink:#eceef3; --ink-2:#a6abb9; --ink-3:#727889;
+  --line:#2b2f39; --line-2:#23262e; --accent:#8fb3e6; --accent-soft:#1f2a3b;
+  --up:#ff6b63; --up-soft:#3a1f20; --down:#3fcf8e; --down-soft:#173326; --warn:#e7b25a; --warn-soft:#3a2d17; --shadow:none;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC",system-ui,sans-serif;font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.up{color:var(--up)} .down{color:var(--down)} .flat{color:var(--ink-3)}
+header.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;gap:16px;height:56px}
+.brand{font-weight:900;display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);white-space:nowrap}
+.brand img{width:22px;height:22px;border-radius:6px}
+nav.links{display:flex;gap:18px;margin-left:auto;font-size:14px}
+nav.links a{color:var(--ink-2);text-decoration:none}
+nav.links a.on{color:var(--ink);font-weight:600}
+.hero{padding:34px 0 8px}
+.eyebrow{font-size:13px;color:var(--ink-3);letter-spacing:.12em}
+.hero h1{font-size:clamp(28px,4.4vw,42px);line-height:1.15;margin:6px 0 10px;font-weight:900}
+.hero p{color:var(--ink-2);margin:0;max-width:760px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{font-size:13px;padding:4px 10px;border-radius:999px;background:var(--panel);border:1px solid var(--line);color:var(--ink-2)}
+.chip b{color:var(--ink);font-weight:600}
+section.block{margin:30px 0}
+section.block > h2{font-size:21px;margin:0 0 4px}
+section.block > .sub{font-size:14px;color:var(--ink-2);margin:0 0 14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.verdict{padding:20px 22px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:760px){.verdict{grid-template-columns:1fr}}
+.vbox{border-radius:12px;padding:16px 18px;background:var(--bg)}
+.vbox .k{font-size:13px;color:var(--ink-3)}
+.vbox .v{font-size:22px;font-weight:900;margin:2px 0 6px;line-height:1.3}
+.vbox p{margin:0;font-size:14px;color:var(--ink-2)}
+.verdict .summary{grid-column:1/-1;font-size:15px;margin:0;padding-top:4px}
+.base{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media (max-width:760px){.base{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+.stat .k{font-size:12.5px;color:var(--ink-3)}
+.stat .v{font-size:24px;font-weight:700;line-height:1.25}
+.stat .s{font-size:12.5px;color:var(--ink-2)}
+.seg{display:inline-flex;background:var(--line-2);border-radius:9px;padding:3px}
+.seg button{border:0;background:transparent;color:var(--ink-2);font:inherit;font-size:13.5px;padding:5px 12px;border-radius:7px;cursor:pointer}
+.seg button.on{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12);font-weight:600}
+.tools{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid var(--line)}
+.tools h3{margin:0;font-size:16px}
+.sig{display:grid;grid-template-columns:minmax(220px,1.3fr) 70px 90px 90px 80px minmax(220px,1.4fr);gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line-2)}
+.sig.head{font-size:12.5px;color:var(--ink-3);padding-top:10px;padding-bottom:10px}
+.sig:last-child{border-bottom:0}
+.sig .nm{font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sig .ds{font-size:12.5px;color:var(--ink-3)}
+.sig .r{text-align:right}
+.badge{font-size:11.5px;padding:1px 8px;border-radius:6px;font-weight:600}
+.badge.buy{background:var(--up-soft);color:var(--up)} .badge.sell{background:var(--down-soft);color:var(--down)}
+.res{font-size:11.5px;padding:1px 8px;border-radius:6px;border:1px solid var(--line);color:var(--ink-2)}
+.res.good{border-color:transparent;background:var(--accent);color:var(--panel)}
+.res.weak{border-color:var(--accent);color:var(--accent)}
+.res.bad{border-color:transparent;background:var(--warn-soft);color:var(--warn)}
+svg.ci{display:block;width:100%;height:34px}
+@media (max-width:860px){
+  .sig{grid-template-columns:1fr 1fr 1fr;gap:6px 12px}
+  .sig.head{display:none}
+  .sig > div:first-child{grid-column:1/-1}
+  .sig > .ciw{grid-column:1/-1}
+  .sig .r{text-align:left}
+  .sig .r::before{content:attr(data-l);display:block;font-size:11.5px;color:var(--ink-3);font-family:"Noto Sans TC",sans-serif}
+}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{padding:9px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line-2)}
+th{font-size:12px;color:var(--ink-3);font-weight:500}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--panel)}
+td .n{color:var(--ink-3);font-size:11.5px;margin-left:4px}
+ul.notes{margin:0;padding:18px 18px 18px 38px}
+ul.notes li{margin-bottom:8px;color:var(--ink-2);font-size:14px}
+.empty{padding:40px;text-align:center;color:var(--ink-3)}
+footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);font-size:13px;margin-top:40px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="./"><img src="favicon.svg" alt="">自選股籌碼追蹤</a>
+    <nav class="links"><a href="./">追蹤清單</a><a href="backtest.html" class="on">回測報告</a></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="eyebrow">歷史驗證 · 買進訊號 vs 賣出警示</div>
+    <h1>籌碼分數回測</h1>
+    <p>用與網站相同的計分規則，回算自選股過去約兩年每天的分數，看各種訊號出現後，股價在 5 日、20 日內的表現，並與「任意一天買進」相比。</p>
+    <div class="chips" id="chips"></div>
+  </section>
+
+  <div id="body"><div class="card empty">載入中…</div></div>
+</main>
+
+<footer><div class="wrap">回測結果只代表過去，不保證未來，不構成投資建議。</div></footer>
+
+<script>
+(function(){
+  "use strict";
+  const $ = s => document.querySelector(s);
+  const fmt = (v,d=2) => v==null||isNaN(v) ? "—" : Number(v).toLocaleString("zh-TW",{minimumFractionDigits:d,maximumFractionDigits:d});
+  const sgn = (v,d=2) => v==null ? "—" : (v>0?"+":"") + fmt(v,d);
+  const cls = v => v==null||v===0 ? "flat" : v>0 ? "up" : "down";
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  let R = null, H = "20";
+
+  // 訊號是否有效：買進訊號要「超額報酬 > 0」，賣出警示要「超額報酬 < 0」
+  function judge(sig, h){
+    const st = sig.stats[h];
+    if (!st || st.n < 10) return { k:"few", t:"樣本不足", score:0 };
+    const dir = sig.type === "buy" ? 1 : -1, ex = st.excess * dir;
+    const ci = st.ci ? st.ci.map(x => x*dir).sort((a,b)=>a-b) : null;
+    if (ci && ci[0] > 0) return { k:"good", t:"有效", score:ex };
+    if (ex > 0.3) return { k:"weak", t:"傾向有效", score:ex };
+    if (ex < -0.3) return { k:"bad", t:"反向", score:ex };
+    return { k:"none", t:"沒有差別", score:ex };
+  }
+
+  function ciSVG(sig, h, range){
+    const st = sig.stats[h];
+    if (!st || !st.n) return "";
+    const W = 300, Hh = 34, x = v => (v + range) / (2*range) * (W-20) + 10;
+    const color = st.excess >= 0 ? "var(--up)" : "var(--down)";
+    const ci = st.ci || [st.excess, st.excess];
+    return `<svg class="ci" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" aria-label="超額報酬 ${sgn(st.excess)}%">
+      <line x1="${x(0)}" x2="${x(0)}" y1="4" y2="${Hh-4}" stroke="var(--ink-3)" stroke-dasharray="3 3"/>
+      <line x1="${x(Math.max(-range,ci[0]))}" x2="${x(Math.min(range,ci[1]))}" y1="${Hh/2}" y2="${Hh/2}" stroke="${color}" stroke-width="2" opacity=".55"/>
+      <line x1="${x(Math.max(-range,ci[0]))}" x2="${x(Math.max(-range,ci[0]))}" y1="${Hh/2-5}" y2="${Hh/2+5}" stroke="${color}" stroke-width="2" opacity=".55"/>
+      <line x1="${x(Math.min(range,ci[1]))}" x2="${x(Math.min(range,ci[1]))}" y1="${Hh/2-5}" y2="${Hh/2+5}" stroke="${color}" stroke-width="2" opacity=".55"/>
+      <circle cx="${x(Math.max(-range,Math.min(range,st.excess)))}" cy="${Hh/2}" r="5" fill="${color}"/>
+    </svg>`;
+  }
+
+  function render(){
+    const r = R, bH = r.baseline[H];
+    $("#chips").innerHTML = `
+      <span class="chip">期間 <b class="num">${esc(r.start)} ～ ${esc(r.end)}</b></span>
+      <span class="chip">股票 <b class="num">${r.stocks}</b> 檔</span>
+      <span class="chip">樣本 <b class="num">${fmt(bH.n,0)}</b> 個交易日</span>
+      <span class="chip">更新於 <b class="num">${esc(r.generated.replace("T"," "))}</b></span>`;
+
+    const js = r.signals.map(s => ({ s, j: judge(s, H) }));
+    const best = type => js.filter(x => x.s.type === type && x.j.k !== "few").sort((a,b)=>b.j.score-a.j.score)[0];
+    const bb = best("buy"), bs = best("sell");
+    const avg = type => { const a = js.filter(x => x.s.type === type && x.j.k !== "few"); return a.length ? a.reduce((t,x)=>t+x.j.score,0)/a.length : null; };
+    const ab = avg("buy"), as = avg("sell");
+    let summary;
+    const sb = ab == null ? "" : `買進訊號平均比任意一天買進${ab >= 0 ? "多賺" : "少賺"} <b class="num">${fmt(Math.abs(ab))}%</b>`;
+    const ss = as == null ? "" : `賣出警示出現後，股價平均比任意一天${as >= 0 ? "差" : "好"} <b class="num">${fmt(Math.abs(as))}%</b>${as >= 0 ? "（警示有用）" : "（警示反而失準）"}`;
+    if (ab == null || as == null) summary = "部分訊號樣本不足，暫時無法比較。";
+    else if (ab > 0.3 && ab > as + 0.3) summary = `在你的自選股上，<b>買進訊號比較準</b>：${sb}；${ss}。`;
+    else if (as > 0.3 && as > ab + 0.3) summary = `在你的自選股上，<b>賣出警示比較準</b>：${ss}；${sb}。`;
+    else if (ab <= 0.3 && as <= 0.3) summary = `在你的自選股上，買進訊號和賣出警示<b>都沒有明顯優於隨機</b>：${sb}；${ss}。籌碼分數單獨使用的參考價值有限。`;
+    else summary = `買進訊號和賣出警示的效果<b>差不多</b>，沒有哪一邊明顯比較準：${sb}；${ss}。`;
+
+    const vbox = (title, x, type) => !x ? `<div class="vbox"><div class="k">${title}</div><div class="v">—</div><p>樣本不足</p></div>` : `
+      <div class="vbox"><div class="k">${title}</div><div class="v">${esc(x.s.name)}</div>
+      <p>${H} 日後平均 <b class="num ${cls(x.s.stats[H].mean)}">${sgn(x.s.stats[H].mean)}%</b>，比任意一天買進 <b class="num ${cls(x.s.stats[H].excess)}">${sgn(x.s.stats[H].excess)}%</b>
+      ${type==="sell" ? "（負數代表警示有效）" : ""}，勝率 <b class="num">${fmt(x.s.stats[H].win,1)}%</b>，共 <b class="num">${x.s.stats[H].n}</b> 次。判定：<b>${x.j.t}</b></p></div>`;
+
+    const range = Math.max(3, ...r.signals.flatMap(s => { const st = s.stats[H]; return st && st.ci ? st.ci.map(Math.abs) : [Math.abs(st?.excess||0)]; })) * 1.1;
+    const rows = js.map(({s, j}) => { const st = s.stats[H] || {n:0}; return `
+      <div class="sig">
+        <div><div class="nm"><span class="badge ${s.type}">${s.type==="buy"?"買進訊號":"賣出警示"}</span>${esc(s.name)} <span class="res ${j.k==="good"?"good":j.k==="weak"?"weak":j.k==="bad"?"bad":""}">${j.t}</span></div><div class="ds">${esc(s.desc)}</div></div>
+        <div class="r num" data-l="次數">${st.n}</div>
+        <div class="r num ${cls(st.mean)}" data-l="${H} 日平均">${st.n?sgn(st.mean)+"%":"—"}</div>
+        <div class="r num ${cls(st.excess)}" data-l="超額報酬">${st.n?sgn(st.excess)+"%":"—"}</div>
+        <div class="r num" data-l="勝率">${st.n?fmt(st.win,1)+"%":"—"}</div>
+        <div class="ciw">${ciSVG(s, H, range)}</div>
+      </div>`; }).join("");
+
+    const sigKeys = r.signals.map(s => s.key);
+    const ps = r.perStock.map(p => `<tr><td><b>${esc(p.name)}</b> <span class="num" style="color:var(--ink-3);font-size:12px">${esc(p.code)}</span></td>` +
+      sigKeys.map(k => { const x = p.signals[k] || {n:0}; return `<td class="num ${cls(x.mean20)}">${x.mean20==null?"—":sgn(x.mean20)+"%"}<span class="n">${x.n} 次</span></td>`; }).join("") + `</tr>`).join("");
+    const sigName = Object.fromEntries(r.signals.map(s => [s.key, s]));
+    const recent = r.recent.map(e => `<tr><td class="num">${esc(e.date)}</td><td style="text-align:left;position:static"><b>${esc(e.name)}</b> <span class="num" style="color:var(--ink-3)">${esc(e.code)}</span></td>
+      <td style="text-align:left"><span class="badge ${sigName[e.signal].type}">${sigName[e.signal].type==="buy"?"買":"賣"}</span> ${esc(sigName[e.signal].name)}</td>
+      <td class="num">${fmt(e.score,1)}</td><td class="num ${cls(e.r5)}">${e.r5==null?"尚未滿 5 日":sgn(e.r5)+"%"}</td><td class="num ${cls(e.r20)}">${e.r20==null?"尚未滿 20 日":sgn(e.r20)+"%"}</td></tr>`).join("");
+
+    $("#body").innerHTML = `
+      <section class="block">
+        <h2>結論</h2>
+        <p class="sub">以 ${H} 個交易日後的表現判斷；切換下方「持有天數」會一起更新。</p>
+        <div class="card verdict">
+          ${vbox("最有效的買進訊號", bb, "buy")}
+          ${vbox("最有效的賣出警示", bs, "sell")}
+          <p class="summary">${summary}</p>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>比較基準：任意一天買進</h2>
+        <p class="sub">不看任何訊號、隨便哪天買進持有的平均結果。訊號要比這個好，才算有用。</p>
+        <div class="base">
+          <div class="stat"><div class="k">5 日後平均報酬</div><div class="v num ${cls(r.baseline["5"].mean)}">${sgn(r.baseline["5"].mean)}%</div><div class="s">中位數 ${sgn(r.baseline["5"].median)}%</div></div>
+          <div class="stat"><div class="k">5 日勝率</div><div class="v num">${fmt(r.baseline["5"].win,1)}%</div><div class="s">報酬為正的比例</div></div>
+          <div class="stat"><div class="k">20 日後平均報酬</div><div class="v num ${cls(r.baseline["20"].mean)}">${sgn(r.baseline["20"].mean)}%</div><div class="s">中位數 ${sgn(r.baseline["20"].median)}%</div></div>
+          <div class="stat"><div class="k">20 日勝率</div><div class="v num">${fmt(r.baseline["20"].win,1)}%</div><div class="s">報酬為正的比例</div></div>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>各訊號表現</h2>
+        <p class="sub">超額報酬 = 訊號後平均報酬 − 任意一天買進的平均報酬。<b>買進訊號</b>要大於 0（紅）、<b>賣出警示</b>要小於 0（綠）才算有效。右側線段是 95% 信賴區間，沒有跨過中間虛線（0）才代表差異不是運氣。</p>
+        <div class="card">
+          <div class="tools"><h3>持有天數</h3><div class="seg" id="hSeg"><button data-h="5">5 日</button><button data-h="20">20 日</button></div></div>
+          <div class="sig head"><div>訊號</div><div class="r">次數</div><div class="r">${H} 日平均</div><div class="r">超額報酬</div><div class="r">勝率</div><div>超額報酬與 95% 信賴區間（中線 = 0）</div></div>
+          ${rows}
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>各股票的表現（20 日平均報酬）</h2>
+        <p class="sub">同一個訊號在不同股票上的效果可能差很多；次數太少的格子參考價值低。</p>
+        <div class="card table-wrap"><table>
+          <thead><tr><th>股票</th>${r.signals.map(s => `<th title="${esc(s.desc)}">${esc(s.name)}</th>`).join("")}</tr></thead>
+          <tbody>${ps}</tbody></table></div>
+      </section>
+
+      <section class="block">
+        <h2>最近觸發的訊號</h2>
+        <p class="sub">每檔股票每種訊號列出最近 3 次，可以對照當時之後的實際走勢。</p>
+        <div class="card table-wrap"><table>
+          <thead><tr><th>日期</th><th style="text-align:left">股票</th><th style="text-align:left">訊號</th><th>當日分數</th><th>5 日後</th><th>20 日後</th></tr></thead>
+          <tbody>${recent}</tbody></table></div>
+      </section>
+
+      <section class="block">
+        <h2>回測方法與限制</h2>
+        <div class="card"><ul class="notes">
+          <li>訊號在當天收盤後才知道，所以以<b>隔天開盤價進場</b>，持有 5 或 20 個交易日後以收盤價計算報酬，未計手續費與交易稅（來回約 0.6%）。</li>
+          <li>同一檔股票的同一種訊號，觸發後 ${r.cooldown} 個交易日內不重複計算，避免連續幾天的訊號被重複計入。</li>
+          <li><b>不含千張大戶項目</b>：集保的歷史週資料無法免費取得，所以回測分數最高 75 分，而網站上的即時分數最高 100 分，「分數達 50」這類門檻在回測中較難達到。</li>
+          <li>95% 信賴區間用重複抽樣（bootstrap）估計。同一段期間內的訊號彼此有關聯，實際的不確定性會比區間顯示的更大。</li>
+          <li>只用你目前清單上的股票，這些多半是你「現在」會注意的股票，可能帶有倖存者偏差；樣本只有約兩年，市場環境不同時結果可能完全不同。</li>
+          <li>每週六會用最新資料自動重跑；修改自選股清單後也會重新計算。</li>
+        </ul></div>
+      </section>`;
+
+    document.querySelectorAll("#hSeg button").forEach(b => {
+      b.classList.toggle("on", b.dataset.h === H);
+      b.addEventListener("click", () => { H = b.dataset.h; render(); });
+    });
+  }
+
+  fetch("data/backtest.json?t=" + Date.now(), {cache:"no-store"})
+    .then(r => { if (!r.ok) throw 0; return r.json(); })
+    .then(j => { R = j; render(); })
+    .catch(() => { $("#body").innerHTML = `<div class="card empty">還沒有回測結果，請稍後再來（Actions 執行中）。</div>`; });
+})();
+</script>
+</body>
+</html>

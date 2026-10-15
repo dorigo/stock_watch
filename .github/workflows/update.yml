@@ -11,7 +11,6 @@ on:
     paths:
       - watchlist.txt         # 修改自選股清單後自動重抓
       - scripts/fetch.py
-      - scripts/probe.py
 
 permissions:
   contents: write
@@ -31,10 +30,9 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: 測試資料來源（暫時）
-        run: python scripts/probe.py || true
-
       - name: 抓取資料並計分
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
         run: python scripts/fetch.py || echo "FETCH_FAILED=1" >> "$GITHUB_ENV"
 
       - name: 提交資料（失敗時也會提交 data/debug.log 以便除錯）

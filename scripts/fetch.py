@@ -5,7 +5,7 @@
 只用 Python 標準函式庫，不需要 pip install。
 流程：
   1. 讀 watchlist.txt 的股票代號
-  2. 補齊最近 N 個交易日的每日資料（證交所 / 櫃買中心：收盤、三大法人、融資）
+  2. 由 FinMind 取得最近 N 個交易日的收盤、三大法人、融資（證交所會擋國外 IP）
   3. 抓集保戶股權分散表（千張大戶，每週）
   4. 依規則計分，輸出 data/latest.json、data/report/YYYY-MM-DD.json、data/index.json
 
@@ -17,6 +17,7 @@ import csv
 import datetime as dt
 import io
 import json
+import os
 import random
 import re
 import sys
@@ -27,15 +28,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
-DAILY = DATA / "daily"
 REPORT = DATA / "report"
 TDCC_DIR = DATA / "tdcc"
 TZ = dt.timezone(dt.timedelta(hours=8))
 
 NEED_DAYS = 10          # 保留/計算用的交易日數（含走勢小圖）
-LOOKBACK_DAYS = 20      # 往回找交易日的最大日曆天數
+LOOKBACK_DAYS = 30      # 往回抓幾個日曆天的資料
 KEEP_REPORTS = 120      # 歷史清單保留幾天
-MIN_GAP = 3.5           # 同一網站兩次請求最少間隔秒數（避免被證交所封鎖）
+MIN_GAP = 1.2           # 同一網站兩次請求最少間隔秒數
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/128.0 Safari/537.36")
 
@@ -110,16 +110,12 @@ def decode(raw):
 
 
 # ───────────────────────── 解析工具 ─────────────────────────
-def clean(s):
-    return re.sub(r"<[^>]+>|\s", "", str(s or ""))
-
-
 def num(v):
     if v is None:
         return None
     if isinstance(v, (int, float)):
         return float(v)
-    s = clean(v).replace(",", "").replace("+", "")
+    s = re.sub(r"<[^>]+>|\s|,|\+", "", str(v))
     if s in ("", "-", "--", "---", "X", "N/A"):
         return None
     try:
@@ -129,202 +125,6 @@ def num(v):
         return float(m.group()) if m else None
 
 
-def iter_tables(j):
-    """相容證交所新舊格式（tables / fields+data / fieldsN+dataN）與櫃買舊格式（aaData）"""
-    if not isinstance(j, dict):
-        return
-    for t in j.get("tables") or []:
-        if isinstance(t, dict) and t.get("data"):
-            yield [clean(x) for x in (t.get("fields") or [])], t["data"]
-    if j.get("fields") and j.get("data"):
-        yield [clean(x) for x in j["fields"]], j["data"]
-    for k in list(j.keys()):
-        m = re.fullmatch(r"fields(\d+)", k)
-        if m and j.get("data" + m.group(1)):
-            yield [clean(x) for x in j[k]], j["data" + m.group(1)]
-    if j.get("aaData"):
-        yield [], j["aaData"]
-
-
-def find_table(j, *must):
-    for f, d in iter_tables(j):
-        if all(any(m in x for x in f) for m in must):
-            return f, d
-    return None, None
-
-
-def col(fields, *keys, exact=False, start=False):
-    for k in keys:
-        for i, f in enumerate(fields):
-            if (exact and f == k) or (start and f.startswith(k)) or (not exact and not start and k in f):
-                return i
-    return None
-
-
-def cell(row, i):
-    if isinstance(row, dict):
-        row = list(row.values())
-    if i is None or i >= len(row):
-        return None
-    return row[i]
-
-
-# ───────────────────────── 證交所（上市） ─────────────────────────
-def twse_day(d, codes):
-    ds = d.strftime("%Y%m%d")
-    out, flags = {}, {"has_inst": False, "has_margin": False}
-
-    j = http_get(f"https://www.twse.com.tw/rwd/zh/afterTrading/MI_INDEX?date={ds}&type=ALLBUT0099&response=json")
-    f, rows = find_table(j, "證券代號", "收盤價")
-    if not rows:
-        return None, flags  # 非交易日或尚未公布
-    ic, iname = col(f, "證券代號"), col(f, "證券名稱")
-    ivol, iamt = col(f, "成交股數"), col(f, "成交金額")
-    iopen, ihigh, ilow, iclose = col(f, "開盤價"), col(f, "最高價"), col(f, "最低價"), col(f, "收盤價")
-    isign, idiff = col(f, "漲跌(+/-)"), col(f, "漲跌價差")
-    for r in rows:
-        code = str(cell(r, ic) or "").strip()
-        if code not in codes:
-            continue
-        diff = num(cell(r, idiff)) or 0.0
-        sign = str(cell(r, isign) or "")
-        diff = -abs(diff) if "-" in sign else (abs(diff) if "+" in sign else 0.0)
-        out[code] = {
-            "name": str(cell(r, iname) or "").strip(), "market": "上市",
-            "open": num(cell(r, iopen)), "high": num(cell(r, ihigh)), "low": num(cell(r, ilow)),
-            "close": num(cell(r, iclose)), "chg": diff,
-            "vol": num(cell(r, ivol)), "amt": num(cell(r, iamt)),
-        }
-    if not out:
-        return out, flags
-
-    # 三大法人
-    j = http_get(f"https://www.twse.com.tw/rwd/zh/fund/T86?date={ds}&selectType=ALLBUT0999&response=json")
-    f, rows = find_table(j, "證券代號", "三大法人")
-    if rows:
-        flags["has_inst"] = True
-        ic = col(f, "證券代號")
-        ifo = col(f, "外陸資買賣超股數(不含外資自營商)", "外資買賣超股數")
-        itr = col(f, "投信買賣超股數")
-        idl = col(f, "自營商買賣超股數", exact=True)
-        idl_parts = [i for i, x in enumerate(f) if x.startswith("自營商買賣超股數(")]
-        itot = col(f, "三大法人買賣超股數")
-        for r in rows:
-            code = str(cell(r, ic) or "").strip()
-            if code in out:
-                dealer = num(cell(r, idl)) if idl is not None else sum(num(cell(r, i)) or 0 for i in idl_parts)
-                out[code].update(foreign=num(cell(r, ifo)) or 0, trust=num(cell(r, itr)) or 0,
-                                 dealer=dealer or 0, inst=num(cell(r, itot)) or 0)
-        for code in out:  # 當天沒有法人進出的股票不會出現在表中
-            out[code].setdefault("inst", 0)
-            out[code].setdefault("foreign", 0)
-            out[code].setdefault("trust", 0)
-            out[code].setdefault("dealer", 0)
-    else:
-        log("    · 證交所三大法人尚未公布")
-
-    # 融資融券
-    j = http_get(f"https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?date={ds}&selectType=ALL&response=json")
-    f, rows = find_table(j, "代號", "今日餘額")
-    if rows:
-        flags["has_margin"] = True
-        ic, iprev, itoday = col(f, "代號"), col(f, "前日餘額"), col(f, "今日餘額")
-        for r in rows:
-            code = str(cell(r, ic) or "").strip()
-            if code in out:
-                out[code].update(margin=num(cell(r, itoday)), margin_prev=num(cell(r, iprev)))
-    else:
-        log("    · 證交所融資餘額尚未公布")
-    return out, flags
-
-
-# ───────────────────────── 櫃買中心（上櫃） ─────────────────────────
-TPEX_QUOTE_DEFAULT = ["代號", "名稱", "收盤", "漲跌", "開盤", "最高", "最低", "均價", "成交股數", "成交金額(元)", "成交筆數"]
-TPEX_MARGIN_DEFAULT = ["代號", "名稱", "前資餘額(張)", "資買", "資賣", "現償", "資餘額"]
-
-
-def tpex_get(new_url, old_url, *must):
-    j = http_get(new_url)
-    f, rows = find_table(j, *must) if j else (None, None)
-    if rows is None and j:
-        f, rows = next(iter_tables(j), (None, None))
-    if not rows:
-        j = http_get(old_url)
-        f, rows = next(iter_tables(j), (None, None)) if j else (None, None)
-    return f, rows
-
-
-def tpex_day(d, codes):
-    ad, roc = d.strftime("%Y/%m/%d"), f"{d.year - 1911}/{d:%m/%d}"
-    out, flags = {}, {"has_inst": False, "has_margin": False}
-
-    f, rows = tpex_get(
-        f"https://www.tpex.org.tw/www/zh-tw/afterTrading/otc?date={ad}&type=EW&response=json",
-        f"https://www.tpex.org.tw/web/stock/aftertrading/otc_quotes_no1430/stk_wn1430_result.php?l=zh-tw&o=json&d={roc}&se=EW",
-        "代號", "收盤")
-    if not rows:
-        return None, flags
-    f = f or TPEX_QUOTE_DEFAULT
-    ic, iname, iclose, idiff = col(f, "代號"), col(f, "名稱"), col(f, "收盤"), col(f, "漲跌")
-    iopen, ihigh, ilow = col(f, "開盤"), col(f, "最高"), col(f, "最低")
-    ivol, iamt = col(f, "成交股數"), col(f, "成交金額")
-    for r in rows:
-        code = str(cell(r, ic) or "").strip()
-        if code not in codes:
-            continue
-        out[code] = {
-            "name": str(cell(r, iname) or "").strip(), "market": "上櫃",
-            "open": num(cell(r, iopen)), "high": num(cell(r, ihigh)), "low": num(cell(r, ilow)),
-            "close": num(cell(r, iclose)), "chg": num(cell(r, idiff)) or 0.0,
-            "vol": num(cell(r, ivol)), "amt": num(cell(r, iamt)),
-        }
-    if not out:
-        return out, flags
-
-    # 三大法人：欄位順序為 外資(不含自營)、外資自營商、外資合計、投信、自營(自行)、自營(避險)、自營合計、三大法人合計
-    f, rows = tpex_get(
-        f"https://www.tpex.org.tw/www/zh-tw/insti/dailyTrade?type=Daily&sect=EW&date={ad}&response=json",
-        f"https://www.tpex.org.tw/web/stock/3insti/daily_trade/3itrade_hedge_result.php?l=zh-tw&o=json&se=EW&t=D&d={roc}",
-        "代號", "買賣超")
-    if rows:
-        flags["has_inst"] = True
-        nets = [i for i, x in enumerate(f or []) if "買賣超" in x]
-        if len(nets) >= 8:
-            ifo, itr, idl, itot = nets[0], nets[3], nets[6], nets[-1]
-        else:  # 舊格式沒有欄位名稱
-            ifo, itr, idl, itot = 4, 13, 22, 23
-        ic = col(f or [], "代號") or 0
-        for r in rows:
-            code = str(cell(r, ic) or "").strip()
-            if code in out:
-                out[code].update(foreign=num(cell(r, ifo)) or 0, trust=num(cell(r, itr)) or 0,
-                                 dealer=num(cell(r, idl)) or 0, inst=num(cell(r, itot)) or 0)
-        for code in out:
-            for k in ("inst", "foreign", "trust", "dealer"):
-                out[code].setdefault(k, 0)
-    else:
-        log("    · 櫃買三大法人尚未公布")
-
-    f, rows = tpex_get(
-        f"https://www.tpex.org.tw/www/zh-tw/margin/balance?date={ad}&response=json",
-        f"https://www.tpex.org.tw/web/stock/margin_trading/margin_balance/margin_bal_result.php?l=zh-tw&o=json&d={roc}",
-        "代號", "資餘額")
-    if rows:
-        flags["has_margin"] = True
-        f = f or TPEX_MARGIN_DEFAULT
-        ic = col(f, "代號")
-        iprev = col(f, "前資餘額", "融資前日餘額")
-        itoday = col(f, "資餘額", "融資今日餘額", start=True)
-        for r in rows:
-            code = str(cell(r, ic) or "").strip()
-            if code in out:
-                out[code].update(margin=num(cell(r, itoday)), margin_prev=num(cell(r, iprev)))
-    else:
-        log("    · 櫃買融資餘額尚未公布")
-    return out, flags
-
-
-# ───────────────────────── 每日資料快取 ─────────────────────────
 def load_json(p, default=None):
     try:
         return json.loads(Path(p).read_text(encoding="utf-8"))
@@ -340,71 +140,109 @@ def save_json(p, obj, compact=True):
     p.write_text(text, encoding="utf-8")
 
 
-def fetch_day(d, codes):
-    log(f"  ↳ 抓取 {d}")
-    twse, f1 = twse_day(d, set(codes))
-    if twse is None:
+# ───────────────────────── FinMind ─────────────────────────
+# 證交所會擋國外 IP（GitHub Actions 在美國），因此股價、法人、融資改由 FinMind 取得。
+# 不需要註冊；若在 GitHub Secrets 設定 FINMIND_TOKEN，可提高請求上限。
+FINMIND = "https://api.finmindtrade.com/api/v4/data"
+FINMIND_TOKEN = os.environ.get("FINMIND_TOKEN", "").strip()
+
+
+def finmind(dataset, data_id=None, start=None):
+    q = {"dataset": dataset}
+    if data_id:
+        q["data_id"] = data_id
+    if start:
+        q["start_date"] = start
+    if FINMIND_TOKEN:
+        q["token"] = FINMIND_TOKEN
+    j = http_get(FINMIND + "?" + urllib.parse.urlencode(q))
+    if not j or j.get("status") != 200:
+        if j:
+            log(f"    ! FinMind {dataset} {data_id or ''}：{j.get('msg')}")
         return None
-    stocks = dict(twse)
-    rest = [c for c in codes if c not in stocks]
-    f2 = {"has_inst": True, "has_margin": True}
-    if rest:
-        tpex, f2 = tpex_day(d, set(rest))
-        if tpex:
-            stocks.update(tpex)
-        else:
-            f2 = {"has_inst": False, "has_margin": False}
-    has_tw = any(s["market"] == "上市" for s in stocks.values())
-    has_tp = any(s["market"] == "上櫃" for s in stocks.values())
-    return {
-        "date": d.isoformat(),
-        "fetched_at": now_tw().isoformat(timespec="seconds"),
-        "has_inst": (f1["has_inst"] or not has_tw) and (f2["has_inst"] or not has_tp),
-        "has_margin": (f1["has_margin"] or not has_tw) and (f2["has_margin"] or not has_tp),
-        "stocks": stocks,
-    }
+    return j.get("data") or []
 
 
-def ensure_days(codes):
-    today = now_tw().date()
-    days, d = [], today
-    for _ in range(LOOKBACK_DAYS):
-        if len(days) >= NEED_DAYS:
-            break
-        if d.weekday() >= 5:
-            d -= dt.timedelta(days=1)
-            continue
-        path = DAILY / f"{d.isoformat()}.json"
-        cached = load_json(path)
-        recent = (today - d).days <= 1
-        if cached and cached.get("closed"):
-            d -= dt.timedelta(days=1)
-            continue
-        complete = cached and all(c in cached["stocks"] for c in codes) and \
-            (not recent or (cached.get("has_inst") and cached.get("has_margin")))
-        # 舊檔案中沒有的代號：只要代號在任何市場都查不到，就不必重抓
-        if cached and not complete and not recent:
-            missing = [c for c in codes if c not in cached["stocks"]]
-            if missing and all(c in cached.get("not_found", []) for c in missing):
-                complete = True
-        if complete:
-            days.append(cached)
+def stock_info(codes):
+    """代號 → (名稱, 市場)，快取在 data/stock_info.json"""
+    path = DATA / "stock_info.json"
+    cache = load_json(path, {})
+    if all(c in cache for c in codes):
+        return cache
+    log("• 更新股票名稱與市場對照表")
+    rows = finmind("TaiwanStockInfo")
+    if rows:
+        for r in rows:
+            sid = r.get("stock_id")
+            if sid in codes:
+                cache[sid] = [r.get("stock_name"), {"twse": "上市", "tpex": "上櫃"}.get(r.get("type"), r.get("type"))]
+        save_json(path, cache, compact=False)
+    return cache
+
+
+def fetch_stock(code, start):
+    """回傳 {日期: 當日資料}"""
+    days = {}
+    rows = finmind("TaiwanStockPrice", code, start)
+    if rows is None:
+        return None
+    for r in rows:
+        if not r.get("Trading_Volume") and not r.get("close"):
+            continue  # 停牌
+        days[r["date"]] = {
+            "open": num(r.get("open")), "high": num(r.get("max")), "low": num(r.get("min")),
+            "close": num(r.get("close")), "chg": num(r.get("spread")) or 0.0,
+            "vol": num(r.get("Trading_Volume")), "amt": num(r.get("Trading_money")),
+        }
+    rows = finmind("TaiwanStockInstitutionalInvestorsBuySell", code, start) or []
+    inst = {}
+    for r in rows:
+        d = inst.setdefault(r["date"], {"foreign": 0.0, "trust": 0.0, "dealer": 0.0, "inst": 0.0})
+        net = (num(r.get("buy")) or 0) - (num(r.get("sell")) or 0)
+        name = r.get("name", "")
+        if name == "Foreign_Investor":
+            d["foreign"] += net
+        elif name == "Investment_Trust":
+            d["trust"] += net
+        elif name.startswith("Dealer"):
+            d["dealer"] += net
+        d["inst"] += net
+    for date, v in inst.items():
+        if date in days:
+            days[date].update(v)
+    rows = finmind("TaiwanStockMarginPurchaseShortSale", code, start) or []
+    for r in rows:
+        if r["date"] in days:
+            days[r["date"]].update(margin=num(r.get("MarginPurchaseTodayBalance")),
+                                   margin_prev=num(r.get("MarginPurchaseYesterdayBalance")))
+    return days
+
+
+def build_days(codes):
+    start = (now_tw().date() - dt.timedelta(days=LOOKBACK_DAYS)).isoformat()
+    info = stock_info(codes)
+    per = {}
+    log("• 股價 / 三大法人 / 融資（FinMind）")
+    for c in codes:
+        log(f"  ↳ {c}")
+        got = fetch_stock(c, start)
+        if got:
+            per[c] = got
         else:
-            got = fetch_day(d, codes)
-            if got is None:
-                if d < today:
-                    save_json(path, {"date": d.isoformat(), "closed": True})
-                    log(f"    · {d} 非交易日")
-                else:
-                    log(f"    · {d} 今日資料尚未公布")
-            else:
-                got["not_found"] = [c for c in codes if c not in got["stocks"]]
-                if cached:  # 保留舊檔中其他代號
-                    for k, v in cached.get("stocks", {}).items():
-                        got["stocks"].setdefault(k, v)
-                save_json(path, got)
-                days.append(got)
-        d -= dt.timedelta(days=1)
+            log(f"    ! {c} 沒有資料（代號錯誤或已下市）")
+    all_dates = sorted({d for v in per.values() for d in v}, reverse=True)[:NEED_DAYS]
+    days = []
+    for d in all_dates:
+        stocks = {}
+        for c, v in per.items():
+            if d in v:
+                name, market = info.get(c, [c, "—"])
+                stocks[c] = {"name": name or c, "market": market or "—", **v[d]}
+        days.append({"date": d, "stocks": stocks})
+    if days:
+        latest = days[0]["stocks"].values()
+        days[0]["has_inst"] = all("inst" in s for s in latest)
+        days[0]["has_margin"] = all("margin" in s for s in latest)
     return days  # 新 → 舊
 
 
@@ -575,10 +413,9 @@ def main():
     if "--demo" in sys.argv:
         return demo(codes)
 
-    log("• 每日行情 / 三大法人 / 融資")
-    days = ensure_days(codes)
+    days = build_days(codes)
     if not days:
-        log("✗ 找不到任何交易日資料，可能是證交所暫時封鎖或網址變更，請查看上方錯誤訊息")
+        log("✗ 找不到任何交易日資料，請查看上方錯誤訊息")
         sys.exit(1)
     update_tdcc()
     tdcc = tdcc_latest_two()

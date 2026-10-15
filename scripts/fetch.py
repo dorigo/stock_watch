@@ -37,6 +37,7 @@ NEED_DAYS = 22          # 抓取的交易日數（回算歷史分數需要較多
 LOOKBACK_DAYS = 200     # 往回抓幾個日曆天的資料（K 線與 60 日均線需要）
 CHART_DAYS = 60         # K 線圖顯示的交易日數
 FUND_YEARS = 5          # 估值歷史位置的比較期間（年）
+FUND_VERSION = 2        # 基本面快取格式版本（新增欄位時加 1，會強制重抓）
 TREND_DAYS = 10         # 回算近幾日的分數（分數走勢）
 HIST_DAYS = 10          # 明細與法人小圖顯示幾日
 KEEP_REPORTS = 120      # 歷史清單保留幾天
@@ -343,22 +344,60 @@ def fetch_revenue(code):
     return {"months": out, "latest": out[-1]["ym"], "ytdYoy": round((cur / prev - 1) * 100, 1) if prev and cur else None}
 
 
+def _date(v):
+    v = str(v or "").strip()[:10]
+    return v if re.fullmatch(r"\d{4}-\d{2}-\d{2}", v) and not v.startswith("1900") else None
+
+
+def fetch_dividends(code):
+    """股利政策：即將除權息、最近幾次配息、近一年現金股利"""
+    start = (now_tw().date() - dt.timedelta(days=365 * 3)).isoformat()
+    rows = finmind("TaiwanStockDividend", code, start)
+    if rows is None:
+        return None
+    if rows and code == read_watchlist()[0]:
+        log(f"    · 股利欄位：{sorted(rows[0].keys())}")
+    today = now_tw().date().isoformat()
+    events = []
+    for r in rows:
+        cash = (num(r.get("CashEarningsDistribution")) or 0) + (num(r.get("CashStatutorySurplus")) or 0)
+        stock = (num(r.get("StockEarningsDistribution")) or 0) + (num(r.get("StockStatutorySurplus")) or 0)
+        ex_cash, ex_stock = _date(r.get("CashExDividendTradingDate")), _date(r.get("StockExDividendTradingDate"))
+        pay = _date(r.get("CashDividendPaymentDate"))
+        period = str(r.get("year") or "").strip()
+        ann = _date(r.get("AnnouncementDate")) or _date(r.get("date"))
+        if cash > 0:
+            events.append({"type": "息", "ex": ex_cash, "cash": round(cash, 4), "pay": pay, "period": period, "ann": ann})
+        if stock > 0:
+            events.append({"type": "權", "ex": ex_stock, "stock": round(stock, 4), "period": period, "ann": ann})
+    # 已公布但還沒定除息日的，也列為即將（ex 為 None）
+    upcoming = sorted([e for e in events if e["ex"] is None or e["ex"] >= today],
+                      key=lambda e: e["ex"] or "9999")
+    past = sorted([e for e in events if e["ex"] and e["ex"] < today], key=lambda e: e["ex"], reverse=True)
+    one_year = (now_tw().date() - dt.timedelta(days=365)).isoformat()
+    ttm = round(sum(e.get("cash", 0) for e in past if e["ex"] >= one_year), 4)
+    # 未公布除息日、且同一期別已在過去事件中的，代表是舊資料，排除
+    done = {(e["period"], e["type"]) for e in past}
+    upcoming = [e for e in upcoming if not (e["ex"] is None and (e["period"], e["type"]) in done)]
+    return {"upcoming": upcoming[:4], "past": past[:8], "ttmCash": ttm}
+
+
 def update_fundamentals(codes):
     """一天只抓一次，快取在 data/fundamentals.json"""
     path = DATA / "fundamentals.json"
     cache = load_json(path, {})
     today = now_tw().date().isoformat()
-    stocks = cache.get("stocks", {}) if cache.get("date") == today else {}
+    stocks = cache.get("stocks", {}) if cache.get("date") == today and cache.get("v") == FUND_VERSION else {}
     todo = [c for c in codes if c not in stocks]
     if todo:
         log(f"• 基本面（估值、月營收）：{len(todo)} 檔")
         for c in todo:
             log(f"  ↳ {c}")
-            stocks[c] = {"val": fetch_valuation(c), "rev": fetch_revenue(c)}
+            stocks[c] = {"val": fetch_valuation(c), "rev": fetch_revenue(c), "div": fetch_dividends(c)}
     else:
         log("• 基本面：今日已更新，沿用快取")
     stocks = {c: stocks[c] for c in codes if c in stocks}
-    save_json(path, {"date": today, "stocks": stocks})
+    save_json(path, {"date": today, "v": FUND_VERSION, "stocks": stocks})
     return stocks
 
 
@@ -602,6 +641,9 @@ def main():
         s["per"], s["perPct"], s["yield"], s["yieldPct"] = v.get("per"), v.get("perPct"), v.get("yield"), v.get("yieldPct")
         m = (r.get("months") or [None])[-1] or {}
         s["revYoy"], s["revYm"] = m.get("yoy"), m.get("ym")
+        d = (fund.get(s["code"]) or {}).get("div") or {}
+        nxt = next((e for e in d.get("upcoming", []) if e.get("ex")), None)
+        s["nextEx"] = {"date": nxt["ex"], "type": nxt["type"], "cash": nxt.get("cash"), "stock": nxt.get("stock")} if nxt else None
     save_json(DATA / "charts.json", {"date": report["date"], "stocks": build_charts()})
     write_outputs(report)
     log(f"✓ 完成：{report['date']}，{len(stocks)} 檔" + ("" if report["complete"] else "（部分資料尚未公布，稍後會再更新）"))

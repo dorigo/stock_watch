@@ -248,6 +248,17 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
 .rlab{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3);font-family:var(--mono)}
 .sec-t{font-size:14px;margin:20px 0 10px}
 .hint2{font-size:12.5px;color:var(--ink-3);margin-top:8px}
+/* 除權息 */
+.divs{margin:0 0 22px}
+.divs .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.divs table{min-width:860px}
+.dday{display:flex;flex-direction:column;line-height:1.3}
+.dday b{font-family:var(--mono);font-size:15px}
+.dday span{font-size:11.5px;color:var(--ink-3)}
+.dday span.soon{color:var(--up);font-weight:600}
+.dtype{font-size:11.5px;padding:1px 7px;border-radius:6px;font-weight:600;background:var(--accent-soft);color:var(--accent)}
+.dtype.q{background:var(--warn-soft);color:var(--warn)}
+.tag.div{background:var(--accent-soft);color:var(--accent)}
 /* 持股 */
 .hold{margin:0 0 22px}
 .hold .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
@@ -300,6 +311,8 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
   <div class="stats" id="stats"></div>
 
   <section class="hold" id="holdings"></section>
+
+  <section class="divs" id="divs"></section>
 
   <section class="risers" id="risers"></section>
 
@@ -570,9 +583,11 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
     return `<span class="tag ${alert?"alert":pos?"pos":neg?"neg":""}" data-tip="${tagKey(t)}">${esc(t)}</span>`;
   }
   function holdTags(s){
-    const h = state.holdings[s.code]; if (!h) return "";
+    const n = s.nextEx && daysUntil(s.nextEx.date);
+    const dv = n != null && n >= 0 && n <= 14 ? `<span class="tag div" data-tip="t_div">${esc(s.nextEx.date.slice(5).replace("-", "/"))} 除${s.nextEx.type}</span>` : "";
+    const h = state.holdings[s.code]; if (!h) return dv;
     const k = holdCalc(s.close, h);
-    return `<span class="tag held" data-tip="t_held">持有</span>` + (k && k.stopHit ? `<span class="tag stop" data-tip="t_stop">跌破停損</span>` : "");
+    return `<span class="tag held" data-tip="t_held">持有</span>` + (k && k.stopHit ? `<span class="tag stop" data-tip="t_stop">跌破停損</span>` : "") + dv;
   }
 
   function filtered(){
@@ -592,6 +607,7 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
     const all = state.data.stocks.filter(s => state.market === "all" || s.market === state.market);
     renderStats(all);
     renderHoldings();
+    renderDivs();
     renderRisers(all);
     const list = filtered();
     if (!list.length){ $("#tbody").innerHTML = `<tr><td colspan="14" class="empty">沒有符合條件的股票</td></tr>`; return; }
@@ -657,6 +673,14 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
       stop: ["停損", "事先決定好「跌到多少就賣」的價格，避免小虧變大虧。例如買在 100 元、停損設 92 元，最多就虧 8%。新手最常見的錯誤就是不停損、越攤越平。"],
       pnl: ["損益與報酬率", "損益 =（收盤價 − 買進價）× 股數；報酬率 = 損益 ÷ 買進成本。這裡的數字未扣手續費與證交稅（買賣一趟約 0.4%～0.6%）。"]
     },
+    "股利": {
+      div: ["除息與除權", "公司把獲利發給股東：發現金叫「現金股利」，除息日當天股價會扣掉這筆錢；發股票叫「股票股利」，除權日當天股價會依比例調降。所以除息當天帳面上不會多賺，股利本來就是從股價裡拿出來的。"],
+      exlast: ["怎樣才領得到", "最晚要在除權息日的「前一個交易日」收盤時持有股票（當天買進也算）。除權息日當天或之後才買，就領不到這一次。"],
+      fill: ["填息", "除息後股價漲回除息前的價格，叫做填息。有填息，領到的股利才是真的賺到；遲遲不填息，就等於「領了股利、賠了價差」。"],
+      paydate: ["發放日", "現金股利實際匯入你銀行帳戶的日子，通常在除息日後 3～5 週。"],
+      divtax: ["股利要繳的稅", "股利所得要併入綜合所得稅（或選擇 28% 分開計稅）；單筆股利 2 萬元以上，還會先扣 2.11% 的二代健保補充保費。高所得的人參加除息不一定划算。"],
+      t_div: ["即將除權息", "這檔股票在 14 天內有除權息，要不要在之前買進或賣出，可以先看上方的除權息日曆。"]
+    },
     "標籤": {
       t_inst: ["法人買超／賣超", "當天三大法人合計是買比賣多（買超），還是賣比買多（賣超）。"],
       t_f: ["外資連買 N 天", "外資連續 N 個交易日都是買超。"],
@@ -684,6 +708,7 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
     if (/隔日沖/.test(t)) return "t_dt";
     if (/分數連升|分數大增/.test(t)) return "t_su";
     if (/分數大減/.test(t)) return "t_sd";
+    if (/除(息|權)$/.test(t)) return "t_div";
     return "";
   }
   function renderGlossary(){
@@ -788,6 +813,54 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
     }).catch(() => alert("檔案格式不正確"));
     e.target.value = "";
   });
+
+  // ════════ 除權息日曆 ════════
+  const WD = "日一二三四五六";
+  function todayTW(){ return new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Taipei" })); }
+  function daysUntil(d){ if (!d) return null; const t = todayTW(); t.setHours(0,0,0,0); return Math.round((new Date(d + "T00:00:00") - t) / 864e5); }
+  function prevTradingDay(d){ const x = new Date(d + "T00:00:00"); do { x.setDate(x.getDate() - 1); } while (x.getDay() === 0 || x.getDay() === 6); return x; }
+  const md = x => `${x.getMonth() + 1}/${x.getDate()}（${WD[x.getDay()]}）`;
+  function renderDivs(){
+    const el = $("#divs"), F = state.fund && state.fund.stocks;
+    if (!F || !state.data){ el.innerHTML = ""; return; }
+    const ev = [], pending = [];
+    state.data.stocks.forEach(s => {
+      const d = F[s.code] && F[s.code].div; if (!d) return;
+      (d.upcoming || []).forEach(e => (e.ex ? ev : pending).push({ ...e, s }));
+    });
+    ev.sort((a, b) => a.ex.localeCompare(b.ex));
+    const head = `<div class="hold-head"><h2>除權息日曆</h2><span style="font-size:13px;color:var(--ink-3)">自選股已公布的除權息日期</span></div>`;
+    const tips = `<div class="hint2" style="padding:0 16px 14px">想領股利，最晚要在除權息日的<b>前一個交易日</b>收盤時持有（遇到國定假日請再往前推）。除息當天股價會扣掉股利，剛買就除息並不會因此多賺，而且股利要繳所得稅、單筆 2 萬元以上還會扣 2.11% 二代健保。殖利率以最新收盤價計算。</div>`;
+    if (!ev.length && !pending.length){
+      el.innerHTML = `<div class="card">${head}<div class="hold-empty">目前自選股沒有已公布、尚未除權息的股利。公司通常在除權息前 1～2 個月公布，公布後會自動出現在這裡。</div></div>`;
+      return;
+    }
+    const row = e => {
+      const s = e.s, h = state.holdings[s.code], n = daysUntil(e.ex), last = e.ex ? prevTradingDay(e.ex) : null;
+      const per = e.type === "息" ? `${fmt(e.cash, 2)} 元` : `${fmt(e.stock, 2)} 元<span class="sub">每張配 ${fmt(e.stock * 100, 0)} 股</span>`;
+      const yld = e.type === "息" && s.close ? fmt(e.cash / s.close * 100, 2) + "%" : "—";
+      const mine = h ? (e.type === "息" ? `<b class="num">${fmt(Math.round(e.cash * h.shares))}</b> 元` : `<b class="num">${fmt(Math.floor(h.shares * e.stock / 10))}</b> 股`) : `<span style="color:var(--ink-3)">—</span>`;
+      return `<tr>
+        <td><div class="dday">${e.ex ? `<b>${md(new Date(e.ex + "T00:00:00"))}</b><span class="${n <= 7 ? "soon" : ""}">${n === 0 ? "今天" : n + " 天後"}</span>` : `<b>未定</b><span>已公布金額</span>`}</div></td>
+        <td style="text-align:left"><b>${esc(s.name)}</b> <span class="num" style="color:var(--ink-3);font-size:12px">${esc(s.code)}</span>${h ? ` <span class="tag held">持有</span>` : ""}</td>
+        <td style="text-align:left"><span class="dtype ${e.type === "權" ? "q" : ""}">除${e.type}</span> <span style="color:var(--ink-3);font-size:12px">${esc(e.period || "")}</span></td>
+        <td class="num">${per}</td><td class="num">${yld}</td>
+        <td class="num">${last ? md(last) : "—"}</td>
+        <td class="num">${e.pay ? esc(e.pay.slice(5).replace("-", "/")) : "—"}</td>
+        <td class="num">${mine}</td></tr>`;
+    };
+    el.innerHTML = `<div class="card">${head}<div class="table-wrap"><table>
+      <thead><tr><th data-tip="div">除權息日</th><th style="text-align:left">股票</th><th style="text-align:left">類型／期別</th><th>每股配發</th><th data-tip="yield">殖利率</th><th data-tip="exlast">最晚持有日</th><th data-tip="paydate">發放日</th><th>你預計領到</th></tr></thead>
+      <tbody>${ev.concat(pending).map(row).join("")}</tbody></table></div>${tips}</div>`;
+  }
+  function divHistory(d){
+    if (!d) return `<div class="hint2">沒有股利資料。</div>`;
+    const all = (d.upcoming || []).map(e => ({ ...e, up: true })).concat(d.past || []);
+    if (!all.length) return `<div class="hint2">近 3 年沒有配發股利。</div>`;
+    return `<table class="mini" style="min-width:0;max-width:620px"><thead><tr><th>除權息日</th><th>期別</th><th>類型</th><th>每股</th><th data-tip="paydate">發放日</th></tr></thead><tbody>` +
+      all.map(e => `<tr><td class="num">${e.ex ? esc(e.ex) : "未定"}${e.up ? ` <span class="tag div">即將</span>` : ""}</td><td>${esc(e.period || "")}</td><td>除${e.type}</td><td class="num">${e.type === "息" ? fmt(e.cash, 2) + " 元" : fmt(e.stock, 2) + " 元（股票）"}</td><td class="num">${e.pay ? esc(e.pay) : "—"}</td></tr>`).join("") +
+      `</tbody></table><div class="hint2">近一年現金股利合計 <b class="num">${fmt(d.ttmCash, 2)}</b> 元／股。</div>`;
+  }
 
   // ════════ 估值標籤 ════════
   function valLabel(pct, inverse){
@@ -914,6 +987,7 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
         <table class="mini" style="min-width:0;max-width:520px"><thead><tr><th>月份</th><th>營收（億）</th><th data-tip="mom">月增率</th><th data-tip="yoy">年增率</th></tr></thead><tbody>${last}</tbody></table>`;
     }
     return `<h4 class="sec-t" style="margin-top:0">現在貴不貴？</h4>${vals}
+      <h4 class="sec-t" data-tip="div">股利紀錄</h4>${divHistory(f.div)}
       <h4 class="sec-t" data-tip="rev">月營收${r ? `（最新 ${esc(r.latest)}，今年累計年增 <span class="${cls(r.ytdYoy)}">${r.ytdYoy == null ? "—" : sgn(r.ytdYoy,1) + "%"}</span>）` : ""}</h4>${revs}`;
   }
 

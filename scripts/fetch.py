@@ -32,8 +32,10 @@ REPORT = DATA / "report"
 TDCC_DIR = DATA / "tdcc"
 TZ = dt.timezone(dt.timedelta(hours=8))
 
-NEED_DAYS = 10          # 保留/計算用的交易日數（含走勢小圖）
-LOOKBACK_DAYS = 30      # 往回抓幾個日曆天的資料
+NEED_DAYS = 22          # 抓取的交易日數（回算歷史分數需要較多天）
+LOOKBACK_DAYS = 40      # 往回抓幾個日曆天的資料
+TREND_DAYS = 10         # 回算近幾日的分數（分數走勢）
+HIST_DAYS = 10          # 明細與法人小圖顯示幾日
 KEEP_REPORTS = 120      # 歷史清單保留幾天
 MIN_GAP = 1.2           # 同一網站兩次請求最少間隔秒數
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -282,9 +284,14 @@ def update_tdcc():
         log(f"  ✓ 新增 {date}，共 {len(big)} 檔")
 
 
-def tdcc_latest_two():
-    files = sorted(TDCC_DIR.glob("*.json"), reverse=True)[:2]
-    return [load_json(f) for f in files]
+def tdcc_all():
+    return [x for x in (load_json(f) for f in sorted(TDCC_DIR.glob("*.json"), reverse=True)) if x]
+
+
+def tdcc_pair(all_weeks, day):
+    """day（YYYY-MM-DD）當時已有的最新兩週集保資料"""
+    key = day.replace("-", "")
+    return [w for w in all_weeks if not str(w["date"]).isdigit() or w["date"] <= key][:2]
 
 
 # ───────────────────────── 計分 ─────────────────────────
@@ -363,7 +370,7 @@ def score_stock(code, days, tdcc):
         tags.append("隔日沖賣壓")
 
     hist = []
-    for dd in reversed(days):
+    for dd in reversed(days[:HIST_DAYS]):
         s = dd["stocks"].get(code)
         if s:
             hist.append({"d": dd["date"], "c": s.get("close"), "p": s.get("chg"),
@@ -384,7 +391,46 @@ def score_stock(code, days, tdcc):
                   "big": round(p4, 1), "margin": round(p5, 1)},
         "tags": [x for x in tags if x],
         "hist": hist,
+        "partial": "inst" not in t or "margin" not in t,
     }
+
+
+def score_full(code, days, weeks):
+    """今日分數＋回算近 TREND_DAYS 日的分數走勢"""
+    rec = score_stock(code, days, tdcc_pair(weeks, days[0]["date"]))
+    if not rec:
+        return None
+    trend = []
+    for i in range(TREND_DAYS):
+        sub = days[i:]
+        if len(sub) < 5:
+            break
+        if code not in sub[0]["stocks"]:
+            continue
+        past = rec if i == 0 else score_stock(code, sub, tdcc_pair(weeks, sub[0]["date"]))
+        trend.append({"d": sub[0]["date"], "s": past["score"]})
+    trend.reverse()  # 舊 → 新
+    sc = [x["s"] for x in trend]
+    rec["trend"] = trend
+    rec["scoreChg1"] = round(sc[-1] - sc[-2], 1) if len(sc) >= 2 else None
+    rec["scoreChg5"] = round(sc[-1] - sc[-6], 1) if len(sc) >= 6 else None
+    up = 0
+    for a, b in zip(reversed(sc[:-1]), reversed(sc[1:])):
+        if b > a:
+            up += 1
+        else:
+            break
+    rec["scoreUp"] = up
+    if up >= 3:
+        rec["tags"].append(f"分數連升{up}天")
+    if rec["scoreChg5"] is not None and rec["scoreChg5"] >= 20:
+        rec["tags"].append("分數大增")
+    elif rec["scoreChg5"] is not None and rec["scoreChg5"] <= -20:
+        rec["tags"].append("分數大減")
+    by_date = {x["d"]: x["s"] for x in trend}
+    for h in rec["hist"]:
+        h["s"] = by_date.get(h["d"])
+    return rec
 
 
 # ───────────────────────── 主流程 ─────────────────────────
@@ -423,10 +469,11 @@ def main():
         log("✗ 找不到任何交易日資料，請查看上方錯誤訊息")
         sys.exit(1)
     update_tdcc()
-    tdcc = tdcc_latest_two()
+    weeks = tdcc_all()
+    tdcc = tdcc_pair(weeks, days[0]["date"])
 
     latest = days[0]
-    stocks = [s for s in (score_stock(c, days, tdcc) for c in codes) if s]
+    stocks = [s for s in (score_full(c, days, weeks) for c in codes) if s]
     stocks.sort(key=lambda s: s["score"], reverse=True)
     for i, s in enumerate(stocks, 1):
         s["rank"] = i
@@ -477,7 +524,7 @@ def demo(codes):
         days.insert(0, {"date": di.isoformat(), "stocks": st})
     tdcc = [{"date": "demo", "big": {c: [rnd.uniform(40, 85), rnd.randint(200, 3000)] for c in codes}}]
     tdcc.append({"date": "demo", "big": {c: [v[0] - rnd.gauss(0.1, 0.4), v[1]] for c, v in tdcc[0]["big"].items()}})
-    stocks = [score_stock(c, days, tdcc) for c in codes]
+    stocks = [score_full(c, days, tdcc) for c in codes]
     stocks.sort(key=lambda s: s["score"], reverse=True)
     for i, s in enumerate(stocks, 1):
         s["rank"] = i

@@ -226,7 +226,32 @@ def fetch_stock(code, start):
         if r["date"] in days:
             days[r["date"]].update(margin=num(r.get("MarginPurchaseTodayBalance")),
                                    margin_prev=num(r.get("MarginPurchaseYesterdayBalance")))
+    adjust_splits(code, days)
     return days
+
+
+def adjust_splits(code, days):
+    """面額變更、分割、減資：用當天參考價（收盤 − 漲跌）和前一天收盤的比例，把之前的資料換算成新基準。
+    差距在 15% 以內的（一般除權息）不調整，K 線維持原始價格。"""
+    ds = sorted(days)
+    for i in range(1, len(ds)):
+        cur, prev = days[ds[i]], days[ds[i - 1]]
+        c, chg, pc = cur.get("close"), cur.get("chg"), prev.get("close")
+        if not c or chg is None or not pc:
+            continue
+        ref = c - chg
+        if ref <= 0 or abs(ref / pc - 1) <= 0.15:
+            continue
+        f = ref / pc
+        log(f"    · {code} {ds[i]} 偵測到股本變動，之前的價格 ×{f:.4f}、量 ÷{f:.4f}")
+        for d in ds[:i]:
+            x = days[d]
+            for k in ("open", "high", "low", "close", "chg"):
+                if x.get(k) is not None:
+                    x[k] = x[k] * f
+            for k in ("vol", "foreign", "trust", "dealer", "inst", "margin", "margin_prev"):
+                if x.get(k) is not None:
+                    x[k] = x[k] / f
 
 
 def build_days(codes):

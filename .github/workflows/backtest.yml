@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths:
       - scripts/backtest.py
+      - scripts/fetch.py
       - watchlist.txt
 
 permissions:

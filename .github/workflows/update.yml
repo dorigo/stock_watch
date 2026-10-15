@@ -11,6 +11,7 @@ on:
     paths:
       - watchlist.txt         # 修改自選股清單後自動重抓
       - scripts/fetch.py
+      - refresh.txt           # 網頁上按「立即更新資料」
 
 permissions:
   contents: write

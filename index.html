@@ -57,6 +57,10 @@ nav.links a:hover{color:var(--ink)}
 .hero h1{font-size:clamp(28px,4.4vw,44px);line-height:1.15;margin:6px 0 10px;font-weight:900;letter-spacing:-.01em}
 .hero p{color:var(--ink-2);margin:0;max-width:720px}
 .meta-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.refresh-bar{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.refresh-bar .btn{height:30px;font-size:13px;padding:0 12px}
+.refresh-bar .rmsg{font-size:13px;color:var(--ink-2);display:inline-flex;align-items:center;gap:8px}
+.refresh-bar .rmsg.err{color:var(--up)} .refresh-bar .rmsg.ok{color:var(--down)}
 .chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:4px 10px;border-radius:999px;background:var(--panel);border:1px solid var(--line);color:var(--ink-2)}
 .chip b{color:var(--ink);font-weight:600}
 .chip.warn{background:var(--warn-soft);border-color:transparent;color:var(--warn)}
@@ -225,6 +229,10 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
     <h1>我的自選股籌碼追蹤</h1>
     <p>每個交易日盤後比對證交所、櫃買中心與集保結算所的公開資料，針對自選清單計算三大法人、千張大戶與融資變化的分數。</p>
     <div class="meta-row" id="metaRow"></div>
+    <div class="refresh-bar" id="refreshBar" hidden>
+      <button class="btn" id="refreshBtn" title="立即重新抓取資料（約 1～2 分鐘）">↻ 立即更新資料</button>
+      <span class="rmsg" id="refreshMsg"></span>
+    </div>
     <div class="notice">本站非證券投資顧問事業，內容僅為公開資料整理與規則計分，不構成投資建議。<a href="#disclaimer">閱讀完整免責聲明</a></div>
   </section>
 
@@ -583,7 +591,8 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
   $("#repoName").textContent = REPO.repo;
 
   function getToken(){ try { return localStorage.getItem(TOKEN_KEY); } catch(e){ return mgr.token; } }
-  function setToken(t){ mgr.token = t; try { t ? localStorage.setItem(TOKEN_KEY, t) : localStorage.removeItem(TOKEN_KEY); } catch(e){} }
+  function setToken(t){ mgr.token = t; try { t ? localStorage.setItem(TOKEN_KEY, t) : localStorage.removeItem(TOKEN_KEY); } catch(e){} updateRefreshBar(); }
+  function updateRefreshBar(){ $("#refreshBar").hidden = !getToken(); }
 
   async function gh(path, opt={}){
     const r = await fetch(API + path, { ...opt, headers: {
@@ -736,6 +745,50 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
       msg("#editMsg", e.status === 409 ? "清單在別處被修改過，請關閉後重新開啟再試一次。" : "儲存失敗：" + e.message, "err");
     } finally { mgr.polling = false; renderWL(); }
   });
+
+  // ── 立即更新：寫入 refresh.txt 觸發 Actions（沿用管理自選股的金鑰，不需額外權限） ──
+  async function waitRunAndReload(commitSha, before, say){
+    let run = null;
+    for (let i = 0; i < 60; i++){
+      await sleep(6000);
+      try {
+        const r = await gh(`/actions/runs?head_sha=${commitSha}&per_page=5`);
+        run = (r.workflow_runs || []).find(x => x.path && x.path.endsWith("update.yml")) || (r.workflow_runs || [])[0];
+        if (run && run.status === "completed") break;
+        say(run && run.status === "in_progress" ? "正在抓取資料…" : "排隊中，等待 GitHub 開始執行…");
+      } catch(e){}
+    }
+    if (!run || run.status !== "completed") return "timeout";
+    if (run.conclusion !== "success") return "failed";
+    say("資料已更新，等待網站發布…");
+    for (let i = 0; i < 30; i++){
+      await sleep(8000);
+      try { const d = await getJSON("data/latest.json"); if (d.updated !== before){ state.data = d; render(); return "ok"; } } catch(e){}
+    }
+    return "slow";
+  }
+  $("#refreshBtn").addEventListener("click", async () => {
+    const btn = $("#refreshBtn"), msg = $("#refreshMsg");
+    const say = (t, k) => { msg.className = "rmsg" + (k ? " " + k : ""); msg.innerHTML = (k ? "" : '<span class="spin on"></span>') + esc(t); };
+    btn.disabled = true; mgr.token = getToken();
+    say("送出更新要求…");
+    try {
+      let sha;
+      try { sha = (await gh("/contents/refresh.txt")).sha; } catch(e){ if (e.status !== 404) throw e; }
+      const stamp = new Date().toLocaleString("zh-TW", { timeZone: "Asia/Taipei", hour12: false });
+      const res = await gh("/contents/refresh.txt", { method:"PUT", body: JSON.stringify({
+        message: "手動更新資料（網頁）", content: b64enc("最後一次從網頁手動更新：" + stamp + "\n"), ...(sha ? { sha } : {}) })});
+      const result = await waitRunAndReload(res.commit.sha, state.data ? state.data.updated : "", say);
+      if (result === "ok") say("完成！已顯示最新資料。", "ok");
+      else if (result === "failed") say("抓取失敗，可稍後再試，或查看 repo 中的 data/debug.log。", "err");
+      else if (result === "slow") say("資料已更新，網站發布較慢，請稍後重新整理頁面。", "ok");
+      else say("GitHub 執行時間較長，請稍後重新整理頁面。", "err");
+    } catch(e){
+      if (e.status === 401 || e.status === 403 || e.status === 404){ setToken(null); say("金鑰無效或已過期，請到「管理自選股」重新設定。", "err"); }
+      else say("送出失敗：" + e.message, "err");
+    } finally { btn.disabled = false; }
+  });
+  updateRefreshBar();
 
   $("#logout").addEventListener("click", () => { if (confirm("要從這台裝置移除 GitHub 金鑰嗎？")){ setToken(null); showSetup(); } });
   $("#openMgr").addEventListener("click", openMgr);

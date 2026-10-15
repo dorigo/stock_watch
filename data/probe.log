@@ -1,0 +1,65 @@
+### https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL
+status=ok len=319314
+head='[\n{"Date":"1151014","Code":"00400A","Name":"主動國泰動能高息","TradeVolume":"24035335","TradeValue":"381545787","OpeningPrice":"15.78","HighestPrice":"15.98","LowestPrice":"15.77","ClosingPrice":"15.78","Change":"0.0600","Transaction":"4836"},\n{"Date":"1151014","Code":"00401A","Name":"主動摩根台灣鑫收","TradeVolume":"10058862","TradeValue":"144902699","OpeningPrice":"14.40","HighestPrice":"14.46","LowestPrice":"14.36","ClosingPrice":"14.39","Change":"0.0600","Transaction":"1856"},\n{"Date":"1151014","Code":"00402A","Name":"主動安聯美國科技","TradeVolume":"3447819","TradeValue":"34976457","OpeningPrice":"10.12","HighestPrice":"10.17","LowestPrice":"10.12","ClosingPrice":"10.14","Change":"0.0900","Transaction":"625"},'
+
+### https://openapi.twse.com.tw/v1/exchangeReport/MI_MARGN
+status=ok len=467919
+head='[\n{"股票代號":"00400A","股票名稱":"主動國泰動能高息","融資買進":"82","融資賣出":"880","融資現金償還":"30","融資前日餘額":"12802","融資今日餘額":"11974","融資限額":"487285","融券買進":"1","融券賣出":"150","融券現券償還":"","融券前日餘額":"302","融券今日餘額":"451","融券限額":"487285","資券互抵":"1","註記":" "},\n{"股票代號":"00401A","股票名稱":"主動摩根台灣鑫收","融資買進":"916","融資賣出":"24","融資現金償還":"","融資前日餘額":"2134","融資今日餘額":"3026","融資限額":"66723","融券買進":"","融券賣出":"","融券現券償還":"","融券前日餘額":"","融券今日餘額":"","融券限額":"66723","資券互抵":"","註記":" "},\n{"股票代號":"00402A","股票名稱":"主動安聯美國科技","融資買進":"","融資賣出":"12","融資現金償還":"","融資前日餘額":"478","融資今日餘額":"466","融資限額":"141156","融券買進":"","融券賣出":"","融券現券償還":"","融券前日餘額":"3","融券今日餘額":"3","融券限額":"141156","資券互抵":"","註記":" "},\n{"股票代號":"00403A","股票名稱":"主動統一升級50","融資買進":"2227",'
+
+### https://openapi.twse.com.tw/v1/fund/T86
+status=ok len=1006
+head='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />\n<meta name="keywords" content="" />\n<meta name="description" content="" />\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title></title>\n\n<style>\n\tbody{\n\t\tdisplay: flex;\n\t\talign-items: center;\n\t\tjustify-content: center;\n\t\theight: 100vh;\n\t\tmargin: 0;\n\t}\n\n\timg{max-width: 100%;}\n\t\n</style>\n\n<!--支援IE9以下 依序為 html5shiv css3選擇器 media Bootsrap3-->\n<!--[if lt IE 9]>\n    <script type="text/javascript" src="js/support_ie/ie8tag.js"></script>'
+
+### https://www.twse.com.tw/rwd/zh/fund/T86?date=20261014&selectType=ALLBUT0999&response=json
+status=ok len=191158
+head='{"stat":"OK","date":"20261014","title":"115年10月14日 三大法人買賣超日報","hints":"單位：股","fields":["證券代號","證券名稱","外陸資買進股數(不含外資自營商)","外陸資賣出股數(不含外資自營商)","外陸資買賣超股數(不含外資自營商)","外資自營商買進股數","外資自營商賣出股數","外資自營商買賣超股數","投信買進股數","投信賣出股數","投信買賣超股數","自營商買賣超股數","自營商買進股數(自行買賣)","自營商賣出股數(自行買賣)","自營商買賣超股數(自行買賣)","自營商買進股數(避險)","自營商賣出股數(避險)","自營商買賣超股數(避險)","三大法人買賣超股數"],"data":[["2002","中鋼            ","85,762,935","8,757,333","77,005,602","0","0","0","0","3,000","-3,000","2,577,536","20,000","0","20,000","2,815,536","258,000","2,557,536","79,580,138"],["1301","台塑            ","84,236,262","30,845,920","53,390,342","0","0","0","7,258,000","2,943,000","4,315,000","-1,013,549","654,000","642,377","11,623","1,075,176","2,100,3'
+
+### https://www.twse.com.tw/exchangeReport/MI_INDEX?response=json&date=20261014&type=ALLBUT0099
+status=ok len=645
+head='{"groups":[{"start":0,"span":11,"title":"(元,股)"},{"start":11,"span":5,"title":"(元,交易單位)"}],"tables":[{},{},{},{},{},{},{},{},{"title":"115年10月14日 每日收盤行情()","fields":["證券代號","證券名稱","成交股數","成交筆數","成交金額","開盤價","最高價","最低價","收盤價","漲跌(+/-)","漲跌價差","最後揭示買價","最後揭示買量","最後揭示賣價","最後揭示賣量","本益比"],"data":[],"hints":"單位：元、股","groups":[{"start":0,"span":11,"title":"(元,股)"},{"start":11,"span":5,"title":"(元,交易單位)"}]},{}],"type":"ALLBUT0099","stat":"OK","date":"20261014"}'
+
+### https://www.twse.com.tw/fund/T86?response=json&date=20261014&selectType=ALLBUT0999
+status=ok len=191158
+head='{"stat":"OK","date":"20261014","title":"115年10月14日 三大法人買賣超日報","hints":"單位：股","fields":["證券代號","證券名稱","外陸資買進股數(不含外資自營商)","外陸資賣出股數(不含外資自營商)","外陸資買賣超股數(不含外資自營商)","外資自營商買進股數","外資自營商賣出股數","外資自營商買賣超股數","投信買進股數","投信賣出股數","投信買賣超股數","自營商買賣超股數","自營商買進股數(自行買賣)","自營商賣出股數(自行買賣)","自營商買賣超股數(自行買賣)","自營商買進股數(避險)","自營商賣出股數(避險)","自營商買賣超股數(避險)","三大法人買賣超股數"],"data":[["2002","中鋼            ","85,762,935","8,757,333","77,005,602","0","0","0","0","3,000","-3,000","2,577,536","20,000","0","20,000","2,815,536","258,000","2,557,536","79,580,138"],["1301","台塑            ","84,236,262","30,845,920","53,390,342","0","0","0","7,258,000","2,943,000","4,315,000","-1,013,549","654,000","642,377","11,623","1,075,176","2,100,3'
+
+### https://www.tpex.org.tw/www/zh-tw/afterTrading/otc?date=2026/10/14&type=EW&response=json
+ERROR HTTP Error 520: <none>
+
+### https://www.tpex.org.tw/www/zh-tw/insti/dailyTrade?type=Daily&sect=EW&date=2026/10/14&response=json
+status=ok len=143590
+head='{"columnNum":25,"tables":[{"title":"三大法人買賣明細資訊","date":"115/10/14","fields":["代號","名稱","買進股數","賣出股數","買賣超股數","買進股數","賣出股數","買賣超股數","買進股數","賣出股數","買賣超股數","買進股數","賣出股數","買賣超股數","買進股數","賣出股數","買賣超股數","買進股數","賣出股數","買賣超股數","買進股數","賣出股數","買賣超股數","三大法人買賣超股數合計"],"data":[["00411A","主動統一前沿科技","61,000","992,000","-931,000","0","0","0","61,000","992,000","-931,000","0","0","0","0","0","0","2,755,000","6,426,190","-3,671,190","2,755,000","6,426,190","-3,671,190","-4,602,190"],["006201","元大富櫃50","26,000","0","26,000","0","0","0","26,000","0","26,000","0","0","0","0","0","0","143,335","164,352","-21,017","143,335","164,352","-21,017","4,983"],["00679B","元大美債20年","1,792,081","6,921,000","-5,128,919","0","0'
+
+### https://www.tpex.org.tw/www/zh-tw/margin/balance?date=2026/10/14&response=json
+status=ok len=107468
+head='{"date":"20261014","tables":[{"title":"上櫃股票融資融券餘額","date":"115/10/14","totalCount":919,"fields":["代號","名稱","前資餘額(張)","資買","資賣","現償","資餘額","資屬證金","資使用率(%)","資限額","前券餘額(張)","券賣","券買","券償","券餘額","券屬證金","券使用率(%)","券限額","資券相抵(張)","備註"],"data":[["00411A","主動統一前沿科技","12,525","136","96","0","12,565","49","11.38","110,394","17","0","5","0","12","0","0.01","110,394","5",""],["00679B","元大美債20年","4,130","14","29","0","4,115","139","0.26","1,557,798","9","5","2","0","12","0","0.0","1,557,798","0",""],["00687B","國泰20年美債","4,964","4","101","1","4,866","119","0.45","1,078,720","0","0","0","0","0","0","0.0","1,078,720","0",""],["00694B","富邦美債1-3","0","0","0","0","0","0","0.0","7,769","0","0","0","0","0","0",'
+
+### https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes
+status=ok len=4873783
+head='[\n{"Date":"1151014","SecuritiesCompanyCode":"00411A","CompanyName":"主動統一前沿科技","Close":"10.75","Change":"+0.03","Open":"10.85","High":"10.85","Low":"10.75","Average":"10.79","TradingShares":"9576584","TransactionAmount":"103350969","TransactionNumber":"1681","LatestBidPrice":"10.74","LatesAskPrice":"10.75","Capitals":"433076000","NextReferencePrice":"10.75","NextLimitUp":"9999.95","NextLimitDown":"0.01"},\n{"Date":"1151014","SecuritiesCompanyCode":"006201","CompanyName":"元大富櫃50","Close":"47.08","Change":"+0.58","Open":"46.81","High":"47.20","Low":"46.80","Average":"46.92","TradingShares":"224853","TransactionAmount":"10549920","TransactionNumber":"138","LatestBidPrice":"46.98","LatesAskPrice":'
+
+### https://opendata.tdcc.com.tw/getOD.ashx?id=1-5
+status=ok len=2380786
+head='資料日期,證券代號,持股分級,人數,股數,占集保庫存數比例%\r\n20261008,000218,1,0,0,0.00\r\n20261008,000218,2,0,0,0.00\r\n20261008,000218,3,0,0,0.00\r\n20261008,000218,4,0,0,0.00\r\n20261008,000218,5,0,0,0.00\r\n20261008,000218,6,0,0,0.00\r\n20261008,000218,7,0,0,0.00\r\n20261008,000218,8,0,0,0.00\r\n20261008,000218,9,0,0,0.00\r\n20261008,000218,10,0,0,0.00\r\n20261008,000218,11,0,0,0.00\r\n20261008,000218,12,0,0,0.00\r\n20261008,000218,13,0,0,0.00\r\n20261008,000218,14,0,0,0.00\r\n20261008,000218,15,1,422278902,100.00\r\n20261008,000218,16,0,0,0.00\r\n20261008,000218,17,1,422278902,100.00\r\n20261008,000560,1,0,0,0.00\r\n20261008,000560,2,0,0,0.00\r\n20261008,000560,3,0,0,0.00\r\n20261008,000560,4,0,0,0.00\r\n20261008,000560,5,0,0,0.00\r\n20261008,000560,6,0,0,0.'
+
+### https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id=2330&start_date=2026-10-01
+status=ok len=1738
+head='{"msg":"success","status":200,"data":[{"date":"2026-10-01","stock_id":"2330","Trading_Volume":20666092,"Trading_money":51702445610,"open":2490.0,"max":2510.0,"min":2485.0,"close":2510.0,"spread":30.0,"Trading_turnover":57634},{"date":"2026-10-02","stock_id":"2330","Trading_Volume":15792206,"Trading_money":39508159297,"open":2505.0,"max":2515.0,"min":2495.0,"close":2500.0,"spread":-10.0,"Trading_turnover":65783},{"date":"2026-10-05","stock_id":"2330","Trading_Volume":26800187,"Trading_money":68799148330,"open":2550.0,"max":2580.0,"min":2545.0,"close":2575.0,"spread":75.0,"Trading_turnover":105264},{"date":"2026-10-06","stock_id":"2330","Trading_Volume":20801802,"Trading_money":53639152613,"op'
+
+### https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockInstitutionalInvestorsBuySell&data_id=2330&start_date=2026-10-08
+status=ok len=1851
+head='{"msg":"success","status":200,"data":[{"date":"2026-10-08","stock_id":"2330","buy":0,"name":"Foreign_Dealer_Self","sell":0},{"date":"2026-10-08","stock_id":"2330","buy":248600,"name":"Dealer_self","sell":7500},{"date":"2026-10-08","stock_id":"2330","buy":334747,"name":"Dealer_Hedging","sell":65999},{"date":"2026-10-08","stock_id":"2330","buy":7131686,"name":"Foreign_Investor","sell":19434673},{"date":"2026-10-08","stock_id":"2330","buy":829300,"name":"Investment_Trust","sell":36437},{"date":"2026-10-12","stock_id":"2330","buy":0,"name":"Foreign_Dealer_Self","sell":0},{"date":"2026-10-12","stock_id":"2330","buy":42010,"name":"Dealer_self","sell":27500},{"date":"2026-10-12","stock_id":"2330","'
+
+### https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockMarginPurchaseShortSale&data_id=2330&start_date=2026-10-08
+status=ok len=1666
+head='{"msg":"success","status":200,"data":[{"date":"2026-10-08","stock_id":"2330","MarginPurchaseBuy":1699,"MarginPurchaseCashRepayment":30,"MarginPurchaseLimit":6483092,"MarginPurchaseSell":361,"MarginPurchaseTodayBalance":31586,"MarginPurchaseYesterdayBalance":30278,"Note":" ","OffsetLoanAndShort":4,"ShortSaleBuy":13,"ShortSaleCashRepayment":0,"ShortSaleLimit":6483092,"ShortSaleSell":8,"ShortSaleTodayBalance":45,"ShortSaleYesterdayBalance":50},{"date":"2026-10-12","stock_id":"2330","MarginPurchaseBuy":1322,"MarginPurchaseCashRepayment":13,"MarginPurchaseLimit":6483092,"MarginPurchaseSell":353,"MarginPurchaseTodayBalance":32542,"MarginPurchaseYesterdayBalance":31586,"Note":" ","OffsetLoanAndShor'
+
+### https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockHoldingSharesPer&data_id=2330&start_date=2026-09-20
+ERROR HTTP Error 400: Bad Request
+
+### https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id=6488&start_date=2026-10-08
+status=ok len=792
+head='{"msg":"success","status":200,"data":[{"date":"2026-10-08","stock_id":"6488","Trading_Volume":20608056,"Trading_money":23258740205,"open":1180.0,"max":1195.0,"min":1095.0,"close":1130.0,"spread":-85.0,"Trading_turnover":49278},{"date":"2026-10-12","stock_id":"6488","Trading_Volume":9890757,"Trading_money":11083190270,"open":1110.0,"max":1145.0,"min":1090.0,"close":1115.0,"spread":-15.0,"Trading_turnover":19060},{"date":"2026-10-13","stock_id":"6488","Trading_Volume":16023365,"Trading_money":16315821465,"open":1070.0,"max":1070.0,"min":1005.0,"close":1015.0,"spread":-100.0,"Trading_turnover":48359},{"date":"2026-10-14","stock_id":"6488","Trading_Volume":10898821,"Trading_money":11042138914,"o'
+
+### https://ipinfo.io/json
+status=ok len=268
+head='{\n  "ip": "52.159.229.48",\n  "city": "San Jose",\n  "region": "California",\n  "country": "US",\n  "loc": "37.3394,-121.8950",\n  "org": "AS8075 Microsoft Corporation",\n  "postal": "95110",\n  "timezone": "America/Los_Angeles",\n  "readme": "https://ipinfo.io/missingauth"\n}'

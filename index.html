@@ -1304,7 +1304,7 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
     return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto" role="img" aria-label="近 12 個月營收">` + m.map((x, i) => {
       const h = x.rev / mx * (H - T - B), cx = L + bw * (i + 0.5), col = x.yoy == null ? "var(--ink-3)" : `var(${x.yoy >= 0 ? "--up" : "--down"})`;
       return `<rect x="${(cx - bw*0.32).toFixed(1)}" y="${(H - B - h).toFixed(1)}" width="${(bw*0.64).toFixed(1)}" height="${h.toFixed(1)}" rx="3" fill="${col}" opacity="${i === m.length - 1 ? 1 : .55}"/>
-        <text x="${cx.toFixed(1)}" y="${(H - B - h - 6).toFixed(1)}" font-size="10.5" text-anchor="middle" fill="${col}" font-family="IBM Plex Mono,monospace">${x.yoy == null ? "" : sgn(x.yoy,0) + "%"}</text>
+        <text x="${cx.toFixed(1)}" y="${(H - B - h - 6).toFixed(1)}" font-size="10.5" text-anchor="middle" fill="${col}" font-family="IBM Plex Mono,monospace">${x.yoy == null ? "" : sgn(x.yoy, Math.abs(x.yoy) < 1 ? 1 : 0) + "%"}</text>
         <text x="${cx.toFixed(1)}" y="${H - 6}" font-size="10.5" text-anchor="middle" fill="var(--ink-3)" font-family="IBM Plex Mono,monospace">${esc(x.ym.slice(2).replace("-", "/"))}</text>`;
     }).join("") + `</svg>`;
   }

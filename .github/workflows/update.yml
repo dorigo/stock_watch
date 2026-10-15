@@ -24,24 +24,30 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
       - name: 抓取資料並計分
-        run: python scripts/fetch.py
+        run: python scripts/fetch.py || echo "FETCH_FAILED=1" >> "$GITHUB_ENV"
 
-      - name: 提交資料
+      - name: 提交資料（失敗時也會提交 data/debug.log 以便除錯）
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data
           if git diff --cached --quiet; then
             echo "資料沒有變更"
-            exit 0
+          else
+            git commit -m "更新資料 $(TZ=Asia/Taipei date '+%Y-%m-%d %H:%M')"
+            git pull --rebase
+            git push
           fi
-          git commit -m "更新資料 $(TZ=Asia/Taipei date '+%Y-%m-%d %H:%M')"
-          git pull --rebase
-          git push
+
+      - name: 回報抓取結果
+        if: env.FETCH_FAILED == '1'
+        run: |
+          echo "抓取失敗，請查看 data/debug.log"
+          exit 1

@@ -54,8 +54,13 @@ FULL_BIG = 0.50          # 千張大戶一週增加 0.5 個百分點
 FULL_MARGIN = 0.03       # 融資餘額單日減少 3%
 
 
+DEBUG = []
+
+
 def log(*a):
-    print(*a, flush=True)
+    msg = " ".join(str(x) for x in a)
+    print(msg, flush=True)
+    DEBUG.append(msg)
 
 
 def now_tw():
@@ -82,6 +87,7 @@ def http_get(url, as_json=True, tries=3):
             with urllib.request.urlopen(req, timeout=40) as r:
                 raw = r.read()
             text = decode(raw)
+            DEBUG.append(f"    [GET] {url}\n          len={len(raw)} head={text[:600]!r}")
             if as_json:
                 if text.lstrip().startswith("<"):
                     raise ValueError("回傳 HTML 而非 JSON（可能被擋或網址已變更）")
@@ -156,6 +162,8 @@ def col(fields, *keys, exact=False, start=False):
 
 
 def cell(row, i):
+    if isinstance(row, dict):
+        row = list(row.values())
     if i is None or i >= len(row):
         return None
     return row[i]
@@ -638,4 +646,17 @@ def demo(codes):
 
 
 if __name__ == "__main__":
-    main()
+    import traceback
+    code = 0
+    try:
+        main()
+    except SystemExit as e:
+        code = e.code or 0
+    except Exception:  # noqa: BLE001
+        log(traceback.format_exc())
+        code = 1
+    finally:
+        if "--demo" not in sys.argv:
+            DATA.mkdir(parents=True, exist_ok=True)
+            (DATA / "debug.log").write_text(f"執行時間 {now_tw().isoformat(timespec='seconds')}\n" + "\n".join(DEBUG), encoding="utf-8")
+    sys.exit(code)

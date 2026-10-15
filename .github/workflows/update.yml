@@ -1,0 +1,47 @@
+name: 更新籌碼資料
+
+on:
+  schedule:
+    # GitHub 排程使用 UTC 時間；台北 = UTC+8
+    - cron: "17 9 * * 1-5"   # 台北 17:17（收盤、三大法人）
+    - cron: "7 14 * * 1-5"   # 台北 22:07（補上融資餘額）
+  workflow_dispatch:          # 可在 Actions 頁面手動執行
+  push:
+    branches: [main]
+    paths:
+      - watchlist.txt         # 修改自選股清單後自動重抓
+      - scripts/fetch.py
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 抓取資料並計分
+        run: python scripts/fetch.py
+
+      - name: 提交資料
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then
+            echo "資料沒有變更"
+            exit 0
+          fi
+          git commit -m "更新資料 $(TZ=Asia/Taipei date '+%Y-%m-%d %H:%M')"
+          git pull --rebase
+          git push

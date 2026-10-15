@@ -618,43 +618,50 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
     return list;
   }
 
-  // ── 往下捲動時固定的欄位標題 ──
-  const fixHead = document.createElement("div");
-  fixHead.className = "fixhead"; fixHead.setAttribute("aria-hidden", "true");
-  document.body.appendChild(fixHead);
-  const listWrap = () => document.querySelector("#list .table-wrap");
-  function buildFixHead(){
-    const t = document.querySelector("#list table"); if (!t) return;
-    fixHead.innerHTML = `<table><thead>${t.tHead.innerHTML}</thead></table>`;
-    syncFixHead(true);
-  }
-  function syncFixHead(resize){
-    const wrap = listWrap(), t = document.querySelector("#list table"); if (!wrap || !t) return;
-    const head = t.tHead, hr = head.getBoundingClientRect(), tr = t.getBoundingClientRect(), top = 56;
-    const show = hr.top < top && tr.bottom > top + hr.height + 40;
-    fixHead.classList.toggle("show", show);
-    if (!show) return;
-    const wr = wrap.getBoundingClientRect(), ft = fixHead.querySelector("table"); if (!ft) return;
-    fixHead.style.left = wr.left + "px"; fixHead.style.width = wrap.clientWidth + "px";
-    const src = head.rows[0].cells, dst = ft.tHead.rows[0].cells;
-    if (resize || ft.dataset.w !== String(t.offsetWidth)){
-      ft.style.width = t.offsetWidth + "px"; ft.dataset.w = String(t.offsetWidth);
-      for (let i = 0; i < src.length && i < dst.length; i++){
-        const w = src[i].getBoundingClientRect().width + "px";
-        dst[i].style.width = dst[i].style.minWidth = dst[i].style.maxWidth = w;
+  // ── 往下捲動時固定的欄位標題（追蹤清單、我的持股、除權息日曆共用） ──
+  function makeFixHead(scope){
+    const box = document.createElement("div");
+    box.className = "fixhead"; box.setAttribute("aria-hidden", "true");
+    document.body.appendChild(box);
+    const q = () => ({ t: document.querySelector(scope + " table"), w: document.querySelector(scope + " .table-wrap") });
+    let boundWrap = null;
+    function sync(resize){
+      const { t, w } = q();
+      if (!t || !w || !t.tHead){ box.classList.remove("show"); return; }
+      const hr = t.tHead.getBoundingClientRect(), tr = t.getBoundingClientRect(), top = 56;
+      const show = hr.top < top && tr.bottom > top + hr.height + 40;
+      box.classList.toggle("show", show);
+      if (!show) return;
+      const wr = w.getBoundingClientRect(), ft = box.querySelector("table"); if (!ft) return;
+      box.style.left = wr.left + "px"; box.style.width = w.clientWidth + "px";
+      const src = t.tHead.rows[0].cells, dst = ft.tHead.rows[0].cells;
+      if (resize || ft.dataset.w !== String(t.offsetWidth)){
+        ft.style.width = t.offsetWidth + "px"; ft.dataset.w = String(t.offsetWidth);
+        for (let i = 0; i < src.length && i < dst.length; i++){
+          const cw = src[i].getBoundingClientRect().width + "px";
+          dst[i].style.width = dst[i].style.minWidth = dst[i].style.maxWidth = cw;
+        }
       }
+      ft.style.transform = `translateX(${-w.scrollLeft}px)`;
+      if (dst[0]) dst[0].style.transform = `translateX(${w.scrollLeft}px)`;
     }
-    ft.style.transform = `translateX(${-wrap.scrollLeft}px)`;
-    if (dst[0]) dst[0].style.transform = `translateX(${wrap.scrollLeft}px)`;
+    function build(){
+      const { t, w } = q();
+      if (!t || !t.tHead){ box.innerHTML = ""; box.classList.remove("show"); return; }
+      box.innerHTML = `<table><thead>${t.tHead.innerHTML}</thead></table>`;
+      if (w && w !== boundWrap){ w.addEventListener("scroll", () => sync(false), {passive:true}); boundWrap = w; }
+      sync(true);
+    }
+    addEventListener("scroll", () => sync(false), {passive:true});
+    addEventListener("resize", () => sync(true));
+    box.addEventListener("click", e => {
+      const th = e.target.closest("th[data-sort]"); if (!th) return;
+      const orig = document.querySelector(`${scope} thead th[data-sort="${th.dataset.sort}"]`);
+      if (orig) orig.click();
+    });
+    return { build, sync };
   }
-  addEventListener("scroll", () => syncFixHead(false), {passive:true});
-  addEventListener("resize", () => syncFixHead(true));
-  document.querySelector("#list .table-wrap").addEventListener("scroll", () => syncFixHead(false), {passive:true});
-  fixHead.addEventListener("click", e => {
-    const th = e.target.closest("th[data-sort]"); if (!th) return;
-    const orig = document.querySelector(`#list th[data-sort="${th.dataset.sort}"]`);
-    if (orig) orig.click();
-  });
+  const fixList = makeFixHead("#list"), fixHold = makeFixHead("#holdings"), fixDivs = makeFixHead("#divs");
 
   // 排序：空值永遠排最後；字串用中文排序
   function cmpBy(get, dir){
@@ -705,7 +712,7 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
       </tr>`;
       return row + (state.open === s.code ? detail(s) : "");
     }).join("");
-    buildFixHead();
+    fixList.build();
   }
 
   // ════════ 名詞解說 ════════
@@ -818,7 +825,7 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
       toStop: h.stop ? (close - h.stop) / close * 100 : null, risk: h.stop ? (h.cost - h.stop) * h.shares : null };
   }
   function renderHoldings(){
-    setTimeout(() => markSort("#holdings", state.hsort.key, state.hsort.dir));
+    setTimeout(() => { markSort("#holdings", state.hsort.key, state.hsort.dir); fixHold.build(); });
     const H = state.holdings, codes = Object.keys(H), el = $("#holdings");
     const head = `<div class="hold-head"><h2>我的持股</h2>
       <button class="btn" data-hact="export" title="下載持股資料，可在其他裝置匯入">匯出</button>
@@ -911,7 +918,7 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
     const DG = { ex: e => e.ex, name: e => e.s.name, cash: e => e.type === "息" ? e.cash : e.stock, yld: e => e.type === "息" && e.s.close ? e.cash / e.s.close : null,
       pay: e => e.pay, mine: e => { const h = state.holdings[e.s.code]; return h ? (e.type === "息" ? e.cash * h.shares : e.stock * h.shares / 10) : null; } };
     ev.sort(cmpBy(DG[state.dsort.key] || DG.ex, state.dsort.dir));
-    setTimeout(() => markSort("#divs", state.dsort.key, state.dsort.dir));
+    setTimeout(() => { markSort("#divs", state.dsort.key, state.dsort.dir); fixDivs.build(); });
     const head = `<div class="hold-head"><h2>除權息日曆</h2><span style="font-size:13px;color:var(--ink-3)">自選股已公布的除權息日期</span></div>`;
     const tips = `<div class="hint2" style="padding:0 16px 14px">想領股利，最晚要在除權息日的<b>前一個交易日</b>收盤時持有（遇到國定假日請再往前推）。除息當天股價會扣掉股利，剛買就除息並不會因此多賺，而且股利要繳所得稅、單筆 2 萬元以上還會扣 2.11% 二代健保。殖利率以最新收盤價計算。</div>`;
     if (!ev.length && !pending.length){

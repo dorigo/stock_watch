@@ -257,6 +257,12 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
 .rlab{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3);font-family:var(--mono)}
 .sec-t{font-size:14px;margin:20px 0 10px}
 .hint2{font-size:12.5px;color:var(--ink-3);margin-top:8px}
+/* 往下捲動時固定的欄位標題 */
+.fixhead{position:fixed;top:56px;z-index:15;overflow:hidden;background:var(--panel);border-bottom:1px solid var(--line);box-shadow:0 6px 14px rgba(20,24,35,.08);display:none}
+.fixhead.show{display:block}
+.fixhead table{min-width:0;table-layout:fixed;width:auto}
+.fixhead th{position:relative;top:auto;background:var(--panel)}
+.fixhead th:first-child{z-index:2;box-shadow:1px 0 0 var(--line-2)}
 /* 除權息 */
 .divs{margin:0 0 22px}
 .divs .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
@@ -612,6 +618,44 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
     return list;
   }
 
+  // ── 往下捲動時固定的欄位標題 ──
+  const fixHead = document.createElement("div");
+  fixHead.className = "fixhead"; fixHead.setAttribute("aria-hidden", "true");
+  document.body.appendChild(fixHead);
+  const listWrap = () => document.querySelector("#list .table-wrap");
+  function buildFixHead(){
+    const t = document.querySelector("#list table"); if (!t) return;
+    fixHead.innerHTML = `<table><thead>${t.tHead.innerHTML}</thead></table>`;
+    syncFixHead(true);
+  }
+  function syncFixHead(resize){
+    const wrap = listWrap(), t = document.querySelector("#list table"); if (!wrap || !t) return;
+    const head = t.tHead, hr = head.getBoundingClientRect(), tr = t.getBoundingClientRect(), top = 56;
+    const show = hr.top < top && tr.bottom > top + hr.height + 40;
+    fixHead.classList.toggle("show", show);
+    if (!show) return;
+    const wr = wrap.getBoundingClientRect(), ft = fixHead.querySelector("table"); if (!ft) return;
+    fixHead.style.left = wr.left + "px"; fixHead.style.width = wrap.clientWidth + "px";
+    const src = head.rows[0].cells, dst = ft.tHead.rows[0].cells;
+    if (resize || ft.dataset.w !== String(t.offsetWidth)){
+      ft.style.width = t.offsetWidth + "px"; ft.dataset.w = String(t.offsetWidth);
+      for (let i = 0; i < src.length && i < dst.length; i++){
+        const w = src[i].getBoundingClientRect().width + "px";
+        dst[i].style.width = dst[i].style.minWidth = dst[i].style.maxWidth = w;
+      }
+    }
+    ft.style.transform = `translateX(${-wrap.scrollLeft}px)`;
+    if (dst[0]) dst[0].style.transform = `translateX(${wrap.scrollLeft}px)`;
+  }
+  addEventListener("scroll", () => syncFixHead(false), {passive:true});
+  addEventListener("resize", () => syncFixHead(true));
+  document.querySelector("#list .table-wrap").addEventListener("scroll", () => syncFixHead(false), {passive:true});
+  fixHead.addEventListener("click", e => {
+    const th = e.target.closest("th[data-sort]"); if (!th) return;
+    const orig = document.querySelector(`#list th[data-sort="${th.dataset.sort}"]`);
+    if (orig) orig.click();
+  });
+
   // 排序：空值永遠排最後；字串用中文排序
   function cmpBy(get, dir){
     const m = dir === "asc" ? 1 : -1;
@@ -661,6 +705,7 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
       </tr>`;
       return row + (state.open === s.code ? detail(s) : "");
     }).join("");
+    buildFixHead();
   }
 
   // ════════ 名詞解說 ════════

@@ -1,5 +1,5 @@
-執行時間 2026-10-15T11:58:58+08:00
-自選股 13 檔：2330, 2317, 2454, 3231, 2357, 0050, 5904, 1504, 2303, 2345, 2356, 2449, 3481
+執行時間 2026-10-15T13:41:31+08:00
+自選股 14 檔：2330, 2317, 2454, 3231, 2357, 0050, 5904, 1504, 2303, 2345, 2356, 2449, 3481, 3260
 • 股價 / 三大法人 / 融資（FinMind）
   ↳ 2330
     [GET] https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id=2330&start_date=2026-09-05
@@ -92,8 +92,15 @@
           len=11381 head='{"msg":"success","status":200,"data":[{"date":"2026-09-07","stock_id":"3481","buy":94926654,"name":"Foreign_Investor","sell":50751521},{"date":"2026-09-07","stock_id":"3481","buy":0,"name":"Foreign_Dealer_Self","sell":0},{"date":"2026-09-07","stock_id":"3481","buy":0,"name":"Investment_Trust","sell":37714},{"date":"2026-09-07","stock_id":"3481","buy":4416990,"name":"Dealer_self","sell":2010000},{"date":"2026-09-07","stock_id":"3481","buy":1812891,"name":"Dealer_Hedging","sell":458042},{"date":"2026-09-08","stock_id":"3481","buy":31611064,"name":"Foreign_Investor","sell":73683917},{"date":"2026'
     [GET] https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockMarginPurchaseShortSale&data_id=3481&start_date=2026-09-05
           len=10546 head='{"msg":"success","status":200,"data":[{"date":"2026-09-07","stock_id":"3481","MarginPurchaseBuy":19422,"MarginPurchaseCashRepayment":42,"MarginPurchaseLimit":1997299,"MarginPurchaseSell":17779,"MarginPurchaseTodayBalance":323390,"MarginPurchaseYesterdayBalance":321789,"Note":" ","OffsetLoanAndShort":421,"ShortSaleBuy":1313,"ShortSaleCashRepayment":0,"ShortSaleLimit":1997299,"ShortSaleSell":526,"ShortSaleTodayBalance":4630,"ShortSaleYesterdayBalance":5417},{"date":"2026-09-08","stock_id":"3481","MarginPurchaseBuy":14515,"MarginPurchaseCashRepayment":64,"MarginPurchaseLimit":1997299,"MarginPurch'
+  ↳ 3260
+    [GET] https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id=3260&start_date=2026-09-05
+          len=4558 head='{"msg":"success","status":200,"data":[{"date":"2026-09-07","stock_id":"3260","Trading_Volume":6454193,"Trading_money":2669902804,"open":410.0,"max":419.0,"min":410.0,"close":412.0,"spread":11.5,"Trading_turnover":7411},{"date":"2026-09-08","stock_id":"3260","Trading_Volume":13197551,"Trading_money":5567725822,"open":418.5,"max":428.0,"min":414.0,"close":414.0,"spread":2.0,"Trading_turnover":15836},{"date":"2026-09-09","stock_id":"3260","Trading_Volume":7258739,"Trading_money":3033035586,"open":417.5,"max":424.5,"min":413.5,"close":414.5,"spread":0.5,"Trading_turnover":9414},{"date":"2026-09-10'
+    [GET] https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockInstitutionalInvestorsBuySell&data_id=3260&start_date=2026-09-05
+          len=11182 head='{"msg":"success","status":200,"data":[{"date":"2026-09-07","stock_id":"3260","buy":3386239,"name":"Foreign_Investor","sell":844010},{"date":"2026-09-07","stock_id":"3260","buy":0,"name":"Foreign_Dealer_Self","sell":0},{"date":"2026-09-07","stock_id":"3260","buy":0,"name":"Investment_Trust","sell":0},{"date":"2026-09-07","stock_id":"3260","buy":209110,"name":"Dealer_self","sell":32000},{"date":"2026-09-07","stock_id":"3260","buy":176276,"name":"Dealer_Hedging","sell":29508},{"date":"2026-09-08","stock_id":"3260","buy":4442237,"name":"Foreign_Investor","sell":3044185},{"date":"2026-09-08","stock'
+    [GET] https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockMarginPurchaseShortSale&data_id=3260&start_date=2026-09-05
+          len=10076 head='{"msg":"success","status":200,"data":[{"date":"2026-09-07","stock_id":"3260","MarginPurchaseBuy":352,"MarginPurchaseCashRepayment":13,"MarginPurchaseLimit":83615,"MarginPurchaseSell":744,"MarginPurchaseTodayBalance":20217,"MarginPurchaseYesterdayBalance":20622,"Note":"","OffsetLoanAndShort":7,"ShortSaleBuy":87,"ShortSaleCashRepayment":2,"ShortSaleLimit":83615,"ShortSaleSell":28,"ShortSaleTodayBalance":540,"ShortSaleYesterdayBalance":601},{"date":"2026-09-08","stock_id":"3260","MarginPurchaseBuy":747,"MarginPurchaseCashRepayment":0,"MarginPurchaseLimit":83615,"MarginPurchaseSell":1016,"MarginPu'
 • 集保戶股權分散表
     [GET] https://opendata.tdcc.com.tw/getOD.ashx?id=1-5
           len=2380786 head='資料日期,證券代號,持股分級,人數,股數,占集保庫存數比例%\r\n20261008,000218,1,0,0,0.00\r\n20261008,000218,2,0,0,0.00\r\n20261008,000218,3,0,0,0.00\r\n20261008,000218,4,0,0,0.00\r\n20261008,000218,5,0,0,0.00\r\n20261008,000218,6,0,0,0.00\r\n20261008,000218,7,0,0,0.00\r\n20261008,000218,8,0,0,0.00\r\n20261008,000218,9,0,0,0.00\r\n20261008,000218,10,0,0,0.00\r\n20261008,000218,11,0,0,0.00\r\n20261008,000218,12,0,0,0.00\r\n20261008,000218,13,0,0,0.00\r\n20261008,000218,14,0,0,0.00\r\n20261008,000218,15,1,422278902,100.00\r\n20261008,000218,16,0,0,0.00\r\n20261008,000218,17,1,422278902,100.00\r\n20261008,000560,1,0,0,0.00\r\n20261008,000560,2,0,0,0.00\r\n20261008'
   · 已是最新（20261008）
-✓ 完成：2026-10-14，13 檔
+✓ 完成：2026-10-14，14 檔

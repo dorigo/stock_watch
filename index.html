@@ -209,6 +209,67 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
 .spin{width:16px;height:16px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--accent);animation:sp .8s linear infinite;display:none}
 .spin.on{display:inline-block}
 @keyframes sp{to{transform:rotate(360deg)}}
+
+/* 提示框與名詞 */
+[data-tip]{cursor:help}
+th[data-tip]{text-decoration:underline dotted var(--ink-3);text-underline-offset:3px}
+#tip{position:fixed;z-index:80;max-width:300px;background:var(--ink);color:var(--bg);font-size:13px;line-height:1.6;padding:10px 12px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.25);pointer-events:none;opacity:0;transition:opacity .12s}
+#tip.show{opacity:1}
+#tip b{display:block;margin-bottom:2px;font-size:13.5px}
+.gloss{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.gloss .g{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.gloss .g b{display:block;margin-bottom:2px}
+.gloss .g p{margin:0;font-size:13.5px;color:var(--ink-2)}
+.gloss-cat{font-size:13px;color:var(--ink-3);margin:18px 0 8px;letter-spacing:.06em}
+/* 估值標籤 */
+.vbadge{display:inline-block;font-size:11px;padding:0 6px;border-radius:5px;margin-left:4px;font-family:"Noto Sans TC",sans-serif;vertical-align:1px}
+.vb-cheap{background:var(--down-soft);color:var(--down)} .vb-low{background:var(--down-soft);color:var(--down);opacity:.8}
+.vb-mid{background:var(--line-2);color:var(--ink-2)} .vb-high{background:var(--warn-soft);color:var(--warn)} .vb-exp{background:var(--up-soft);color:var(--up)}
+/* 明細分頁 */
+.dtabs{display:flex;gap:4px;padding:12px 16px 0;border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap}
+.dtabs button{border:0;background:transparent;font:inherit;font-size:14px;color:var(--ink-2);padding:8px 12px;border-bottom:2px solid transparent;cursor:pointer}
+.dtabs button.on{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+.dpane{padding:18px 16px;white-space:normal}
+.kinfo{font-size:12.5px;color:var(--ink-2);min-height:20px;margin-bottom:6px;font-family:var(--mono)}
+.kinfo b{color:var(--ink)}
+svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan-y}
+.dwrap{position:sticky;left:0;width:min(1206px,calc(100vw - 34px))}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-3);margin-top:6px}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:4px}
+.fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:820px){.fgrid{grid-template-columns:1fr}}
+.vcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+.vcard .k{font-size:13px;color:var(--ink-3)}
+.vcard .v{font-size:24px;font-weight:700;font-family:var(--mono);line-height:1.3}
+.vcard p{margin:6px 0 0;font-size:12.5px;color:var(--ink-2)}
+.rbar{position:relative;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--down-soft),var(--line-2),var(--up-soft));margin:14px 0 4px}
+.rbar i{position:absolute;top:-4px;width:4px;height:16px;border-radius:2px;background:var(--ink);transform:translateX(-2px)}
+.rbar u{position:absolute;top:-2px;width:2px;height:12px;background:var(--ink-3);text-decoration:none}
+.rlab{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3);font-family:var(--mono)}
+.sec-t{font-size:14px;margin:20px 0 10px}
+.hint2{font-size:12.5px;color:var(--ink-3);margin-top:8px}
+/* 持股 */
+.hold{margin:0 0 22px}
+.hold .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.hold-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line)}
+.hold-head h2{font-size:18px;margin:0 auto 0 0}
+.hold-sum{display:flex;gap:22px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line-2)}
+.hold-sum div{font-size:12.5px;color:var(--ink-3)}
+.hold-sum b{display:block;font-size:20px;font-family:var(--mono);color:var(--ink)}
+.hold-sum b.up{color:var(--up)} .hold-sum b.down{color:var(--down)}
+.hold table{min-width:820px}
+.hold-empty{padding:16px;font-size:14px;color:var(--ink-3)}
+.tag.held{background:var(--accent);color:var(--panel)}
+.tag.stop{background:var(--up);color:#fff}
+.hform{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:720px}
+@media (max-width:640px){.hform{grid-template-columns:1fr}}
+.hform label{font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:4px}
+.hform input{font:inherit;font-size:14px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:0 10px;height:38px}
+.hform .full{grid-column:1/-1}
+.quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.quick button{font:inherit;font-size:12px;border:1px solid var(--line);background:var(--panel);color:var(--ink-2);border-radius:7px;padding:2px 8px;cursor:pointer}
+.hcalc{font-size:13.5px;color:var(--ink-2);margin:12px 0;line-height:1.9}
+.hbtns{display:flex;gap:8px;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -216,7 +277,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
   <div class="wrap">
     <div class="brand"><i>籌</i>自選股籌碼追蹤</div>
     <nav class="links">
-      <a href="#list">追蹤清單</a><a href="backtest.html">回測報告</a><a href="#method">評分方式</a><a href="#sources">資料來源</a><a href="#disclaimer">免責聲明</a>
+      <a href="#list">追蹤清單</a><a href="backtest.html">回測報告</a><a href="#method">評分方式</a><a href="#glossary">名詞小辭典</a><a href="#sources">資料來源</a><a href="#disclaimer">免責聲明</a>
     </nav>
     <button class="btn" id="openMgr" style="margin-left:4px">＋ 管理自選股</button>
     <button class="theme-btn" id="themeBtn" title="切換深淺色" aria-label="切換深淺色"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
@@ -238,6 +299,8 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
 
   <div class="stats" id="stats"></div>
 
+  <section class="hold" id="holdings"></section>
+
   <section class="risers" id="risers"></section>
 
   <section class="panel" id="list">
@@ -256,6 +319,8 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
         <option value="scoreChg1">排序：分數變化（1 日）</option>
         <option value="scoreChg5">排序：分數變化（5 日）</option>
         <option value="bigDelta">排序：大戶週增減</option>
+        <option value="perAsc">排序：本益比（低→高）</option>
+        <option value="revYoy">排序：營收年增率</option>
         <option value="code">排序：代號</option>
       </select>
       <input type="search" id="q" placeholder="搜尋代號或名稱">
@@ -263,11 +328,11 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
     <div class="table-wrap">
       <table>
         <thead><tr>
-          <th>股票與訊號</th><th>收盤</th><th>漲跌幅</th><th>成交量(張)</th>
-          <th>外資</th><th>投信</th><th>自營商</th><th>法人合計</th><th>5 日累計</th>
-          <th>近 10 日法人</th><th>千張大戶</th><th>融資增減</th><th>分數</th>
+          <th data-tip="tags">股票與訊號</th><th data-tip="close">收盤</th><th data-tip="chg">漲跌幅</th><th data-tip="vol">成交量(張)</th>
+          <th data-tip="foreign">外資</th><th data-tip="trust">投信</th><th data-tip="dealer">自營商</th><th data-tip="inst">法人合計</th><th data-tip="sum5">5 日累計</th>
+          <th data-tip="spark">近 10 日法人</th><th data-tip="big">千張大戶</th><th data-tip="margin">融資增減</th><th data-tip="per">本益比</th><th data-tip="score">分數</th>
         </tr></thead>
-        <tbody id="tbody"><tr><td colspan="13" class="empty">載入中…</td></tr></tbody>
+        <tbody id="tbody"><tr><td colspan="14" class="empty">載入中…</td></tr></tbody>
       </table>
     </div>
   </section>
@@ -297,12 +362,19 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
     </div>
   </section>
 
+  <section class="block" id="glossary">
+    <h2>名詞小辭典</h2>
+    <p style="color:var(--ink-2);margin:0 0 6px;font-size:14px">表格欄位和標籤的白話說明。電腦上把滑鼠移到欄位名稱或標籤上，也會跳出說明。</p>
+    <div id="glossBody"></div>
+  </section>
+
   <section class="block" id="sources">
     <h2>資料來源</h2>
     <div class="card">
       <ul>
         <li>收盤行情、三大法人買賣超、融資融券餘額：原始資料來自臺灣證券交易所、證券櫃檯買賣中心，經 <a href="https://finmindtrade.com/" target="_blank" rel="noopener">FinMind</a> 整理提供</li>
         <li>千張大戶：臺灣集中保管結算所 集保戶股權分散表（每週）</li>
+        <li>本益比、殖利率、股價淨值比、月營收：原始資料來自證交所、櫃買中心與公開資訊觀測站，經 FinMind 整理提供</li>
       </ul>
     </div>
   </section>
@@ -360,13 +432,14 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
   </div>
 </div>
 
+<div id="tip" role="tooltip"></div>
 <footer><div class="wrap">資料每個交易日盤後自動更新 · <span id="footUpd"></span></div></footer>
 
 <script>
 (function(){
   "use strict";
   const $ = s => document.querySelector(s);
-  const state = { data:null, market:"all", sort:"score", q:"", open:null };
+  const state = { data:null, market:"all", sort:"score", q:"", open:null, tab:"kline", charts:null, fund:null, holdings:{} };
 
   // ── 深淺色 ──
   const root = document.documentElement;
@@ -395,6 +468,11 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
     const sel = $("#dateSel");
     sel.innerHTML = dates.length ? dates.map(d => `<option value="${d}">${d}</option>`).join("") : `<option>最新</option>`;
     sel.addEventListener("change", () => load("data/report/" + sel.value + ".json"));
+    renderGlossary();
+    await Promise.all([
+      getJSON("data/charts.json").then(j => state.charts = j).catch(() => {}),
+      getJSON("data/fundamentals.json").then(j => state.fund = j).catch(() => {})
+    ]);
     await load("data/latest.json");
   }
 
@@ -406,7 +484,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
       if ([...sel.options].some(o => o.value === state.data.date)) sel.value = state.data.date;
       render();
     } catch(e){
-      $("#tbody").innerHTML = `<tr><td colspan="13" class="empty">尚無資料。請點右上角「管理自選股」新增股票，或到 GitHub 的 Actions 頁面手動執行「更新籌碼資料」。</td></tr>`;
+      $("#tbody").innerHTML = `<tr><td colspan="14" class="empty">尚無資料。請點右上角「管理自選股」新增股票，或到 GitHub 的 Actions 頁面手動執行「更新籌碼資料」。</td></tr>`;
     }
   }
 
@@ -452,7 +530,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
   function trendSVG(trend, mini, wide){
     const pts = (trend||[]).map(x => x.s);
     if (pts.length < 2) return mini ? "" : `<div class="hint">歷史資料不足，無法畫出走勢</div>`;
-    const W = mini ? (wide ? 200 : 64) : 640, H = mini ? (wide ? 30 : 24) : 150, padX = mini ? 2 : 28, padT = mini ? 3 : 18, padB = mini ? 3 : 24;
+    const W = mini ? (wide ? 200 : 64) : chartW(640), H = mini ? (wide ? 30 : 24) : 150, padX = mini ? 2 : 28, padT = mini ? 3 : 18, padB = mini ? 3 : 24;
     let lo = 0, hi = 100;
     if (mini){ lo = Math.min(...pts); hi = Math.max(...pts); const need = 20 - (hi - lo); if (need > 0){ lo -= need/2; hi += need/2; } }
     const x = i => padX + i * (W - padX*2) / (pts.length - 1);
@@ -489,7 +567,12 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
 
   function tagHTML(t){
     const pos = /買超|連買|增持|融資減少|分數連升|分數大增/.test(t), neg = /賣超|減持|分數大減/.test(t), alert = /隔日沖|融資大增|量增/.test(t);
-    return `<span class="tag ${alert?"alert":pos?"pos":neg?"neg":""}">${esc(t)}</span>`;
+    return `<span class="tag ${alert?"alert":pos?"pos":neg?"neg":""}" data-tip="${tagKey(t)}">${esc(t)}</span>`;
+  }
+  function holdTags(s){
+    const h = state.holdings[s.code]; if (!h) return "";
+    const k = holdCalc(s.close, h);
+    return `<span class="tag held" data-tip="t_held">持有</span>` + (k && k.stopHit ? `<span class="tag stop" data-tip="t_stop">跌破停損</span>` : "");
   }
 
   function filtered(){
@@ -498,7 +581,8 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
     let list = d.stocks.filter(s => (state.market === "all" || s.market === state.market) &&
       (!q || s.code.toLowerCase().includes(q) || (s.name||"").toLowerCase().includes(q)));
     const k = state.sort;
-    list.sort((a,b) => k === "code" ? a.code.localeCompare(b.code) : ((b[k] ?? -Infinity) - (a[k] ?? -Infinity)));
+    if (k === "perAsc") list.sort((a,b) => (a.per ?? Infinity) - (b.per ?? Infinity));
+    else list.sort((a,b) => k === "code" ? a.code.localeCompare(b.code) : ((b[k] ?? -Infinity) - (a[k] ?? -Infinity)));
     return list;
   }
 
@@ -507,14 +591,15 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
     renderMeta();
     const all = state.data.stocks.filter(s => state.market === "all" || s.market === state.market);
     renderStats(all);
+    renderHoldings();
     renderRisers(all);
     const list = filtered();
-    if (!list.length){ $("#tbody").innerHTML = `<tr><td colspan="13" class="empty">沒有符合條件的股票</td></tr>`; return; }
+    if (!list.length){ $("#tbody").innerHTML = `<tr><td colspan="14" class="empty">沒有符合條件的股票</td></tr>`; return; }
     $("#tbody").innerHTML = list.map(s => {
       const row = `<tr class="row${state.open===s.code?" open":""}" data-code="${esc(s.code)}">
         <td><div class="stock"><span class="rank ${s.rank<=3?"top":""}">${s.rank}</span><div>
           <div><span class="nm">${esc(s.name)}</span> <span class="cd">${esc(s.code)}</span><span class="mk">${esc(s.market)}</span></div>
-          <div class="tags">${(s.tags||[]).map(tagHTML).join("")}</div></div></div></td>
+          <div class="tags">${holdTags(s)}${(s.tags||[]).map(tagHTML).join("")}</div></div></div></td>
         <td class="num">${fmt(s.close, 2)}</td>
         <td class="num ${cls(s.chgPct)}">${sgn(s.chgPct,2)}%<span class="sub">${sgn(s.chg,2)}</span></td>
         <td class="num">${fmt(s.vol)}<span class="sub">${s.volRatio ? "量比 " + fmt(s.volRatio,2) : ""}</span></td>
@@ -526,13 +611,350 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
         <td>${spark(s.hist||[])}</td>
         <td class="num">${s.bigPct==null?"—":fmt(s.bigPct,2)+"%"}<span class="sub ${cls(s.bigDelta)}">${s.bigDelta==null?"":"週 "+sgn(s.bigDelta,2)}</span></td>
         <td class="num ${cls(s.marginChg==null?null:-s.marginChg)}">${sgn(s.marginChg)}<span class="sub">${s.margin==null?"":"餘 "+fmt(s.margin)}</span></td>
+        ${perCell(s)}
         <td><span class="score">${trendSVG(s.trend, true)}<span class="sc"><b class="num">${fmt(s.score,1)}</b>${chgHTML(s.scoreChg1, s.partial)}</span></span></td>
       </tr>`;
       return row + (state.open === s.code ? detail(s) : "");
     }).join("");
   }
 
-  function detail(s){
+  // ════════ 名詞解說 ════════
+  const GLOSS = {
+    "基本": {
+      close: ["收盤價", "當天最後一筆成交的價格，也是隔天漲跌的比較基準。"],
+      chg: ["漲跌幅", "今天收盤比昨天收盤漲或跌了多少百分比。台股紅色代表上漲、綠色代表下跌，和歐美相反。"],
+      vol: ["成交量（張）", "當天總共成交多少張。1 張 = 1,000 股。下方的「量比」是今天成交量 ÷ 前 4 日平均，大於 2 代表今天特別熱絡。"],
+      tags: ["股票與訊號", "左邊的數字是依分數排的名次，下方小標籤是系統依規則自動標出的狀況，滑鼠移上去可以看說明。"],
+      lot: ["張與股", "台股交易單位：1 張 = 1,000 股。不足 1 張的叫「零股」。股價 100 元的股票，買 1 張要 10 萬元。"]
+    },
+    "三大法人": {
+      foreign: ["外資", "外國的投資機構，資金最大。連續買超通常代表看好，但也常因匯率或全球資金調度而大進大出。單位：張。"],
+      trust: ["投信", "國內的基金公司（買你買的基金的那些人）。比較常集中買中小型股，連續買超常被視為值得注意的訊號。"],
+      dealer: ["自營商", "券商用自己的錢操作，多半是短線交易或避險，參考價值最低。"],
+      inst: ["法人合計", "外資＋投信＋自營商當天的買賣超總和。正數（紅）代表買比賣多，負數（綠）代表賣比買多。"],
+      sum5: ["5 日累計", "近 5 個交易日法人合計的總和。比單日數字可靠，單日可能只是偶然。"],
+      spark: ["近 10 日法人", "近 10 個交易日法人合計的小長條圖，紅色往上是買超、綠色往下是賣超，一眼看出最近是在買還是在賣。"]
+    },
+    "籌碼": {
+      big: ["千張大戶", "持股超過 1,000 張的大股東合計占了多少比例（集保結算所每週公布）。比例逐週上升，代表籌碼往大戶集中；下降代表大戶在分散出貨。"],
+      margin: ["融資增減", "融資是散戶向券商借錢買股票。融資減少（綠）通常被視為健康，代表籌碼從散戶流向較穩定的買方；融資大增代表散戶追進，股價一跌容易出現賣壓。單位：張。"],
+      score: ["分數", "依法人買超、連買天數、大戶增減、融資變化算出的籌碼分數（0～100）。旁邊的 ▲▼ 是和前一天比的變化。注意：回測顯示單看分數買賣效果有限，請當作參考資訊。"]
+    },
+    "基本面": {
+      per: ["本益比", "股價 ÷ 每股盈餘（近四季）。意思是用現在的價格買，要幾年的獲利才能「回本」。越高代表市場期待越高、也越貴。旁邊的標籤是和這檔股票自己過去 5 年相比的位置。虧損公司沒有本益比。"],
+      pbr: ["股價淨值比", "股價 ÷ 每股淨值（公司資產扣掉負債後，平均每股值多少）。小於 1 代表股價比帳面價值還低。適合用在金融、傳產等資產型公司。"],
+      yield: ["殖利率", "近一年配發的現金股利 ÷ 股價。例如 4% 代表用現在的價格買，一年大約能領回 4% 的股利。殖利率越高，通常代表價格相對便宜（但也可能是公司前景不佳）。"],
+      pct: ["歷史位置", "把這檔股票過去 5 年每天的本益比排一排，看今天落在哪裡。「便宜區」是比過去 80% 的時間都低，「昂貴區」是比過去 80% 的時間都高。只跟自己比，不同產業不能直接比較。"],
+      rev: ["月營收", "公司每個月的營業收入，每月 10 日前公布，是公司生意好壞最即時的數字。單位：億元。"],
+      yoy: ["年增率", "這個月營收和去年同一個月相比的成長率。用年增率可以排除季節因素（例如年底旺季），比月增率更有參考價值。"],
+      mom: ["月增率", "這個月營收和上個月相比的成長率。容易受季節、工作天數影響，看趨勢時以年增率為主。"]
+    },
+    "技術面": {
+      kline: ["K 線", "每一根代表一天：實體的上下緣是開盤價和收盤價，上下的細線是當天最高和最低價。紅 K 是收盤比開盤高，綠 K 是收盤比開盤低。"],
+      ma: ["均線（MA）", "過去 N 天收盤價的平均。MA5 約一週、MA20 約一個月（月線）、MA60 約一季（季線）。股價在均線之上通常代表趨勢偏多，在之下偏空。"]
+    },
+    "風險管理": {
+      stop: ["停損", "事先決定好「跌到多少就賣」的價格，避免小虧變大虧。例如買在 100 元、停損設 92 元，最多就虧 8%。新手最常見的錯誤就是不停損、越攤越平。"],
+      pnl: ["損益與報酬率", "損益 =（收盤價 − 買進價）× 股數；報酬率 = 損益 ÷ 買進成本。這裡的數字未扣手續費與證交稅（買賣一趟約 0.4%～0.6%）。"]
+    },
+    "標籤": {
+      t_inst: ["法人買超／賣超", "當天三大法人合計是買比賣多（買超），還是賣比買多（賣超）。"],
+      t_f: ["外資連買 N 天", "外資連續 N 個交易日都是買超。"],
+      t_t: ["投信連買 N 天", "投信連續 N 個交易日都是買超，常被視為投信在佈局。"],
+      t_big: ["大戶增持／減持", "千張大戶的持股比例這週比上週增加或減少。"],
+      t_mdown: ["融資減少", "融資餘額比前一天少，散戶借錢買的部位在減少。"],
+      t_mup: ["融資大增", "融資餘額一天增加超過 3%，散戶追價明顯，要留意之後的賣壓。"],
+      t_vol: ["量增", "今天成交量是前 4 日平均的 2 倍以上，代表有特別的買賣力道或消息。"],
+      t_dt: ["隔日沖賣壓", "推估用標籤：當天大漲 5% 以上、爆量、收在高點附近，但法人沒有買。這種情況常有短線客隔天獲利了結，容易開高走低。"],
+      t_su: ["分數連升／分數大增", "籌碼分數連續上升 3 天以上，或 5 日內上升 20 分以上，代表買盤正在聚集。"],
+      t_sd: ["分數大減", "籌碼分數 5 日內下降 20 分以上，代表原本的買盤明顯減弱。"],
+      t_held: ["持有", "你在「我的持股」記錄了這檔股票。"],
+      t_stop: ["跌破停損", "最新收盤價已經低於你設定的停損價，請依照自己的計畫處理。"]
+    }
+  };
+  const GL = Object.assign({}, ...Object.values(GLOSS));
+  function tagKey(t){
+    if (/法人(買|賣)超/.test(t)) return "t_inst";
+    if (/外資連買/.test(t)) return "t_f";
+    if (/投信連買/.test(t)) return "t_t";
+    if (/大戶/.test(t)) return "t_big";
+    if (/融資減少/.test(t)) return "t_mdown";
+    if (/融資大增/.test(t)) return "t_mup";
+    if (/量增/.test(t)) return "t_vol";
+    if (/隔日沖/.test(t)) return "t_dt";
+    if (/分數連升|分數大增/.test(t)) return "t_su";
+    if (/分數大減/.test(t)) return "t_sd";
+    return "";
+  }
+  function renderGlossary(){
+    $("#glossBody").innerHTML = Object.entries(GLOSS).map(([cat, items]) =>
+      `<div class="gloss-cat">${esc(cat)}</div><div class="gloss">` +
+      Object.values(items).map(([t, d]) => `<div class="g"><b>${esc(t)}</b><p>${esc(d)}</p></div>`).join("") + `</div>`).join("");
+  }
+  const tipEl = $("#tip");
+  function showTip(el){
+    const g = GL[el.dataset.tip]; if (!g) return;
+    tipEl.innerHTML = `<b>${esc(g[0])}</b>${esc(g[1])}`;
+    tipEl.classList.add("show");
+    const r = el.getBoundingClientRect(), tw = tipEl.offsetWidth, th = tipEl.offsetHeight;
+    let left = Math.min(Math.max(8, r.left + r.width/2 - tw/2), innerWidth - tw - 8);
+    let top = r.bottom + 8; if (top + th > innerHeight - 8) top = r.top - th - 8;
+    tipEl.style.left = left + "px"; tipEl.style.top = top + "px";
+  }
+  const hideTip = () => tipEl.classList.remove("show");
+  document.addEventListener("mouseover", e => { const el = e.target.closest("[data-tip]"); if (el) showTip(el); else hideTip(); });
+  document.addEventListener("click", e => { const el = e.target.closest("th[data-tip]"); if (el){ showTip(el); setTimeout(hideTip, 4000); } });
+  addEventListener("scroll", hideTip, {passive:true});
+
+  // ════════ 我的持股（只存在這台裝置的瀏覽器） ════════
+  const HKEY = "holdings_v1";
+  function loadH(){ try { return JSON.parse(localStorage.getItem(HKEY) || "{}") || {}; } catch(e){ return {}; } }
+  function saveH(){ try { localStorage.setItem(HKEY, JSON.stringify(state.holdings)); } catch(e){} }
+  state.holdings = loadH();
+  const stockOf = code => state.data && state.data.stocks.find(s => s.code === code);
+  function holdCalc(close, h){
+    if (close == null || !h || !h.cost || !h.shares) return null;
+    const cost = h.cost * h.shares, val = close * h.shares, pnl = val - cost;
+    return { cost, val, pnl, pct: pnl / cost * 100, stopHit: !!(h.stop && close <= h.stop),
+      toStop: h.stop ? (close - h.stop) / close * 100 : null, risk: h.stop ? (h.cost - h.stop) * h.shares : null };
+  }
+  function renderHoldings(){
+    const H = state.holdings, codes = Object.keys(H), el = $("#holdings");
+    const head = `<div class="hold-head"><h2>我的持股</h2>
+      <button class="btn" data-hact="export" title="下載持股資料，可在其他裝置匯入">匯出</button>
+      <button class="btn" data-hact="import" title="匯入先前匯出的持股資料">匯入</button>
+      <input type="file" id="hImport" accept="application/json" hidden></div>`;
+    if (!codes.length){
+      el.innerHTML = `<div class="card">${head}<div class="hold-empty">還沒有記錄持股。點開表格中任一檔股票 →「我的持股」分頁，輸入買進價格、股數與停損價，就會在這裡顯示損益與停損提醒。資料只存在這台裝置的瀏覽器，不會公開。</div></div>`;
+      return;
+    }
+    let tc = 0, tv = 0, hits = 0;
+    const rows = codes.map(c => {
+      const h = H[c], s = stockOf(c), k = holdCalc(s && s.close, h);
+      if (k){ tc += k.cost; tv += k.val; if (k.stopHit) hits++; }
+      return `<tr data-code="${esc(c)}" class="hrow" style="cursor:pointer">
+        <td><b>${esc(s ? s.name : (h.name || c))}</b> <span class="num" style="color:var(--ink-3);font-size:12px">${esc(c)}</span>${k && k.stopHit ? ` <span class="tag stop" data-tip="t_stop">跌破停損</span>` : ""}</td>
+        <td class="num">${fmt(h.shares)}<span class="sub">${h.shares % 1000 === 0 ? fmt(h.shares/1000) + " 張" : "股"}</span></td>
+        <td class="num">${fmt(h.cost, 2)}</td>
+        <td class="num">${s ? fmt(s.close, 2) : "—"}</td>
+        <td class="num">${k ? fmt(k.val) : "—"}</td>
+        <td class="num ${k ? cls(k.pnl) : ""}">${k ? sgn(Math.round(k.pnl)) : "—"}</td>
+        <td class="num ${k ? cls(k.pct) : ""}">${k ? sgn(k.pct, 2) + "%" : (s ? "—" : "不在自選股")}</td>
+        <td class="num">${h.stop ? fmt(h.stop, 2) : "未設定"}</td>
+        <td class="num ${k && k.toStop != null && k.toStop < 3 ? "up" : ""}">${k && k.toStop != null ? (k.stopHit ? "已跌破" : fmt(k.toStop, 1) + "%") : "—"}</td>
+      </tr>`;
+    }).join("");
+    const pnl = tv - tc;
+    el.innerHTML = `<div class="card">${head}
+      <div class="hold-sum">
+        <div>總成本<b>${fmt(tc)}</b></div><div>目前市值<b>${fmt(tv)}</b></div>
+        <div>未實現損益<b class="${cls(pnl)}">${sgn(Math.round(pnl))}</b></div>
+        <div>報酬率<b class="${cls(pnl)}">${tc ? sgn(pnl / tc * 100, 2) + "%" : "—"}</b></div>
+        ${hits ? `<div>停損警示<b class="up">${hits} 檔跌破</b></div>` : ""}
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>股票</th><th>股數</th><th>買進均價</th><th>最新收盤</th><th>市值</th><th data-tip="pnl">損益</th><th data-tip="pnl">報酬率</th><th data-tip="stop">停損價</th><th>距停損</th></tr></thead>
+        <tbody>${rows}</tbody></table></div>
+      <div class="hint2" style="padding:0 16px 14px">以最新收盤價計算，未扣手續費與證交稅。點任一列可修改。資料只存在這台裝置的瀏覽器，換裝置請用「匯出／匯入」。</div></div>`;
+  }
+  $("#holdings").addEventListener("click", e => {
+    const act = e.target.closest("[data-hact]");
+    if (act && act.dataset.hact === "export"){
+      const blob = new Blob([JSON.stringify(state.holdings, null, 1)], {type:"application/json"});
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "holdings.json"; a.click(); URL.revokeObjectURL(a.href);
+      return;
+    }
+    if (act && act.dataset.hact === "import"){ $("#hImport").click(); return; }
+    const tr = e.target.closest("tr.hrow");
+    if (tr && stockOf(tr.dataset.code)){
+      state.open = tr.dataset.code; state.tab = "hold"; state.q = ""; $("#q").value = "";
+      state.market = "all"; document.querySelectorAll("#mktSeg button").forEach(x => x.classList.toggle("on", x.dataset.v === "all"));
+      render();
+      const row = document.querySelector(`tr.row[data-code="${CSS.escape(tr.dataset.code)}"]`);
+      if (row) row.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+  });
+  $("#holdings").addEventListener("change", e => {
+    if (e.target.id !== "hImport" || !e.target.files[0]) return;
+    e.target.files[0].text().then(t => {
+      const obj = JSON.parse(t);
+      if (typeof obj !== "object" || Array.isArray(obj)) throw 0;
+      const clean = {};
+      for (const [c, h] of Object.entries(obj)){
+        if (/^[0-9]{4,6}[A-Z]?$/.test(c) && h && +h.cost > 0 && +h.shares > 0)
+          clean[c] = { cost: +h.cost, shares: +h.shares, stop: +h.stop > 0 ? +h.stop : null, name: String(h.name || "").slice(0, 30) };
+      }
+      if (confirm(`匯入 ${Object.keys(clean).length} 檔持股？會覆蓋這台裝置目前的持股資料。`)){ state.holdings = clean; saveH(); render(); }
+    }).catch(() => alert("檔案格式不正確"));
+    e.target.value = "";
+  });
+
+  // ════════ 估值標籤 ════════
+  function valLabel(pct, inverse){
+    if (pct == null) return null;
+    const p = inverse ? 100 - pct : pct;
+    if (p < 20) return { t:"便宜區", c:"vb-cheap" };
+    if (p < 40) return { t:"偏低", c:"vb-low" };
+    if (p < 60) return { t:"中間", c:"vb-mid" };
+    if (p < 80) return { t:"偏高", c:"vb-high" };
+    return { t:"昂貴區", c:"vb-exp" };
+  }
+  function perCell(s){
+    const rev = s.revYoy == null ? "" : `<span class="sub ${cls(s.revYoy)}" data-tip="yoy">營收年增 ${sgn(s.revYoy,1)}%</span>`;
+    if (s.per == null) return `<td class="num">—<span class="sub">${s.yield ? "殖利率 " + fmt(s.yield,2) + "%" : "無本益比"}</span>${rev}</td>`;
+    const L = valLabel(s.perPct);
+    return `<td class="num">${fmt(s.per,1)}${L ? `<span class="vbadge ${L.c}" data-tip="pct">${L.t}</span>` : ""}${rev}</td>`;
+  }
+
+  // 圖表寬度跟著螢幕走，手機上字才不會縮得太小
+  const chartW = max => Math.min(max, Math.max(330, Math.round((innerWidth || 800) - 48)));
+  let lastW = innerWidth;
+  addEventListener("resize", () => { if (Math.abs(innerWidth - lastW) > 60 && state.open){ lastW = innerWidth; render(); } });
+
+  // ════════ K 線圖 ════════
+  function klineSVG(code, rows, hold){
+    if (!rows || rows.length < 5) return `<div class="hint2">K 線資料不足（每天更新後會補齊）</div>`;
+    const W = chartW(760), small = W < 560, PT = 10, PH = small ? 200 : 240, GAP = 22, IH = small ? 60 : 70, PB = 20, H = PT + PH + GAP + IH + PB, L = 6, R = 54;
+    const n = rows.length, bw = (W - L - R) / n;
+    const extra = hold ? [hold.cost, hold.stop].filter(v => v > 0) : [];
+    let hi = Math.max(...rows.map(r => r[2]), ...extra), lo = Math.min(...rows.map(r => r[3]), ...extra);
+    const pad = (hi - lo) * 0.06 || 1; hi += pad; lo -= pad;
+    const y = v => PT + (1 - (v - lo) / (hi - lo)) * PH, x = i => L + bw * (i + 0.5);
+    const grid = [0, 1, 2, 3, 4].map(k => { const v = lo + (hi - lo) * k / 4; return `<line x1="${L}" x2="${W-R}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" stroke="var(--line-2)"/><text x="${W-R+6}" y="${(y(v)+4).toFixed(1)}" font-size="10.5" fill="var(--ink-3)" font-family="IBM Plex Mono,monospace">${fmt(v, v < 100 ? 2 : 1)}</text>`; }).join("");
+    const candles = rows.map((r, i) => {
+      const [d, o, h, l, c] = r; if (o == null || c == null) return "";
+      const up = c >= o, col = `var(${up ? "--up" : "--down"})`, bwid = Math.max(1, bw * 0.62);
+      const top = y(Math.max(o, c)), bh = Math.max(1, Math.abs(y(o) - y(c)));
+      return `<line x1="${x(i).toFixed(1)}" x2="${x(i).toFixed(1)}" y1="${y(h).toFixed(1)}" y2="${y(l).toFixed(1)}" stroke="${col}"/><rect x="${(x(i)-bwid/2).toFixed(1)}" y="${top.toFixed(1)}" width="${bwid.toFixed(1)}" height="${bh.toFixed(1)}" fill="${col}"/>`;
+    }).join("");
+    const maLine = (k, col) => { let d = "", on = false; rows.forEach((r, i) => { if (r[k] == null){ on = false; return; } d += (on ? "L" : "M") + x(i).toFixed(1) + " " + y(r[k]).toFixed(1); on = true; }); return d ? `<path d="${d}" fill="none" stroke="${col}" stroke-width="1.4"/>` : ""; };
+    const hl = (v, col, t) => v > 0 ? `<line x1="${L}" x2="${W-R}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" stroke="${col}" stroke-dasharray="5 4"/><text x="${L+4}" y="${(y(v)-4).toFixed(1)}" font-size="11" fill="${col}">${t} ${fmt(v,2)}</text>` : "";
+    const iy0 = PT + PH + GAP, imid = iy0 + IH / 2, imax = Math.max(1, ...rows.map(r => Math.abs(r[6] || 0)));
+    const ibars = rows.map((r, i) => { const v = r[6]; if (!v) return ""; const h = Math.abs(v) / imax * (IH / 2 - 2); return `<rect x="${(x(i)-Math.max(1,bw*0.62)/2).toFixed(1)}" y="${(v > 0 ? imid - h : imid).toFixed(1)}" width="${Math.max(1,bw*0.62).toFixed(1)}" height="${h.toFixed(1)}" fill="var(${v > 0 ? "--up" : "--down"})" opacity=".8"/>`; }).join("");
+    const step = Math.ceil(n / (small ? 4 : 6)), dates = rows.map((r, i) => i % step === 0 ? `<text x="${x(i).toFixed(1)}" y="${H-4}" font-size="10" text-anchor="middle" fill="var(--ink-3)" font-family="IBM Plex Mono,monospace">${esc(r[0].slice(5))}</text>` : "").join("");
+    return `<svg class="kline" data-code="${esc(code)}" viewBox="0 0 ${W} ${H}" role="img" aria-label="近 ${n} 日 K 線圖">
+      ${grid}${candles}${maLine(7, "var(--warn)")}${maLine(8, "var(--accent)")}${maLine(9, "#9b7bd6")}
+      ${hold ? hl(hold.cost, "var(--accent)", "成本") + hl(hold.stop, "var(--up)", "停損") : ""}
+      <text x="${L}" y="${iy0 - 6}" font-size="11" fill="var(--ink-3)">三大法人買賣超（張）</text>
+      <line x1="${L}" x2="${W-R}" y1="${imid}" y2="${imid}" stroke="var(--line)"/>${ibars}
+      <text x="${W-R+6}" y="${iy0+10}" font-size="10" fill="var(--ink-3)" font-family="IBM Plex Mono,monospace">+${fmt(imax)}</text>
+      <text x="${W-R+6}" y="${iy0+IH}" font-size="10" fill="var(--ink-3)" font-family="IBM Plex Mono,monospace">-${fmt(imax)}</text>
+      ${dates}
+      <line class="kx" x1="0" x2="0" y1="${PT}" y2="${iy0+IH}" stroke="var(--ink-3)" stroke-dasharray="2 3" visibility="hidden"/>
+      <rect x="${L}" y="0" width="${W-L-R}" height="${H}" fill="transparent" class="khit"/>
+    </svg>`;
+  }
+  function kinfoText(rows, i){
+    const r = rows[i], p = i > 0 ? rows[i-1][4] : null, ch = p ? (r[4] / p - 1) * 100 : null;
+    return `<b>${esc(r[0])}</b>　開 ${fmt(r[1],2)}　高 ${fmt(r[2],2)}　低 ${fmt(r[3],2)}　收 <b>${fmt(r[4],2)}</b> <span class="${cls(ch)}">${ch == null ? "" : sgn(ch,2) + "%"}</span>　量 ${fmt(r[5])} 張　法人 <span class="${cls(r[6])}">${sgn(r[6])}</span>　MA5 ${fmt(r[7],2)}　MA20 ${fmt(r[8],2)}　MA60 ${fmt(r[9],2)}`;
+  }
+  function onKMove(e){
+    const svg = e.target.closest && e.target.closest("svg.kline"); if (!svg) return;
+    const rows = state.charts && state.charts.stocks[svg.dataset.code]; if (!rows) return;
+    const pt = e.touches ? e.touches[0] : e, rect = svg.getBoundingClientRect();
+    const VW = svg.viewBox.baseVal.width, sx = (pt.clientX - rect.left) / rect.width * VW, bw = (VW - 6 - 54) / rows.length;
+    const i = Math.max(0, Math.min(rows.length - 1, Math.floor((sx - 6) / bw)));
+    const line = svg.querySelector(".kx"), cx = 6 + bw * (i + 0.5);
+    line.setAttribute("x1", cx); line.setAttribute("x2", cx); line.setAttribute("visibility", "visible");
+    const info = svg.parentElement.querySelector(".kinfo"); if (info) info.innerHTML = kinfoText(rows, i);
+  }
+  document.addEventListener("mousemove", onKMove);
+  document.addEventListener("touchmove", onKMove, {passive:true});
+
+  function klinePane(s){
+    const rows = state.charts && state.charts.stocks && state.charts.stocks[s.code];
+    const hold = state.holdings[s.code];
+    const note = state.charts && state.data && state.charts.date !== state.data.date ? `<div class="hint2">K 線為最新資料（${esc(state.charts.date)}），非你目前選擇的日期。</div>` : "";
+    return `<div class="kinfo">${rows && rows.length ? kinfoText(rows, rows.length - 1) : ""}</div>
+      ${klineSVG(s.code, rows, hold)}
+      <div class="legend"><span><i style="background:var(--warn)"></i>MA5 週線</span><span><i style="background:var(--accent)"></i>MA20 月線</span><span><i style="background:#9b7bd6"></i>MA60 季線</span>${hold ? `<span><i style="background:var(--up)"></i>你的停損價</span>` : ""}</div>
+      <div class="hint2">紅 K：收盤比開盤高；綠 K：收盤比開盤低。滑鼠移到圖上（手機用手指滑）可以看每天的數字。下方長條是三大法人買賣超，對照看看法人買的時候股價怎麼走。</div>${note}`;
+  }
+
+  // ════════ 基本面 ════════
+  function vcard(title, tipKey, cur, pct, range, years, inverse, unit, desc){
+    if (cur == null) return `<div class="vcard"><div class="k" data-tip="${tipKey}">${title}</div><div class="v">—</div><p>${desc}</p></div>`;
+    const L = valLabel(pct, inverse);
+    let bar = "";
+    if (range){
+      const [mn, md, mx] = range, pos = v => Math.max(0, Math.min(100, (v - mn) / ((mx - mn) || 1) * 100));
+      bar = `<div class="rbar" style="${inverse ? "background:linear-gradient(90deg,var(--up-soft),var(--line-2),var(--down-soft))" : ""}"><u style="left:${pos(md)}%"></u><i style="left:${pos(cur)}%"></i></div>
+        <div class="rlab"><span>最低 ${fmt(mn,2)}${unit}</span><span>中位 ${fmt(md,2)}${unit}</span><span>最高 ${fmt(mx,2)}${unit}</span></div>`;
+    }
+    return `<div class="vcard"><div class="k" data-tip="${tipKey}">${title}</div>
+      <div class="v">${fmt(cur,2)}${unit}${L ? `<span class="vbadge ${L.c}" style="font-size:12px">${L.t}</span>` : ""}</div>${bar}
+      <p>${pct == null ? "歷史資料不足，無法比較" : `目前高於過去 ${years} 年中 <b>${fmt(pct,0)}%</b> 的交易日`}。${desc}</p></div>`;
+  }
+  function revSVG(months){
+    const m = months.slice(-12); if (m.length < 2) return "";
+    const W = chartW(760), H = 190, L = 6, R = 6, T = 22, B = 24, bw = (W - L - R) / m.length, mx = Math.max(...m.map(x => x.rev)) || 1;
+    return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto" role="img" aria-label="近 12 個月營收">` + m.map((x, i) => {
+      const h = x.rev / mx * (H - T - B), cx = L + bw * (i + 0.5), col = x.yoy == null ? "var(--ink-3)" : `var(${x.yoy >= 0 ? "--up" : "--down"})`;
+      return `<rect x="${(cx - bw*0.32).toFixed(1)}" y="${(H - B - h).toFixed(1)}" width="${(bw*0.64).toFixed(1)}" height="${h.toFixed(1)}" rx="3" fill="${col}" opacity="${i === m.length - 1 ? 1 : .55}"/>
+        <text x="${cx.toFixed(1)}" y="${(H - B - h - 6).toFixed(1)}" font-size="10.5" text-anchor="middle" fill="${col}" font-family="IBM Plex Mono,monospace">${x.yoy == null ? "" : sgn(x.yoy,0) + "%"}</text>
+        <text x="${cx.toFixed(1)}" y="${H - 6}" font-size="10.5" text-anchor="middle" fill="var(--ink-3)" font-family="IBM Plex Mono,monospace">${esc(x.ym.slice(2).replace("-", "/"))}</text>`;
+    }).join("") + `</svg>`;
+  }
+  function fundPane(s){
+    const f = state.fund && state.fund.stocks && state.fund.stocks[s.code];
+    if (!f) return `<div class="hint2">基本面資料尚未產生，每天第一次更新時會自動抓取。</div>`;
+    const v = f.val, r = f.rev;
+    const vals = v ? `<div class="fgrid">
+        ${vcard("本益比", "per", v.per, v.perPct, v.perRange, v.years, false, "", v.per == null ? "公司近四季虧損或沒有獲利資料，無法計算本益比。" : "數字越高代表越貴、市場期待越高。")}
+        ${vcard("殖利率", "yield", v.yield, v.yieldPct, v.yieldRange, v.years, true, "%", "殖利率越高，價格相對越便宜（右邊綠色）。")}
+        ${vcard("股價淨值比", "pbr", v.pbr, v.pbrPct, v.pbrRange, v.years, false, "", "小於 1 代表股價低於帳面價值。")}
+      </div>
+      <div class="hint2">「便宜／昂貴」只是和這檔股票自己過去 ${v.years} 年相比。公司前景改變時，過去的區間不一定適用；不同產業之間也不能直接比較。資料日期：${esc(v.date || "")}</div>`
+      : `<div class="hint2">沒有估值資料（ETF 沒有本益比與淨值比）。</div>`;
+    let revs = `<div class="hint2">沒有月營收資料（ETF 不公布月營收）。</div>`;
+    if (r && r.months && r.months.length){
+      const last = r.months.slice(-6).reverse().map(x => `<tr><td class="num">${esc(x.ym)}</td><td class="num">${fmt(x.rev,2)}</td><td class="num ${cls(x.mom)}">${x.mom == null ? "—" : sgn(x.mom,1) + "%"}</td><td class="num ${cls(x.yoy)}"><b>${x.yoy == null ? "—" : sgn(x.yoy,1) + "%"}</b></td></tr>`).join("");
+      revs = `${revSVG(r.months)}
+        <div class="hint2" style="margin-bottom:10px">長條高度是營收金額，上方數字是<span data-tip="yoy" style="text-decoration:underline dotted">年增率</span>（紅色成長、綠色衰退），最右邊是最新月份。</div>
+        <table class="mini" style="min-width:0;max-width:520px"><thead><tr><th>月份</th><th>營收（億）</th><th data-tip="mom">月增率</th><th data-tip="yoy">年增率</th></tr></thead><tbody>${last}</tbody></table>`;
+    }
+    return `<h4 class="sec-t" style="margin-top:0">現在貴不貴？</h4>${vals}
+      <h4 class="sec-t" data-tip="rev">月營收${r ? `（最新 ${esc(r.latest)}，今年累計年增 <span class="${cls(r.ytdYoy)}">${r.ytdYoy == null ? "—" : sgn(r.ytdYoy,1) + "%"}</span>）` : ""}</h4>${revs}`;
+  }
+
+  // ════════ 我的持股分頁 ════════
+  function holdPane(s){
+    const h = state.holdings[s.code] || {}, k = holdCalc(s.close, h);
+    const calc = k ? `<div class="hcalc">
+        市值 <b class="num">${fmt(k.val)}</b> 元　未實現損益 <b class="num ${cls(k.pnl)}">${sgn(Math.round(k.pnl))}</b> 元（<span class="num ${cls(k.pct)}">${sgn(k.pct,2)}%</span>）<br>
+        ${h.stop ? (k.stopHit ? `<b class="up">⚠ 最新收盤 ${fmt(s.close,2)} 已跌破停損價 ${fmt(h.stop,2)}。</b>`
+          : `距離停損還有 <b class="num">${fmt(k.toStop,1)}%</b>；若觸發停損，相對買進成本約${k.risk >= 0 ? "虧損" : "獲利"} <b class="num">${fmt(Math.abs(Math.round(k.risk)))}</b> 元（${fmt(Math.abs((h.cost - h.stop) / h.cost * 100),1)}%）。`)
+          : "還沒設定停損價。建議先想好「跌到哪裡就認錯」，例如買進價的 -8%。"}
+      </div>` : "";
+    return `<div class="hform">
+        <label>買進均價（元）<input type="number" step="0.01" min="0" id="hCost" value="${h.cost || ""}" placeholder="例如 ${fmt(s.close,2)}"></label>
+        <label>持有股數 <span style="color:var(--ink-3)">（1 張 = 1,000 股）</span><input type="number" step="1" min="0" id="hShares" value="${h.shares || ""}" placeholder="例如 1000"></label>
+        <label><span data-tip="stop" style="text-decoration:underline dotted">停損價（元）</span><input type="number" step="0.01" min="0" id="hStop" value="${h.stop || ""}" placeholder="跌破就賣的價格">
+          <span class="quick">${[5, 8, 10].map(p => `<button type="button" data-hq="${p}">買價 -${p}%</button>`).join("")}</span></label>
+      </div>
+      ${calc}
+      <div class="hbtns"><button class="btn primary" data-hs="save">儲存</button>${state.holdings[s.code] ? `<button class="btn ghost" data-hs="del">刪除這筆持股</button>` : ""}</div>
+      <div class="hint2">資料只存在這台裝置的瀏覽器，不會上傳到 GitHub，別人看不到。損益以最新收盤價計算，未扣手續費與證交稅。</div>`;
+  }
+  $("#tbody").addEventListener("click", e => {
+    const tab = e.target.closest(".dtabs button");
+    if (tab){ state.tab = tab.dataset.t; render(); return; }
+    const q = e.target.closest("[data-hq]");
+    if (q){ const c = parseFloat($("#hCost").value); if (c > 0) $("#hStop").value = (c * (1 - q.dataset.hq / 100)).toFixed(2); else $("#hCost").focus(); return; }
+    const hs = e.target.closest("[data-hs]");
+    if (hs && state.open){
+      const code = state.open;
+      if (hs.dataset.hs === "del"){ if (confirm("刪除這筆持股？")){ delete state.holdings[code]; saveH(); render(); } return; }
+      const cost = parseFloat($("#hCost").value), shares = parseInt($("#hShares").value, 10), stop = parseFloat($("#hStop").value);
+      if (!(cost > 0) || !(shares > 0)){ alert("請輸入買進均價與持有股數"); return; }
+      const s = stockOf(code);
+      state.holdings[code] = { cost, shares, stop: stop > 0 ? stop : null, name: s ? s.name : "" };
+      saveH(); render();
+    }
+  }, true);
+
+  // ════════ 明細（分頁） ════════
+  function chipsPane(s){
     const P = s.parts || {};
     const parts = [
       ["法人當日買超 ÷ 5 日均量", P.instToday, 25],
@@ -545,7 +967,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
       <td class="num">${esc(h.d.slice(5))}</td><td class="num">${fmt(h.c,2)}</td><td class="num ${cls(h.p)}">${sgn(h.p,2)}</td>
       <td class="num">${fmt(h.v)}</td><td class="num ${cls(h.f)}">${sgn(h.f)}</td><td class="num ${cls(h.t)}">${sgn(h.t)}</td>
       <td class="num ${cls(h.dl)}">${sgn(h.dl)}</td><td class="num ${cls(h.i)}"><b>${sgn(h.i)}</b></td><td class="num">${fmt(h.m)}</td><td class="num"><b>${h.s==null?"—":fmt(h.s,1)}</b></td></tr>`).join("");
-    return `<tr class="detail"><td colspan="13"><div class="detail-inner">
+    return `<div class="detail-inner" style="padding:0">
       <div class="trend-box"><h4>近 ${(s.trend||[]).length} 個交易日分數走勢${s.scoreChg5!=null?` · 5 日 ${sgn(s.scoreChg5,1)}`:""}</h4>${trendSVG(s.trend, false)}</div>
       <div><h4>分數組成 · ${fmt(s.score,1)} 分</h4>${parts}
         <div class="kv">5 日均量 <b class="num">${fmt(s.avg5)}</b> 張<br>
@@ -553,9 +975,15 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
         千張大戶 <b class="num">${s.bigPct==null?"—":fmt(s.bigPct,2)+"%"}</b>${s.bigPeople?`（<span class="num">${fmt(s.bigPeople)}</span> 人）`:""}<br>
         成交金額 <b class="num">${fmt(s.amt,2)}</b> 億</div></div>
       <div class="table-wrap"><h4>近 ${(s.hist||[]).length} 個交易日（單位：張）</h4>
-        <table class="mini"><thead><tr><th>日期</th><th>收盤</th><th>漲跌</th><th>成交量</th><th>外資</th><th>投信</th><th>自營商</th><th>法人合計</th><th>融資餘額</th><th>分數</th></tr></thead>
+        <table class="mini"><thead><tr><th>日期</th><th>收盤</th><th>漲跌</th><th>成交量</th><th data-tip="foreign">外資</th><th data-tip="trust">投信</th><th data-tip="dealer">自營商</th><th data-tip="inst">法人合計</th><th data-tip="margin">融資餘額</th><th data-tip="score">分數</th></tr></thead>
         <tbody>${rows}</tbody></table></div>
-    </div></td></tr>`;
+    </div>`;
+  }
+  function detail(s){
+    const tabs = [["kline","K 線與法人"],["chips","籌碼分數"],["fund","基本面"],["hold", "我的持股" + (state.holdings[s.code] ? " ●" : "")]];
+    const t = state.tab || "kline";
+    const body = t === "chips" ? chipsPane(s) : t === "fund" ? fundPane(s) : t === "hold" ? holdPane(s) : klinePane(s);
+    return `<tr class="detail"><td colspan="14"><div class="dwrap"><div class="dtabs">${tabs.map(([k, l]) => `<button data-t="${k}" class="${k === t ? "on" : ""}">${l}</button>`).join("")}</div><div class="dpane">${body}</div></div></td></tr>`;
   }
 
   // ── 事件 ──
@@ -576,6 +1004,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
   });
   $("#tbody").addEventListener("click", e => {
     const tr = e.target.closest("tr.row"); if (!tr) return;
+    if (state.open !== tr.dataset.code) state.tab = state.tab || "kline";
     state.open = state.open === tr.dataset.code ? null : tr.dataset.code; render();
   });
 

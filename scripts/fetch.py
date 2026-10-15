@@ -20,6 +20,7 @@ import json
 import os
 import random
 import re
+import statistics
 import sys
 import time
 import urllib.parse
@@ -33,7 +34,9 @@ TDCC_DIR = DATA / "tdcc"
 TZ = dt.timezone(dt.timedelta(hours=8))
 
 NEED_DAYS = 22          # 抓取的交易日數（回算歷史分數需要較多天）
-LOOKBACK_DAYS = 40      # 往回抓幾個日曆天的資料
+LOOKBACK_DAYS = 200     # 往回抓幾個日曆天的資料（K 線與 60 日均線需要）
+CHART_DAYS = 60         # K 線圖顯示的交易日數
+FUND_YEARS = 5          # 估值歷史位置的比較期間（年）
 TREND_DAYS = 10         # 回算近幾日的分數（分數走勢）
 HIST_DAYS = 10          # 明細與法人小圖顯示幾日
 KEEP_REPORTS = 120      # 歷史清單保留幾天
@@ -237,6 +240,8 @@ def build_days(codes):
             per[c] = got
         else:
             log(f"    ! {c} 沒有資料（代號錯誤或已下市）")
+    global RAW, INFO
+    RAW, INFO = per, info
     all_dates = sorted({d for v in per.values() for d in v}, reverse=True)[:NEED_DAYS]
     days = []
     for d in all_dates:
@@ -251,6 +256,110 @@ def build_days(codes):
         days[0]["has_inst"] = all("inst" in s for s in latest)
         days[0]["has_margin"] = all("margin" in s for s in latest)
     return days  # 新 → 舊
+
+
+# ───────────────────────── K 線 ─────────────────────────
+RAW, INFO = {}, {}
+
+
+def build_charts():
+    """近 CHART_DAYS 日：[日期, 開, 高, 低, 收, 量(張), 法人(張), MA5, MA20, MA60]"""
+    out = {}
+    for code, days in RAW.items():
+        ds = sorted(days)
+        closes = [days[d]["close"] for d in ds]
+
+        def ma(i, n):
+            return round(sum(closes[i - n + 1:i + 1]) / n, 2) if i >= n - 1 and all(closes[i - n + 1:i + 1]) else None
+        rows = []
+        for i, d in enumerate(ds):
+            if i < len(ds) - CHART_DAYS:
+                continue
+            x = days[d]
+            r2 = lambda v: None if v is None else round(v, 2)  # noqa: E731
+            rows.append([d, r2(x.get("open")), r2(x.get("high")), r2(x.get("low")), r2(x.get("close")), lots(x.get("vol")),
+                         lots(x.get("inst")) if "inst" in x else None, ma(i, 5), ma(i, 20), ma(i, 60)])
+        out[code] = rows
+    return out
+
+
+# ───────────────────────── 基本面（估值、月營收）─────────────────────────
+def pct_rank(hist, v):
+    hist = [h for h in hist if h is not None]
+    if v is None or len(hist) < 60:
+        return None
+    return round(sum(h < v for h in hist) / len(hist) * 100, 1)
+
+
+def fetch_valuation(code):
+    start = (now_tw().date() - dt.timedelta(days=365 * FUND_YEARS + 10)).isoformat()
+    rows = finmind("TaiwanStockPER", code, start)
+    if not rows:
+        return None
+    pe = [num(r.get("PER")) for r in rows]
+    pe = [x if x and x > 0 else None for x in pe]
+    pb = [num(r.get("PBR")) for r in rows]
+    pb = [x if x and x > 0 else None for x in pb]
+    dy = [num(r.get("dividend_yield")) for r in rows]
+    last = rows[-1]
+    cur_pe, cur_pb, cur_dy = pe[-1], pb[-1], dy[-1]
+
+    def rng(h):
+        h = [x for x in h if x is not None]
+        return [round(min(h), 2), round(statistics.median(h), 2), round(max(h), 2)] if len(h) >= 60 else None
+    return {
+        "date": last.get("date"), "years": FUND_YEARS,
+        "per": cur_pe, "perPct": pct_rank(pe, cur_pe), "perRange": rng(pe),
+        "pbr": cur_pb, "pbrPct": pct_rank(pb, cur_pb), "pbrRange": rng(pb),
+        "yield": cur_dy, "yieldPct": pct_rank(dy, cur_dy), "yieldRange": rng(dy),
+    }
+
+
+def fetch_revenue(code):
+    start = (now_tw().date().replace(day=1) - dt.timedelta(days=800)).isoformat()
+    rows = finmind("TaiwanStockMonthRevenue", code, start)
+    if not rows:
+        return None
+    rev = {}
+    for r in rows:
+        y, m, v = r.get("revenue_year"), r.get("revenue_month"), num(r.get("revenue"))
+        if y and m and v:
+            rev[(int(y), int(m))] = v
+    if not rev:
+        return None
+    keys = sorted(rev)
+    out = []
+    for (y, m) in keys[-13:]:
+        prev_m = (y, m - 1) if m > 1 else (y - 1, 12)
+        v = rev[(y, m)]
+        yoy = rev.get((y - 1, m))
+        mom = rev.get(prev_m)
+        out.append({"ym": f"{y}-{m:02d}", "rev": round(v / 1e8, 2),
+                    "yoy": round((v / yoy - 1) * 100, 1) if yoy else None,
+                    "mom": round((v / mom - 1) * 100, 1) if mom else None})
+    ly, lm = keys[-1]
+    cur = sum(rev.get((ly, k), 0) for k in range(1, lm + 1))
+    prev = sum(rev.get((ly - 1, k), 0) for k in range(1, lm + 1))
+    return {"months": out, "latest": out[-1]["ym"], "ytdYoy": round((cur / prev - 1) * 100, 1) if prev and cur else None}
+
+
+def update_fundamentals(codes):
+    """一天只抓一次，快取在 data/fundamentals.json"""
+    path = DATA / "fundamentals.json"
+    cache = load_json(path, {})
+    today = now_tw().date().isoformat()
+    stocks = cache.get("stocks", {}) if cache.get("date") == today else {}
+    todo = [c for c in codes if c not in stocks]
+    if todo:
+        log(f"• 基本面（估值、月營收）：{len(todo)} 檔")
+        for c in todo:
+            log(f"  ↳ {c}")
+            stocks[c] = {"val": fetch_valuation(c), "rev": fetch_revenue(c)}
+    else:
+        log("• 基本面：今日已更新，沿用快取")
+    stocks = {c: stocks[c] for c in codes if c in stocks}
+    save_json(path, {"date": today, "stocks": stocks})
+    return stocks
 
 
 # ───────────────────────── 集保千張大戶 ─────────────────────────
@@ -486,6 +595,14 @@ def main():
         "notFound": [c for c in codes if c not in latest["stocks"]],
         "stocks": stocks,
     }
+    fund = update_fundamentals(codes)
+    for s in stocks:
+        v = (fund.get(s["code"]) or {}).get("val") or {}
+        r = (fund.get(s["code"]) or {}).get("rev") or {}
+        s["per"], s["perPct"], s["yield"], s["yieldPct"] = v.get("per"), v.get("perPct"), v.get("yield"), v.get("yieldPct")
+        m = (r.get("months") or [None])[-1] or {}
+        s["revYoy"], s["revYm"] = m.get("yoy"), m.get("ym")
+    save_json(DATA / "charts.json", {"date": report["date"], "stocks": build_charts()})
     write_outputs(report)
     log(f"✓ 完成：{report['date']}，{len(stocks)} 檔" + ("" if report["complete"] else "（部分資料尚未公布，稍後會再更新）"))
     if report["notFound"]:

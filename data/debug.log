@@ -1,4 +1,4 @@
-執行時間 2026-10-15T19:59:11+08:00
+執行時間 2026-10-15T20:01:33+08:00
 自選股 14 檔：2330, 2317, 2454, 3231, 2357, 0050, 5904, 1504, 2303, 2345, 2356, 2449, 3481, 3260
 • 股價 / 三大法人 / 融資（FinMind）
   ↳ 2330
@@ -50,6 +50,7 @@
           len=56644 head='{"msg":"success","status":200,"data":[{"date":"2026-03-30","stock_id":"5904","buy":109000,"name":"Foreign_Investor","sell":134000},{"date":"2026-03-30","stock_id":"5904","buy":0,"name":"Foreign_Dealer_Self","sell":0},{"date":"2026-03-30","stock_id":"5904","buy":0,"name":"Investment_Trust","sell":0},{"date":"2026-03-30","stock_id":"5904","buy":0,"name":"Dealer_self","sell":0},{"date":"2026-03-30","stock_id":"5904","buy":1849,"name":"Dealer_Hedging","sell":3344},{"date":"2026-03-31","stock_id":"5904","buy":281500,"name":"Foreign_Investor","sell":409000},{"date":"2026-03-31","stock_id":"5904","bu'
     [GET] https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockMarginPurchaseShortSale&data_id=5904&start_date=2026-03-29
           len=53107 head='{"msg":"success","status":200,"data":[{"date":"2026-03-30","stock_id":"5904","MarginPurchaseBuy":3,"MarginPurchaseCashRepayment":0,"MarginPurchaseLimit":26610,"MarginPurchaseSell":2,"MarginPurchaseTodayBalance":196,"MarginPurchaseYesterdayBalance":195,"Note":"","OffsetLoanAndShort":0,"ShortSaleBuy":0,"ShortSaleCashRepayment":0,"ShortSaleLimit":26610,"ShortSaleSell":0,"ShortSaleTodayBalance":0,"ShortSaleYesterdayBalance":0},{"date":"2026-03-31","stock_id":"5904","MarginPurchaseBuy":8,"MarginPurchaseCashRepayment":0,"MarginPurchaseLimit":26610,"MarginPurchaseSell":8,"MarginPurchaseTodayBalance":'
+    · 5904 2026-08-10 偵測到股本變動，之前的價格 ×0.1000、量 ÷0.1000
   ↳ 1504
     [GET] https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id=1504&start_date=2026-03-29
           len=24063 head='{"msg":"success","status":200,"data":[{"date":"2026-03-30","stock_id":"1504","Trading_Volume":8571230,"Trading_money":534680061,"open":61.7,"max":62.9,"min":61.5,"close":62.7,"spread":-1.1,"Trading_turnover":5745},{"date":"2026-03-31","stock_id":"1504","Trading_Volume":9969982,"Trading_money":605164875,"open":61.9,"max":62.3,"min":59.8,"close":60.0,"spread":-2.7,"Trading_turnover":7985},{"date":"2026-04-01","stock_id":"1504","Trading_Volume":5676274,"Trading_money":352065611,"open":62.4,"max":62.4,"min":61.6,"close":62.3,"spread":2.3,"Trading_turnover":4118},{"date":"2026-04-02","stock_id":"15'

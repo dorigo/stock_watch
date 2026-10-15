@@ -33,7 +33,7 @@
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC",system-ui,sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
 a{color:var(--accent)}
 .wrap{max-width:1440px;margin:0 auto;padding:0 16px}
@@ -696,6 +696,15 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
   }
   const fixList = makeFixHead("#list"), fixHold = makeFixHead("#holdings"), fixDivs = makeFixHead("#divs");
 
+  // 捲動到追蹤清單中的某一檔：扣掉頂端導覽列與固定欄位標題列的高度
+  function scrollToRow(code){
+    const tr = document.querySelector(`tr.row[data-code="${CSS.escape(code)}"]`); if (!tr) return;
+    const bar = document.querySelector("header.top"), thead = document.querySelector("#list thead");
+    const offset = (bar ? bar.offsetHeight : 56) + (thead ? thead.offsetHeight : 40) + 8;
+    const top = tr.getBoundingClientRect().top + scrollY - offset;
+    scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+  }
+
   // 排序：空值永遠排最後；字串用中文排序
   function cmpBy(get, dir){
     const m = dir === "asc" ? 1 : -1;
@@ -926,7 +935,7 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
       state.market = "all"; document.querySelectorAll("#mktSeg button").forEach(x => x.classList.toggle("on", x.dataset.v === "all"));
       render();
       const row = document.querySelector(`tr.row[data-code="${CSS.escape(tr.dataset.code)}"]`);
-      if (row) row.scrollIntoView({behavior:"smooth", block:"start"});
+      if (row) scrollToRow(tr.dataset.code);
     }
   });
   $("#holdings").addEventListener("change", e => {
@@ -989,7 +998,7 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
     state.market = "all"; document.querySelectorAll("#mktSeg button").forEach(x => x.classList.toggle("on", x.dataset.v === "all"));
     render();
     const tr = document.querySelector(`tr.row[data-code="${CSS.escape(c.dataset.code)}"]`);
-    if (tr) tr.scrollIntoView({behavior:"smooth", block:"start"});
+    if (tr) scrollToRow(c.dataset.code);
   });
 
   // ════════ 除權息日曆 ════════
@@ -1283,7 +1292,7 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
     state.market = "all"; document.querySelectorAll("#mktSeg button").forEach(x => x.classList.toggle("on", x.dataset.v === "all"));
     render();
     const tr = document.querySelector(`tr.row[data-code="${CSS.escape(b.dataset.code)}"]`);
-    if (tr) tr.scrollIntoView({behavior:"smooth", block:"center"});
+    if (tr) scrollToRow(b.dataset.code);
   });
   $("#tbody").addEventListener("click", e => {
     const tr = e.target.closest("tr.row"); if (!tr) return;

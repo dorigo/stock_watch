@@ -133,7 +133,8 @@ svg.spark{display:block;margin-left:auto}
 .empty{padding:40px;text-align:center;color:var(--ink-3)}
 
 /* 展開明細 */
-tr.detail td{background:var(--bg);padding:0;text-align:left;position:static}
+tr.detail > td{background:var(--bg);padding:0;text-align:left;position:static}
+.mini th:first-child,.mini td:first-child{text-align:left}
 .detail-inner{padding:18px 16px;display:grid;grid-template-columns:300px 1fr;gap:20px;white-space:normal}
 @media (max-width:820px){.detail-inner{grid-template-columns:1fr}}
 .detail-inner h4{margin:0 0 10px;font-size:14px}

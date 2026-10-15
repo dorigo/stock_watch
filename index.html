@@ -36,7 +36,7 @@
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC",system-ui,sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
 a{color:var(--accent)}
-.wrap{max-width:1240px;margin:0 auto;padding:0 16px}
+.wrap{max-width:1440px;margin:0 auto;padding:0 16px}
 .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
 .up{color:var(--up)} .down{color:var(--down)} .flat{color:var(--ink-3)}
 
@@ -87,8 +87,8 @@ input[type=search]{width:150px}
 
 /* 表格 */
 .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-table{width:100%;border-collapse:collapse;font-size:14px;min-width:1080px}
-th,td{padding:10px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line-2)}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:1040px}
+th,td{padding:10px 7px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line-2)}
 th{font-size:12.5px;color:var(--ink-3);font-weight:500;background:var(--panel);position:sticky;top:0}
 th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--panel);z-index:1}
 tbody tr.row{cursor:pointer}
@@ -100,7 +100,7 @@ tbody tr.row.open td{background:var(--accent-soft)}
 .stock .nm{font-weight:700}
 .stock .cd{font-size:12px;color:var(--ink-3);font-family:var(--mono)}
 .mk{font-size:11px;padding:0 6px;border-radius:5px;border:1px solid var(--line);color:var(--ink-3);margin-left:4px}
-.tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px;max-width:260px}
+.tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px;max-width:210px}
 .tag{font-size:11px;padding:0 6px;border-radius:5px;background:var(--line-2);color:var(--ink-2)}
 .tag.pos{background:var(--up-soft);color:var(--up)} .tag.neg{background:var(--down-soft);color:var(--down)} .tag.alert{background:var(--warn-soft);color:var(--warn)}
 .score{display:inline-flex;align-items:center;gap:8px}
@@ -242,7 +242,7 @@ th[data-tip]{text-decoration:underline dotted var(--ink-3);text-underline-offset
 .kinfo{font-size:12.5px;color:var(--ink-2);min-height:20px;margin-bottom:6px;font-family:var(--mono)}
 .kinfo b{color:var(--ink)}
 svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan-y}
-.dwrap{position:sticky;left:0;width:min(1206px,calc(100vw - 34px))}
+.dwrap{position:sticky;left:0;width:min(1406px,calc(100vw - 34px))}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-3);margin-top:6px}
 .legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:4px}
 .fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
@@ -539,7 +539,7 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
   function spark(hist){
     const vals = hist.map(h => h.i || 0);
     if (!vals.length) return "—";
-    const w = 96, h = 26, max = Math.max(1, ...vals.map(Math.abs)), bw = w / Math.max(vals.length, 10);
+    const w = 64, h = 26, max = Math.max(1, ...vals.map(Math.abs)), bw = w / Math.max(vals.length, 10);
     const mid = h/2;
     const bars = vals.map((v,i) => {
       const bh = Math.max(1, Math.abs(v)/max*(mid-1));
@@ -553,7 +553,7 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
   function trendSVG(trend, mini, wide){
     const pts = (trend||[]).map(x => x.s);
     if (pts.length < 2) return mini ? "" : `<div class="hint">歷史資料不足，無法畫出走勢</div>`;
-    const W = mini ? (wide ? 200 : 64) : chartW(640), H = mini ? (wide ? 30 : 24) : 150, padX = mini ? 2 : 28, padT = mini ? 3 : 18, padB = mini ? 3 : 24;
+    const W = mini ? (wide ? 200 : 48) : chartW(640), H = mini ? (wide ? 30 : 24) : 150, padX = mini ? 2 : 28, padT = mini ? 3 : 18, padB = mini ? 3 : 24;
     let lo = 0, hi = 100;
     if (mini){ lo = Math.min(...pts); hi = Math.max(...pts); const need = 20 - (hi - lo); if (need > 0){ lo -= need/2; hi += need/2; } }
     const x = i => padX + i * (W - padX*2) / (pts.length - 1);
@@ -918,7 +918,7 @@ svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan
     return { t:"昂貴區", c:"vb-exp" };
   }
   function perCell(s){
-    const rev = s.revYoy == null ? "" : `<span class="sub ${cls(s.revYoy)}" data-tip="yoy">營收年增 ${sgn(s.revYoy,1)}%</span>`;
+    const rev = s.revYoy == null ? "" : `<span class="sub ${cls(s.revYoy)}" data-tip="yoy">營收 ${sgn(s.revYoy,0)}%</span>`;
     if (s.per == null) return `<td class="num">—<span class="sub">${s.yield ? "殖利率 " + fmt(s.yield,2) + "%" : "無本益比"}</span>${rev}</td>`;
     const L = valLabel(s.perPct);
     return `<td class="num">${fmt(s.per,1)}${L ? `<span class="vbadge ${L.c}" data-tip="pct">${L.t}</span>` : ""}${rev}</td>`;

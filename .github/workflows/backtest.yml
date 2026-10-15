@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths:
       - scripts/backtest.py
+      - scripts/backtest_resonance.py
       - watchlist.txt
 
 permissions:
@@ -33,11 +34,16 @@ jobs:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
         run: python scripts/backtest.py || echo "BT_FAILED=1" >> "$GITHUB_ENV"
 
+      - name: 共振回調策略回測
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+        run: python scripts/backtest_resonance.py || echo "BT_FAILED=1" >> "$GITHUB_ENV"
+
       - name: 提交結果
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/backtest.json data/backtest.log 2>/dev/null || true
+          git add data/backtest.json data/backtest.log data/backtest_resonance.json data/backtest_resonance.log 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "結果沒有變更"
           else
@@ -49,5 +55,5 @@ jobs:
       - name: 回報結果
         if: env.BT_FAILED == '1'
         run: |
-          echo "回測失敗，請查看 data/backtest.log"
+          echo "回測失敗，請查看 data/backtest.log 或 data/backtest_resonance.log"
           exit 1

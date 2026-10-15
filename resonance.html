@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>共振回調回測</title>
+<meta name="description" content="用日線資料回測「共振回調策略」：週線多頭、EMA 與 AVWAP 共振支撐、跌破後拉回進場。">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#1f3a5f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f3ee; --panel:#ffffff; --ink:#1b1d22; --ink-2:#5b6070; --ink-3:#8b90a0;
+  --line:#e4e1d8; --line-2:#efece5; --accent:#1f3a5f; --accent-soft:#e6ecf4;
+  --up:#d1342f; --up-soft:#fbe9e8; --down:#11865a; --down-soft:#e3f3eb; --warn:#b7791f; --warn-soft:#fbf1df;
+  --shadow:0 1px 2px rgba(20,24,35,.05),0 6px 20px rgba(20,24,35,.05);
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#13151a; --panel:#1b1e25; --ink:#eceef3; --ink-2:#a6abb9; --ink-3:#727889;
+  --line:#2b2f39; --line-2:#23262e; --accent:#8fb3e6; --accent-soft:#1f2a3b;
+  --up:#ff6b63; --up-soft:#3a1f20; --down:#3fcf8e; --down-soft:#173326; --warn:#e7b25a; --warn-soft:#3a2d17; --shadow:none;
+}}
+:root[data-theme="dark"]{
+  --bg:#13151a; --panel:#1b1e25; --ink:#eceef3; --ink-2:#a6abb9; --ink-3:#727889;
+  --line:#2b2f39; --line-2:#23262e; --accent:#8fb3e6; --accent-soft:#1f2a3b;
+  --up:#ff6b63; --up-soft:#3a1f20; --down:#3fcf8e; --down-soft:#173326; --warn:#e7b25a; --warn-soft:#3a2d17; --shadow:none;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC",system-ui,sans-serif;font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.up{color:var(--up)} .down{color:var(--down)} .flat{color:var(--ink-3)}
+header.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;gap:16px;height:56px}
+.brand{font-weight:900;display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);white-space:nowrap}
+.brand img{width:22px;height:22px;border-radius:6px}
+nav.links{display:flex;gap:18px;margin-left:auto;font-size:14px}
+nav.links a{color:var(--ink-2);text-decoration:none}
+nav.links a.on{color:var(--ink);font-weight:600}
+.hero{padding:34px 0 8px}
+.eyebrow{font-size:13px;color:var(--ink-3);letter-spacing:.12em}
+.hero h1{font-size:clamp(28px,4.4vw,42px);line-height:1.15;margin:6px 0 10px;font-weight:900}
+.hero p{color:var(--ink-2);margin:0;max-width:760px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{font-size:13px;padding:4px 10px;border-radius:999px;background:var(--panel);border:1px solid var(--line);color:var(--ink-2)}
+.chip b{color:var(--ink);font-weight:600}
+section.block{margin:30px 0}
+section.block > h2{font-size:21px;margin:0 0 4px}
+section.block > .sub{font-size:14px;color:var(--ink-2);margin:0 0 14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.verdict{padding:20px 22px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:760px){.verdict{grid-template-columns:1fr}}
+.vbox{border-radius:12px;padding:16px 18px;background:var(--bg)}
+.vbox .k{font-size:13px;color:var(--ink-3)}
+.vbox .v{font-size:22px;font-weight:900;margin:2px 0 6px;line-height:1.3}
+.vbox p{margin:0;font-size:14px;color:var(--ink-2)}
+.verdict .summary{grid-column:1/-1;font-size:15px;margin:0;padding-top:4px}
+.base{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media (max-width:760px){.base{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+.stat .k{font-size:12.5px;color:var(--ink-3)}
+.stat .v{font-size:24px;font-weight:700;line-height:1.25}
+.stat .s{font-size:12.5px;color:var(--ink-2)}
+.seg{display:inline-flex;background:var(--line-2);border-radius:9px;padding:3px}
+.seg button{border:0;background:transparent;color:var(--ink-2);font:inherit;font-size:13.5px;padding:5px 12px;border-radius:7px;cursor:pointer}
+.seg button.on{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12);font-weight:600}
+.tools{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid var(--line)}
+.tools h3{margin:0;font-size:16px}
+.sig{display:grid;grid-template-columns:minmax(220px,1.3fr) 70px 90px 90px 80px minmax(220px,1.4fr);gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line-2)}
+.sig.head{font-size:12.5px;color:var(--ink-3);padding-top:10px;padding-bottom:10px}
+.sig:last-child{border-bottom:0}
+.sig .nm{font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sig .ds{font-size:12.5px;color:var(--ink-3)}
+.sig .r{text-align:right}
+.badge{font-size:11.5px;padding:1px 8px;border-radius:6px;font-weight:600}
+.badge.buy{background:var(--up-soft);color:var(--up)} .badge.sell{background:var(--down-soft);color:var(--down)}
+.res{font-size:11.5px;padding:1px 8px;border-radius:6px;border:1px solid var(--line);color:var(--ink-2)}
+.res.good{border-color:transparent;background:var(--accent);color:var(--panel)}
+.res.weak{border-color:var(--accent);color:var(--accent)}
+.res.bad{border-color:transparent;background:var(--warn-soft);color:var(--warn)}
+svg.ci{display:block;width:100%;height:34px}
+@media (max-width:860px){
+  .sig{grid-template-columns:1fr 1fr 1fr;gap:6px 12px}
+  .sig.head{display:none}
+  .sig > div:first-child{grid-column:1/-1}
+  .sig > .ciw{grid-column:1/-1}
+  .sig .r{text-align:left}
+  .sig .r::before{content:attr(data-l);display:block;font-size:11.5px;color:var(--ink-3);font-family:"Noto Sans TC",sans-serif}
+}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{padding:9px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line-2)}
+th{font-size:12px;color:var(--ink-3);font-weight:500}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--panel)}
+td .n{color:var(--ink-3);font-size:11.5px;margin-left:4px}
+ul.notes{margin:0;padding:18px 18px 18px 38px}
+ul.notes li{margin-bottom:8px;color:var(--ink-2);font-size:14px}
+.empty{padding:40px;text-align:center;color:var(--ink-3)}
+footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);font-size:13px;margin-top:40px}
+</style>
+<style>
+.rules{margin:0;padding:18px 18px 18px 40px}
+.rules li{margin-bottom:8px;color:var(--ink-2);font-size:14px}
+.rules li b{color:var(--ink)}
+.kgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media (max-width:760px){.kgrid{grid-template-columns:repeat(2,1fr)}}
+.var{display:grid;grid-template-columns:minmax(220px,1.4fr) 60px 90px 80px 80px 90px minmax(200px,1.3fr);gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line-2)}
+.var.head{font-size:12.5px;color:var(--ink-3);padding-top:10px;padding-bottom:10px}
+.var:last-child{border-bottom:0}
+.var .nm{font-weight:700}
+.var .ds{font-size:12.5px;color:var(--ink-3)}
+.var .r{text-align:right}
+.var.main{background:var(--accent-soft)}
+@media (max-width:860px){
+  .var{grid-template-columns:1fr 1fr 1fr;gap:6px 12px}
+  .var.head{display:none}
+  .var > div:first-child,.var > .ciw{grid-column:1/-1}
+  .var .r{text-align:left}
+  .var .r::before{content:attr(data-l);display:block;font-size:11.5px;color:var(--ink-3);font-family:"Noto Sans TC",sans-serif}
+}
+.reason{display:flex;gap:10px;flex-wrap:wrap;padding:16px 18px}
+.reason span{font-size:13.5px;padding:6px 12px;border-radius:10px;background:var(--bg)}
+.reason b{font-family:var(--mono);margin-left:4px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="./"><img src="favicon.svg" alt="">自選股籌碼追蹤</a>
+    <nav class="links"><a href="./">追蹤清單</a><a href="backtest.html">籌碼回測</a><a href="resonance.html" class="on">共振回調</a></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="eyebrow">技術面策略 · 日線版回測 · 只測做多</div>
+    <h1>共振回調策略回測</h1>
+    <p>文章原本用 15 分或 5 分 K 找進場點；免費資料只有日線，所以這裡改用日 K 近似，檢驗這套規則在台股過去約三年的表現，並與「隨機進場、同樣停損出場」相比。</p>
+    <div class="chips" id="chips"></div>
+  </section>
+  <div id="body"><div class="card empty">載入中…</div></div>
+</main>
+
+<footer><div class="wrap">回測結果只代表過去，不保證未來，不構成投資建議。</div></footer>
+
+<script>
+(function(){
+  "use strict";
+  const $ = s => document.querySelector(s);
+  const fmt = (v,d=2) => v==null||isNaN(v) ? "—" : Number(v).toLocaleString("zh-TW",{minimumFractionDigits:d,maximumFractionDigits:d});
+  const sgn = (v,d=2) => v==null ? "—" : (v>0?"+":"") + fmt(v,d);
+  const cls = v => v==null||v===0 ? "flat" : v>0 ? "up" : "down";
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+  function judge(st){
+    if (!st || !st.n || st.n < 20) return { k:"few", t:"樣本不足" };
+    if (st.ci && st.ci[0] > 0) return { k:"good", t:"明顯優於隨機" };
+    if (st.ci && st.ci[1] < 0) return { k:"bad", t:"明顯不如隨機" };
+    if (st.excess > 0.5) return { k:"weak", t:"略優於隨機（可能是運氣）" };
+    if (st.excess < -0.5) return { k:"bad", t:"略差於隨機" };
+    return { k:"none", t:"和隨機差不多" };
+  }
+  function ciSVG(st, range){
+    if (!st || !st.n || st.excess == null) return "";
+    const W = 300, H = 34, x = v => (Math.max(-range, Math.min(range, v)) + range) / (2*range) * (W-20) + 10;
+    const color = st.excess >= 0 ? "var(--up)" : "var(--down)", ci = st.ci || [st.excess, st.excess];
+    return `<svg class="ci" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-label="超額 ${sgn(st.excess)}%">
+      <line x1="${x(0)}" x2="${x(0)}" y1="4" y2="${H-4}" stroke="var(--ink-3)" stroke-dasharray="3 3"/>
+      <line x1="${x(ci[0])}" x2="${x(ci[1])}" y1="${H/2}" y2="${H/2}" stroke="${color}" stroke-width="2" opacity=".55"/>
+      <line x1="${x(ci[0])}" x2="${x(ci[0])}" y1="${H/2-5}" y2="${H/2+5}" stroke="${color}" stroke-width="2" opacity=".55"/>
+      <line x1="${x(ci[1])}" x2="${x(ci[1])}" y1="${H/2-5}" y2="${H/2+5}" stroke="${color}" stroke-width="2" opacity=".55"/>
+      <circle cx="${x(st.excess)}" cy="${H/2}" r="5" fill="${color}"/></svg>`;
+  }
+  const kpi = (k, v, s) => `<div class="stat"><div class="k">${k}</div><div class="v num">${v}</div><div class="s">${s}</div></div>`;
+
+  function render(r){
+    const full = r.variants.find(v => v.key === "full").stats, rnd = r.random, P = r.params, j = judge(full);
+    $("#chips").innerHTML = `
+      <span class="chip">期間 <b class="num">${esc(r.start)} ～ ${esc(r.end)}</b></span>
+      <span class="chip">股票 <b class="num">${r.stocks}</b> 檔</span>
+      <span class="chip">交易成本 <b class="num">${fmt(r.cost)}%</b>／筆</span>
+      <span class="chip">更新於 <b class="num">${esc(r.generated.replace("T"," "))}</b></span>`;
+
+    let summary;
+    if (j.k === "few") summary = `完整策略只出現 ${full.n||0} 次交易，樣本太少，還不能下結論。`;
+    else summary = `完整策略每筆交易平均 <b class="num ${cls(full.mean)}">${sgn(full.mean)}%</b>（已扣成本），隨機進場用同樣的停損與出場規則平均 <b class="num ${cls(rnd.mean)}">${sgn(rnd.mean)}%</b>，差距 <b class="num ${cls(full.excess)}">${sgn(full.excess)}%</b>，95% 信賴區間 ${full.ci ? `${sgn(full.ci[0])}% ～ ${sgn(full.ci[1])}%` : "—"}。判定：<b>${j.t}</b>。`;
+
+    const range = Math.max(3, ...r.variants.flatMap(v => v.stats.ci ? v.stats.ci.map(Math.abs) : [Math.abs(v.stats.excess||0)])) * 1.1;
+    const vrows = r.variants.map(v => { const s = v.stats, jj = judge(s); return `
+      <div class="var ${v.key==="full"?"main":""}">
+        <div><div class="nm">${esc(v.name)} <span class="res ${jj.k==="good"?"good":jj.k==="weak"?"weak":jj.k==="bad"?"bad":""}">${jj.t}</span></div><div class="ds">${esc(v.desc)}</div></div>
+        <div class="r num" data-l="交易數">${s.n||0}</div>
+        <div class="r num ${cls(s.mean)}" data-l="平均報酬">${s.n?sgn(s.mean)+"%":"—"}</div>
+        <div class="r num" data-l="勝率">${s.n?fmt(s.win,1)+"%":"—"}</div>
+        <div class="r num" data-l="獲利因子">${s.pf==null?"—":fmt(s.pf)}</div>
+        <div class="r num ${cls(s.excess)}" data-l="比隨機">${s.excess==null?"—":sgn(s.excess)+"%"}</div>
+        <div class="ciw">${ciSVG(s, range)}</div>
+      </div>`; }).join("");
+
+    const years = Object.entries(r.byYear).map(([y,s]) => `<tr><td><b>${esc(y)}</b></td><td class="num">${s.n}</td><td class="num ${cls(s.mean)}">${sgn(s.mean)}%</td><td class="num">${fmt(s.win,1)}%</td><td class="num ${cls(s.total)}">${sgn(s.total,1)}%</td></tr>`).join("");
+    const wl = r.watchlist;
+    const trades = r.trades.map(t => `<tr><td class="num">${esc(t.entry)}</td><td style="text-align:left"><b>${esc(t.name)}</b> <span class="num" style="color:var(--ink-3)">${esc(t.code)}</span></td>
+      <td class="num">${fmt(t.px)}</td><td class="num">${fmt(t.stop)}</td><td class="num">${fmt(t.risk)}%</td><td class="num">${t.days}</td>
+      <td style="text-align:left">${esc(t.reason)}${t.partial?"（已分批）":""}</td><td class="num ${cls(t.net)}">${sgn(t.net)}%</td><td class="num ${cls(t.r)}">${sgn(t.r)}R</td></tr>`).join("");
+    const er = r.exitReasons;
+
+    $("#body").innerHTML = `
+      <section class="block">
+        <h2>結論</h2>
+        <div class="card verdict" style="grid-template-columns:1fr"><p class="summary" style="padding:0">${summary}</p></div>
+      </section>
+
+      <section class="block">
+        <h2>完整策略的表現</h2>
+        <p class="sub">每筆交易的報酬已扣除 ${fmt(r.cost)}% 交易成本；「持倉中」的交易不列入。</p>
+        <div class="kgrid">
+          ${kpi("交易次數", fmt(full.n,0), `平均持有 ${fmt(full.days,1)} 日`)}
+          ${kpi("勝率", full.n?fmt(full.win,1)+"%":"—", `隨機進場 ${fmt(rnd.win,1)}%`)}
+          ${kpi("每筆平均報酬", `<span class="${cls(full.mean)}">${sgn(full.mean)}%</span>`, `中位數 ${sgn(full.median)}%`)}
+          ${kpi("獲利因子", fmt(full.pf), "總獲利 ÷ 總虧損，>1 才賺錢")}
+          ${kpi("平均獲利／虧損", `<span class="up">${sgn(full.avgWin)}</span> / <span class="down">${sgn(full.avgLoss)}</span>`, "%")}
+          ${kpi("平均 R 倍數", sgn(full.avgR), "1R = 一次停損的虧損")}
+          ${kpi("達到 3R 分批的比例", full.n?fmt(full.partialRate,1)+"%":"—", "先賣 1/3 的機會")}
+          ${kpi("只看你的自選股", wl.n?`<span class="${cls(wl.mean)}">${sgn(wl.mean)}%</span>`:"—", `${wl.n||0} 筆交易`)}
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>哪些條件真的有用？</h2>
+        <p class="sub">把條件一個一個拿掉再測一次。如果拿掉某個條件後結果沒變差，代表那個條件可能沒有貢獻。右側是與隨機進場相比的差距及 95% 信賴區間，沒跨過中線（0）才代表不是運氣。</p>
+        <div class="card">
+          <div class="var head"><div>版本</div><div class="r">交易數</div><div class="r">平均報酬</div><div class="r">勝率</div><div class="r">獲利因子</div><div class="r">比隨機</div><div>與隨機進場的差距（中線 = 0）</div></div>
+          ${vrows}
+          <div class="var"><div><div class="nm">對照組：隨機進場</div><div class="ds">隨機挑日子以開盤價進場，停損幅度與出場規則都相同</div></div>
+            <div class="r num" data-l="交易數">${rnd.n}</div><div class="r num ${cls(rnd.mean)}" data-l="平均報酬">${sgn(rnd.mean)}%</div>
+            <div class="r num" data-l="勝率">${fmt(rnd.win,1)}%</div><div class="r num" data-l="獲利因子">${fmt(rnd.pf)}</div><div class="r num" data-l="比隨機">—</div><div></div></div>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>出場原因</h2>
+        <div class="card reason">
+          <span>停損<b>${er["停損"]||0}</b></span><span>分批後回到成本<b>${er["保本後回落"]||0}</b></span>
+          <span>跌破 EMA9 出場<b>${er["跌破 EMA9"]||0}</b></span><span>持有 ${P.maxHold} 日到期<b>${er["到期"]||0}</b></span><span>持倉中<b>${er["持倉中"]||0}</b></span>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>各年度表現</h2>
+        <p class="sub">策略在不同市場環境下是否穩定。</p>
+        <div class="card table-wrap"><table><thead><tr><th>年度</th><th>交易數</th><th>平均報酬</th><th>勝率</th><th>累計（單純加總）</th></tr></thead><tbody>${years}</tbody></table></div>
+      </section>
+
+      <section class="block">
+        <h2>最近的交易</h2>
+        <p class="sub">最近 80 筆，可以對照當時的 K 線圖檢查規則是否合理。</p>
+        <div class="card table-wrap"><table><thead><tr><th>進場日</th><th style="text-align:left">股票</th><th>進場價</th><th>停損</th><th>風險</th><th>持有日</th><th style="text-align:left">出場原因</th><th>報酬</th><th>R</th></tr></thead><tbody>${trades}</tbody></table></div>
+      </section>
+
+      <section class="block">
+        <h2>回測規則</h2>
+        <div class="card"><ol class="rules">
+          <li><b>週線多頭</b>：上一個完整週的收盤在週 EMA 9、EMA 21 之上，且週 EMA 9 向上（只用已收完的週，不偷看未來）。</li>
+          <li><b>曾大漲後橫盤</b>：近 120 日內從最低點上漲 ${fmt((P.rally-1)*100,0)}% 以上，高點出現在 5 日以前，目前收盤不低於高點的 ${fmt(P.pullbackFloor*100,0)}%。</li>
+          <li><b>共振支撐</b>：日線 EMA 9、EMA 21 與 AVWAP（錨定在那段漲勢的起漲低點）三者差距在 ${fmt(P.zone,0)}% 以內。</li>
+          <li><b>跌破後拉回</b>：當天最低價跌破支撐區下緣，收盤站回來（用日 K 近似文章的分鐘線 V 型反轉）。</li>
+          <li><b>進場</b>：之後 ${P.entryWindow} 個交易日內突破這根 K 線的最高點；跳空開高則以開盤價成交。</li>
+          <li><b>停損</b>：這根 K 線的最低點；停損幅度超過 ${fmt(P.maxRisk,0)}% 的機會不做。</li>
+          <li><b>出場</b>：漲到 ${fmt(P.partialR,0)} 倍風險先賣 1/3、停損移到成本；之後收盤跌破日線 EMA 9 出清；最多持有 ${P.maxHold} 個交易日。</li>
+        </ol></div>
+      </section>
+
+      <section class="block">
+        <h2>限制</h2>
+        <div class="card"><ul class="notes">
+          <li><b>不是文章的原版</b>：文章用 15 分、5 分 K 找進場點，這裡只能用日 K 近似，停損通常比文章的 1.5%～3% 寬，結果可能和原版有落差。</li>
+          <li>同一天內先碰停損還是先突破無法得知，回測一律假設先碰停損（偏保守）。</li>
+          <li>股票清單是現在的大中型股，可能有倖存者偏差；隨機進場對照組用同一批股票，可以抵消一部分。</li>
+          <li>沒有測做空：台股融券有資格與券源限制，而且有強制回補，照搬文章的做空規則不實際。</li>
+          <li>每週六會用最新資料自動重跑。</li>
+        </ul></div>
+      </section>`;
+  }
+
+  fetch("data/backtest_resonance.json?t=" + Date.now(), {cache:"no-store"})
+    .then(r => { if (!r.ok) throw 0; return r.json(); })
+    .then(render)
+    .catch(() => { $("#body").innerHTML = `<div class="card empty">還沒有回測結果，請稍後再來（Actions 執行中）。</div>`; });
+})();
+</script>
+</body>
+</html>

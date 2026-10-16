@@ -115,12 +115,12 @@ Google 帳戶 → 安全性 → 開啟「兩步驟驗證」→ 搜尋「應用�
 | `MAIL_USER` | 寄件 Gmail 地址 | ✔ |
 | `MAIL_PASS` | 上一步的 16 碼應用程式密碼 | ✔ |
 | `MAIL_TO` | 收件信箱，多個用逗號分隔；不填就寄給 `MAIL_USER` | |
-| `HOLDINGS` | 網站「我的持股」→「📧 給 Email 日報」複製的內容；不填就不提醒停損 | |
+| `HOLDINGS` | 持股資料，網站會自動同步（見下方）；不設就不提醒停損 | |
 | `MAIL_SERVER` / `MAIL_PORT` | 不用 Gmail 時填，預設 `smtp.gmail.com` / `465` | |
 
 **3. 測試**：Actions → 「寄一封測試日報」→ Run workflow，約 30 秒後收信。
 
-持股有變動時，再按一次「📧 給 Email 日報」並更新 `HOLDINGS`。Secrets 不會出現在公開的 repo 裡，別人看不到。要停止寄信，刪除 `MAIL_PASS` 即可。
+**持股自動同步**：把網站用的 GitHub 金鑰多開一個權限（github.com/settings/personal-access-tokens → 點金鑰 → Edit → Repository permissions → **Secrets** 設為 `Read and write`），之後在網站「我的持股」新增、修改、刪除，網站會自動加密並更新 `HOLDINGS`，持股區塊會顯示「✓ 已同步」。沒有這個權限時，「📧 同步到 Email 日報」會改成複製內容，讓你手動貼到 Secret。Secrets 不會出現在公開的 repo 裡，別人看不到。要停止寄信，刪除 `MAIL_PASS` 即可。
 
 ## 修改自選股
 

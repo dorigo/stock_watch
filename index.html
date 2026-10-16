@@ -359,6 +359,8 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
 .hold .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
 .hold-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line)}
 .hold-head h2{font-size:18px;margin:0 auto 0 0}
+.sync-chip{font-size:12.5px;color:var(--ink-3);white-space:nowrap}
+.sync-chip.ok{color:var(--down)} .sync-chip.bad{color:var(--up);cursor:pointer;text-decoration:underline dotted}
 .hold-sum{display:flex;gap:22px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line-2)}
 .hold-sum div{font-size:12.5px;color:var(--ink-3)}
 .hold-sum b{display:block;font-size:20px;font-family:var(--mono);color:var(--ink)}
@@ -554,7 +556,7 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
         <li>打開 <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub 建立金鑰頁面</a>（Fine-grained token）</li>
         <li>Token name 隨意填，例如 <code>stock_watch</code>；Expiration 可選 <code>No expiration</code> 或一年</li>
         <li>Repository access 選 <b>Only select repositories</b>，勾選 <code id="repoName">stock_watch</code></li>
-        <li>Permissions → Repository permissions → <b>Contents</b> 設為 <code>Read and write</code></li>
+        <li>Permissions → Repository permissions → <b>Contents</b> 設為 <code>Read and write</code>；想讓 Email 日報自動同步持股，再把 <b>Secrets</b> 也設為 <code>Read and write</code></li>
         <li>按 Generate token，複製以 <code>github_pat_</code> 開頭的金鑰貼到下方</li>
       </ol>
       <div class="field"><input type="password" id="tokenIn" placeholder="github_pat_…" autocomplete="off" spellcheck="false"><button class="btn primary" id="tokenSave">驗證並儲存</button></div>
@@ -994,7 +996,46 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
   // ════════ 我的持股（只存在這台裝置的瀏覽器） ════════
   const HKEY = "holdings_v1";
   function loadH(){ try { return JSON.parse(localStorage.getItem(HKEY) || "{}") || {}; } catch(e){ return {}; } }
-  function saveH(){ try { localStorage.setItem(HKEY, JSON.stringify(state.holdings)); } catch(e){} }
+  function saveH(){ try { localStorage.setItem(HKEY, JSON.stringify(state.holdings)); } catch(e){} queueSync(); }
+
+  // ── 持股自動同步到 GitHub Secret「HOLDINGS」（Email 日報用；需要金鑰有 Secrets 權限） ──
+  const SYNC_KEY = "hold_sync_v1";
+  let syncTimer = null, syncBusy = false;
+  const syncInfo = () => { try { return JSON.parse(localStorage.getItem(SYNC_KEY) || "null"); } catch(e){ return null; } };
+  const setSyncInfo = o => { try { localStorage.setItem(SYNC_KEY, JSON.stringify(o)); } catch(e){} };
+  const hasTok = () => { try { return !!getToken(); } catch(e){ return false; } };
+  function queueSync(){ if (!hasTok()) return; clearTimeout(syncTimer); syncTimer = setTimeout(() => syncHoldings(false), 1500); }
+  function loadSealbox(){
+    if (window.sealBox) return Promise.resolve();
+    return new Promise((ok, bad) => { const sc = document.createElement("script"); sc.src = "vendor/sealbox.js"; sc.onload = ok; sc.onerror = () => bad(new Error("加密元件載入失敗")); document.head.appendChild(sc); });
+  }
+  async function syncHoldings(manual){
+    if (!getToken() || syncBusy) return;
+    syncBusy = true; renderSyncChip("busy");
+    try {
+      await loadSealbox();
+      const k = await gh("/actions/secrets/public-key");
+      await gh("/actions/secrets/HOLDINGS", { method: "PUT", body: JSON.stringify({ encrypted_value: window.sealBox(k.key, JSON.stringify(state.holdings)), key_id: k.key_id }) });
+      setSyncInfo({ ok: true, at: new Date().toISOString(), n: Object.keys(state.holdings).length });
+      if (manual) alert(`已同步 ${Object.keys(state.holdings).length} 檔持股到 Email 日報。之後在這裡修改持股，會自動同步。`);
+    } catch(e){
+      const perm = e.status === 403 || e.status === 404;
+      setSyncInfo({ ok: false, at: new Date().toISOString(), perm, err: e.message });
+      if (manual) alert(perm ? SYNC_PERM_HELP : "同步失敗：" + e.message);
+    } finally { syncBusy = false; renderSyncChip(); }
+  }
+  const SYNC_PERM_HELP = "這組 GitHub 金鑰還沒有「Secrets」權限，所以無法自動同步持股到 Email 日報。\n\n設定一次就好：\n1. 打開 github.com/settings/personal-access-tokens（按確定後會自動開啟）\n2. 點你建立的那組金鑰 → Edit\n3. Repository permissions → Secrets 改為「Read and write」→ Update\n4. 回到這裡按「📧 同步到 Email 日報」\n\n金鑰本身不會改變，不需要重新貼。";
+  function syncChipHTML(st){
+    if (!hasTok()) return "";
+    const i = syncInfo();
+    if (st === "busy") return `<span class="sync-chip">同步中…</span>`;
+    if (!i) return `<span class="sync-chip">尚未同步到 Email 日報</span>`;
+    const t = new Date(i.at), ts = `${t.getMonth() + 1}/${t.getDate()} ${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}`;
+    return i.ok ? `<span class="sync-chip ok" title="Email 日報會使用這份持股">✓ 已同步 ${ts}</span>`
+      : `<span class="sync-chip bad" data-hact="synchelp" title="點一下看說明">⚠ ${i.perm ? "金鑰缺少 Secrets 權限" : "同步失敗"}</span>`;
+  }
+  function renderSyncChip(st){ const el = document.getElementById("syncChip"); if (el) el.innerHTML = syncChipHTML(st); }
+  setTimeout(() => { if (hasTok() && !syncInfo() && Object.keys(state.holdings).length) queueSync(); }, 0);
   state.holdings = loadH();
   const stockOf = code => state.data && state.data.stocks.find(s => s.code === code);
   function holdCalc(close, h){
@@ -1008,7 +1049,8 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
     const H = state.holdings, codes = Object.keys(H), el = $("#holdings");
     const head = `<div class="hold-head"><h2>我的持股</h2>
       <a class="btn" href="realtime.html" style="text-decoration:none" title="開盤時間即時看持股的股價與損益">🍊 盤中即時看板</a>
-      <button class="btn" data-hact="mail" title="複製持股資料，貼到 GitHub Secret「HOLDINGS」後，每日 Email 日報就會提醒停損">📧 給 Email 日報</button>
+      <span id="syncChip">${syncChipHTML()}</span>
+      <button class="btn" data-hact="mail" title="把持股同步到 GitHub Secret「HOLDINGS」，每日 Email 日報才會提醒停損">📧 同步到 Email 日報</button>
       <button class="btn" data-hact="export" title="下載持股資料，可在其他裝置匯入">匯出</button>
       <button class="btn" data-hact="import" title="匯入先前匯出的持股資料">匯入</button>
       <input type="file" id="hImport" accept="application/json" hidden></div>`;
@@ -1058,6 +1100,18 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
       return;
     }
     if (act && act.dataset.hact === "import"){ $("#hImport").click(); return; }
+    if (act && act.dataset.hact === "synchelp"){
+      const i = syncInfo();
+      if (i && i.perm){ alert(SYNC_PERM_HELP); window.open("https://github.com/settings/personal-access-tokens", "_blank", "noopener"); }
+      else if (i) alert("同步失敗：" + (i.err || "未知錯誤") + "\n稍後再按一次「📧 同步到 Email 日報」試試。");
+      return;
+    }
+    if (act && act.dataset.hact === "mail" && getToken()){
+      const i = syncInfo();
+      if (i && i.perm){ syncHoldings(true).then(() => { const j = syncInfo(); if (j && j.perm) window.open("https://github.com/settings/personal-access-tokens", "_blank", "noopener"); }); }
+      else syncHoldings(true);
+      return;
+    }
     if (act && act.dataset.hact === "mail"){
       const txt = JSON.stringify(state.holdings);
       const url = `https://github.com/${REPO.owner}/${REPO.repo}/settings/secrets/actions`;

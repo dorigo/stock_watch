@@ -1,0 +1,29 @@
+name: 寄一封測試日報
+
+# 在 Actions 頁面手動執行，用目前的資料立刻寄一封日報，確認 Email 設定正確。
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: 寄出測試信
+        env:
+          MAIL_USER: ${{ secrets.MAIL_USER }}
+          MAIL_PASS: ${{ secrets.MAIL_PASS }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+          MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
+          MAIL_PORT: ${{ secrets.MAIL_PORT }}
+          HOLDINGS: ${{ secrets.HOLDINGS }}
+        run: |
+          if [ -z "$MAIL_USER" ] || [ -z "$MAIL_PASS" ]; then
+            echo "::error::還沒有設定 MAIL_USER 或 MAIL_PASS，請到 Settings → Secrets and variables → Actions 新增"
+            exit 1
+          fi
+          python scripts/notify.py --force

@@ -36,6 +36,18 @@ jobs:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
         run: python scripts/fetch.py || echo "FETCH_FAILED=1" >> "$GITHUB_ENV"
 
+      - name: 寄送 Email 日報（有設定 MAIL_USER / MAIL_PASS 才會寄）
+        if: env.FETCH_FAILED != '1'
+        continue-on-error: true
+        env:
+          MAIL_USER: ${{ secrets.MAIL_USER }}
+          MAIL_PASS: ${{ secrets.MAIL_PASS }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+          MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
+          MAIL_PORT: ${{ secrets.MAIL_PORT }}
+          HOLDINGS: ${{ secrets.HOLDINGS }}
+        run: python scripts/notify.py
+
       - name: 提交資料（失敗時也會提交 data/debug.log 以便除錯）
         run: |
           git config user.name "github-actions[bot]"

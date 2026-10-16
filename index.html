@@ -1008,6 +1008,7 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
     const H = state.holdings, codes = Object.keys(H), el = $("#holdings");
     const head = `<div class="hold-head"><h2>我的持股</h2>
       <a class="btn" href="realtime.html" style="text-decoration:none" title="開盤時間即時看持股的股價與損益">🍊 盤中即時看板</a>
+      <button class="btn" data-hact="mail" title="複製持股資料，貼到 GitHub Secret「HOLDINGS」後，每日 Email 日報就會提醒停損">📧 給 Email 日報</button>
       <button class="btn" data-hact="export" title="下載持股資料，可在其他裝置匯入">匯出</button>
       <button class="btn" data-hact="import" title="匯入先前匯出的持股資料">匯入</button>
       <input type="file" id="hImport" accept="application/json" hidden></div>`;
@@ -1057,6 +1058,15 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
       return;
     }
     if (act && act.dataset.hact === "import"){ $("#hImport").click(); return; }
+    if (act && act.dataset.hact === "mail"){
+      const txt = JSON.stringify(state.holdings);
+      const url = `https://github.com/${REPO.owner}/${REPO.repo}/settings/secrets/actions`;
+      const done = () => alert(`已複製持股資料（${Object.keys(state.holdings).length} 檔）。\n\n接下來：\n1. 打開 GitHub 的 Secrets 頁面（按確定後會自動開啟）\n2. 第一次：按「New repository secret」，名稱填 HOLDINGS，內容貼上\n   之後更新：點 HOLDINGS 旁的鉛筆圖示，貼上新的內容\n3. 按儲存。下一封日報就會用新的持股資料。`);
+      const go = () => { done(); window.open(url, "_blank", "noopener"); };
+      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(txt).then(go, () => prompt("請手動複製以下內容：", txt));
+      else prompt("請手動複製以下內容：", txt);
+      return;
+    }
     const tr = e.target.closest("tr.hrow");
     if (tr && stockOf(tr.dataset.code)){
       state.open = tr.dataset.code; state.tab = "hold"; state.q = ""; $("#q").value = "";

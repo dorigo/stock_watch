@@ -666,7 +666,7 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
       pct: x => -(calc(x.code).pct ?? -1e9), day: x => -(calc(x.code).day ?? -1e15), tot: x => -(calc(x.code).totPct ?? -1e9),
       stop: x => calc(x.code).toStop ?? 1e9, code: x => x.code,
     }[S.sort];
-    const sorted = list.slice().sort((a, b) => (b.held - a.held) || (key(a) < key(b) ? -1 : key(a) > key(b) ? 1 : 0));
+    const sorted = list.slice().sort((a, b) => (key(a) < key(b) ? -1 : key(a) > key(b) ? 1 : 0) || (b.held - a.held));
     $("#cnt").textContent = list.length ? `持股 ${held.length} 檔${S.showWatch ? ` · 自選 ${list.length - held.length} 檔` : ""}` : "";
     $("#grid").innerHTML = list.length ? sorted.map(card).join("") :
       `<div class="empty"><div class="big">🧺</div><p>這台瀏覽器還沒有記錄持股。<br>到 <a href="./">追蹤清單</a> 點開任一檔股票，在「我的持股」分頁輸入買進價與股數，就會出現在這裡。</p>

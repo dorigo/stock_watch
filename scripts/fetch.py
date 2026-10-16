@@ -662,6 +662,55 @@ def write_outputs(report):
     save_json(DATA / "index.json", {"dates": [f.stem for f in files[:KEEP_REPORTS]]}, compact=False)
 
 
+# ───────────────────────── 大盤行情 ─────────────────────────
+MARKET_SPARK = 30   # 迷你走勢圖天數
+MARKETS = {
+    "tw": ("TaiwanStockPrice", "Trading_money", "close", [
+        ("TAIEX", "加權指數"), ("TPEx", "櫃買指數"), ("Semiconductor", "半導體"), ("Electronic", "電子"),
+        ("ComputerPeripheralEquipment", "電腦週邊"), ("ShippingTransportation", "航運"),
+        ("Plastics", "塑膠"), ("FinancialInsurance", "金融保險"),
+    ]),
+    "us": ("USStockPrice", None, "Close", [
+        ("^DJI", "道瓊工業"), ("^GSPC", "S&P 500"), ("^IXIC", "那斯達克"), ("^SOX", "費城半導體"),
+    ]),
+}
+
+
+def update_markets():
+    """台股與美股指數收盤 → data/market.json；失敗時保留舊資料。"""
+    path = DATA / "market.json"
+    old = load_json(path, {}) or {}
+    start = (now_tw().date() - dt.timedelta(days=MARKET_SPARK * 2 + 10)).isoformat()
+    out = {"updated": now_tw().isoformat(timespec="minutes")}
+    for key, (dataset, money_col, close_col, items) in MARKETS.items():
+        rows_out, dates = [], []
+        for sid, name in items:
+            rows = finmind(dataset, sid, start) or []
+            rows = sorted((r for r in rows if num(r.get(close_col))), key=lambda r: r["date"])
+            if len(rows) < 2:
+                prev = next((x for x in (old.get(key) or {}).get("items", []) if x["id"] == sid), None)
+                if prev:
+                    rows_out.append(prev)
+                log(f"    ! 指數 {name} 沒有資料")
+                continue
+            last, before = rows[-1], rows[-2]
+            c, p = num(last[close_col]), num(before[close_col])
+            item = {"id": sid, "name": name, "date": last["date"], "close": round(c, 2),
+                    "chg": round(c - p, 2), "pct": round((c - p) / p * 100, 2) if p else None,
+                    "spark": [round(num(r[close_col]), 2) for r in rows[-MARKET_SPARK:]]}
+            if money_col and num(last.get(money_col)):
+                item["money"] = round(num(last[money_col]) / 1e8)   # 成交金額（億）
+            rows_out.append(item)
+            dates.append(last["date"])
+        if rows_out:
+            out[key] = {"date": max(dates) if dates else (old.get(key) or {}).get("date"), "items": rows_out}
+        elif old.get(key):
+            out[key] = old[key]
+    if out.get("tw") or out.get("us"):
+        save_json(path, out)
+        log(f"• 大盤行情：台股 {(out.get('tw') or {}).get('date')}，美股 {(out.get('us') or {}).get('date')}")
+
+
 def main():
     codes = read_watchlist()
     if not codes:
@@ -714,6 +763,10 @@ def main():
         if mc.get("dn20") and mc["dn20"]["ago"] <= 5:
             s["tags"].insert(0, "月線跌破季線")
     save_json(DATA / "charts.json", {"date": report["date"], "stocks": build_charts()})
+    try:
+        update_markets()
+    except Exception as e:  # 大盤資料失敗不影響自選股
+        log(f"  ! 大盤行情失敗：{e!r}")
     write_outputs(report)
     log(f"✓ 完成：{report['date']}，{len(stocks)} 檔" + ("" if report["complete"] else "（部分資料尚未公布，稍後會再更新）"))
     if report["notFound"]:

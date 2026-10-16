@@ -383,7 +383,7 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
   <div class="wrap">
     <div class="brand"><i>籌</i>自選股籌碼追蹤</div>
     <nav class="links">
-      <a href="#list">追蹤清單</a><a href="backtest.html">回測報告</a><a href="#method">評分方式</a><a href="#glossary">名詞小辭典</a><a href="#sources">資料來源</a><a href="#disclaimer">免責聲明</a>
+      <a href="#list">追蹤清單</a><a href="realtime.html">盤中即時</a><a href="backtest.html">回測報告</a><a href="#method">評分方式</a><a href="#glossary">名詞小辭典</a><a href="#sources">資料來源</a><a href="#disclaimer">免責聲明</a>
     </nav>
     <button class="btn" id="openMgr" style="margin-left:4px">＋ 管理自選股</button>
     <button class="theme-btn" id="themeBtn" title="切換深淺色" aria-label="切換深淺色"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
@@ -994,6 +994,7 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
     setTimeout(() => { markSort("#holdings", state.hsort.key, state.hsort.dir); fixHold.build(); });
     const H = state.holdings, codes = Object.keys(H), el = $("#holdings");
     const head = `<div class="hold-head"><h2>我的持股</h2>
+      <a class="btn" href="realtime.html" style="text-decoration:none" title="開盤時間即時看持股的股價與損益">🍊 盤中即時看板</a>
       <button class="btn" data-hact="export" title="下載持股資料，可在其他裝置匯入">匯出</button>
       <button class="btn" data-hact="import" title="匯入先前匯出的持股資料">匯入</button>
       <input type="file" id="hImport" accept="application/json" hidden></div>`;

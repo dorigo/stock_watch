@@ -5,6 +5,7 @@ on:
     # GitHub 排程使用 UTC 時間；台北 = UTC+8
     - cron: "17 9 * * 1-5"   # 台北 17:17（收盤、三大法人）
     - cron: "7 14 * * 1-5"   # 台北 22:07（補上融資餘額）
+    - cron: "47 5 * * 1-5"   # 台北 13:47（只更新大盤收盤）
   workflow_dispatch:          # 可在 Actions 頁面手動執行
   push:
     branches: [main]
@@ -34,10 +35,16 @@ jobs:
       - name: 抓取資料並計分
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
-        run: python scripts/fetch.py || echo "FETCH_FAILED=1" >> "$GITHUB_ENV"
+        run: |
+          if [ "${{ github.event.schedule }}" = "47 5 * * 1-5" ]; then
+            python scripts/fetch.py --market || echo "FETCH_FAILED=1" >> "$GITHUB_ENV"
+            echo "MARKET_ONLY=1" >> "$GITHUB_ENV"
+          else
+            python scripts/fetch.py || echo "FETCH_FAILED=1" >> "$GITHUB_ENV"
+          fi
 
       - name: 寄送 Email 日報（有設定 MAIL_USER / MAIL_PASS 才會寄）
-        if: env.FETCH_FAILED != '1'
+        if: env.FETCH_FAILED != '1' && env.MARKET_ONLY != '1'
         continue-on-error: true
         env:
           MAIL_USER: ${{ secrets.MAIL_USER }}

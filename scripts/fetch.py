@@ -676,6 +676,33 @@ MARKETS = {
 }
 
 
+# FinMind 指數代號 → 證交所基本市況報導（即時）代號
+MIS_IDX = {"TAIEX": "tse_t00", "TPEx": "otc_o00", "Semiconductor": "tse_t24", "Electronic": "tse_t13",
+           "ComputerPeripheralEquipment": "tse_t25", "ShippingTransportation": "tse_t15",
+           "Plastics": "tse_t03", "FinancialInsurance": "tse_t17"}
+
+
+def mis_indices():
+    """證交所即時系統的指數（收盤後就是當天收盤價），比 FinMind 早好幾個小時。"""
+    q = "|".join(f"{v}.tw" for v in MIS_IDX.values())
+    url = f"https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch={q}&json=1&delay=0&_={int(time.time() * 1000)}"
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": UA, "Referer": "https://mis.twse.com.tw/stock/index.jsp"})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            j = json.loads(r.read().decode("utf-8", "replace"))
+    except Exception as e:  # noqa: BLE001
+        log(f"    ! 即時指數讀取失敗：{e}")
+        return {}
+    back = {v: k for k, v in MIS_IDX.items()}
+    out = {}
+    for r in j.get("msgArray") or []:
+        sid = back.get(f'{r.get("ex")}_{str(r.get("ch") or "").replace(".tw", "")}')
+        c, y, d = num(r.get("z")), num(r.get("y")), str(r.get("d") or "")
+        if sid and c and y and len(d) == 8:
+            out[sid] = {"date": f"{d[:4]}-{d[4:6]}-{d[6:]}", "close": c, "y": y, "time": r.get("t")}
+    return out
+
+
 def update_markets():
     """台股與美股指數收盤 → data/market.json；失敗時保留舊資料。"""
     path = DATA / "market.json"
@@ -702,6 +729,16 @@ def update_markets():
                 item["money"] = round(num(last[money_col]) / 1e8)   # 成交金額（億）
             rows_out.append(item)
             dates.append(last["date"])
+        if key == "tw":
+            live = mis_indices()
+            for it in rows_out:
+                m = live.get(it["id"])
+                if m and m["date"] > it["date"]:     # 今天的收盤（FinMind 還沒更新）
+                    it.update({"date": m["date"], "close": round(m["close"], 2), "chg": round(m["close"] - m["y"], 2),
+                               "pct": round((m["close"] - m["y"]) / m["y"] * 100, 2),
+                               "spark": (it.get("spark") or [])[-(MARKET_SPARK - 1):] + [round(m["close"], 2)]})
+                    it.pop("money", None)
+                    dates.append(m["date"])
         if rows_out:
             out[key] = {"date": max(dates) if dates else (old.get(key) or {}).get("date"), "items": rows_out}
         elif old.get(key):
@@ -720,6 +757,9 @@ def main():
 
     if "--demo" in sys.argv:
         return demo(codes)
+    if "--market" in sys.argv:            # 只更新大盤（收盤後的快速排程）
+        update_markets()
+        return
 
     days = build_days(codes)
     if not days:

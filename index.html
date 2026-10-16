@@ -665,7 +665,50 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
       <path d="${line}L${W} ${H}L0 ${H}Z" fill="url(#${id})"/>
       <path d="${line}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>`;
   }
-  function renderMarket(m){
+  // 有設定盤中即時看板的轉送站時，台股那一排直接用證交所即時系統的數字（收盤後就是當天收盤）
+  const MIS_IDX = { TAIEX: "tse_t00", TPEx: "otc_o00", Semiconductor: "tse_t24", Electronic: "tse_t13",
+    ComputerPeripheralEquipment: "tse_t25", ShippingTransportation: "tse_t15", Plastics: "tse_t03", FinancialInsurance: "tse_t17" };
+  let mktBase = null, mktTimer = null;
+  function tpeNow(){
+    const p = Object.fromEntries(new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Taipei", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", weekday: "short", hour12: false }).formatToParts(new Date()).map(x => [x.type, x.value]));
+    return { iso: `${p.year}-${p.month}-${p.day}`, min: (+p.hour % 24) * 60 + +p.minute, wk: !["Sat", "Sun"].includes(p.weekday) };
+  }
+  async function liveMarket(){
+    let px = ""; try { px = localStorage.getItem("rt_proxy") || ""; } catch(e){}
+    const t = tpeNow();
+    if (!px || !mktBase || !mktBase.tw || !t.wk || t.min < 9 * 60) return;
+    try {
+      const q = Object.values(MIS_IDX).map(v => v + ".tw").join("|");
+      const ctl = new AbortController(); setTimeout(() => ctl.abort(), 9000);
+      const r = await fetch(px + (px.includes("?") ? "&" : "?") + new URLSearchParams({ src: "mis", q }), { cache: "no-store", signal: ctl.signal });
+      if (!r.ok) return;
+      const j = await r.json(), back = Object.fromEntries(Object.entries(MIS_IDX).map(([k, v]) => [v, k])), live = {};
+      let tm = "";
+      for (const x of (j.msgArray || [])){
+        const id = back[`${x.ex}_${String(x.ch || "").replace(/\.tw$/, "")}`], c = parseFloat(x.z), y = parseFloat(x.y), d = String(x.d || "");
+        if (id && c > 0 && y > 0 && d.length === 8){ live[id] = { date: `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6)}`, c, y }; if (id === "TAIEX") tm = x.t || ""; }
+      }
+      const tw = JSON.parse(JSON.stringify(mktBase.tw)); let changed = false;
+      for (const it of tw.items){
+        const m = live[it.id]; if (!m || m.date < it.date) continue;
+        const spark = (it.spark || []).slice(); if (m.date > it.date) spark.push(m.c); else spark[spark.length - 1] = m.c;
+        Object.assign(it, { date: m.date, close: m.c, chg: m.c - m.y, pct: (m.c - m.y) / m.y * 100, spark: spark.slice(-30) });
+        if (m.date > (mktBase.tw.date || "")) delete it.money;
+        tw.date = m.date; changed = true;
+      }
+      if (!changed) return;
+      const open = tw.date === t.iso && t.min < 13 * 60 + 33;
+      tw.live = open ? `盤中 ${tm.slice(0, 5)}` : "收盤";
+      renderMarket({ ...mktBase, tw }, true);
+    } catch(e){}
+  }
+  function renderMarket(m, isLive){
+    if (!isLive){
+      mktBase = m;
+      clearInterval(mktTimer);
+      liveMarket();
+      mktTimer = setInterval(() => { const t = tpeNow(); if (t.wk && t.min >= 9 * 60 && t.min <= 13 * 60 + 40 && !document.hidden) liveMarket(); }, 30000);
+    }
     const box = $("#mkt");
     if (!m || (!m.tw && !m.us)) { box.hidden = true; return; }
     const md = s => s ? s.slice(5).replace("-", "/") : "—";
@@ -681,7 +724,7 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
     };
     const row = (g, label, icon, cls, mainIds) => !g || !g.items || !g.items.length ? "" : `
       <div class="mkt-row ${cls}">
-        <div class="mkt-lbl"><b><i aria-hidden="true">${icon}</i>${label}</b><span>${md(g.date)}（${wk(g.date)}）收盤</span></div>
+        <div class="mkt-lbl"><b><i aria-hidden="true">${icon}</i>${label}</b><span>${md(g.date)}（${wk(g.date)}）${g.live ? esc(g.live) : "收盤"}</span></div>
         <div class="mkt-tiles">${g.items.map(x => tile(x, mainIds.includes(x.id))).join("")}</div>
       </div>`;
     box.innerHTML = row(m.tw, "台股", "🍊", "tw", ["TAIEX", "TPEx"]) + row(m.us, "美股", "🍩", "us", []) +

@@ -703,6 +703,25 @@ def mis_indices():
     return out
 
 
+def yahoo_us(symbols):
+    """Yahoo 日線：美股收盤後約一小時內就有，比 FinMind 早。回傳 {代號: {date, close, prev}}"""
+    out = {}
+    for sym in symbols:
+        url = f"https://query1.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(sym)}?range=10d&interval=1d"
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": UA})
+            with urllib.request.urlopen(req, timeout=30) as r:
+                res = json.loads(r.read().decode("utf-8", "replace"))["chart"]["result"][0]
+            tz = int(res["meta"].get("gmtoffset") or 0)
+            closes = res["indicators"]["quote"][0]["close"]
+            pts = [(dt.datetime.fromtimestamp(t + tz, dt.timezone.utc).date().isoformat(), c) for t, c in zip(res["timestamp"], closes) if c]
+            if len(pts) >= 2:
+                out[sym] = {"date": pts[-1][0], "close": pts[-1][1], "prev": pts[-2][1], "dates": [d for d, _ in pts]}
+        except Exception as e:  # noqa: BLE001
+            log(f"    ! Yahoo {sym} 讀取失敗：{e}")
+    return out
+
+
 def update_markets():
     """台股與美股指數收盤 → data/market.json；失敗時保留舊資料。"""
     path = DATA / "market.json"
@@ -738,6 +757,18 @@ def update_markets():
                                "pct": round((m["close"] - m["y"]) / m["y"] * 100, 2),
                                "spark": (it.get("spark") or [])[-(MARKET_SPARK - 1):] + [round(m["close"], 2)]})
                     it.pop("money", None)
+                    dates.append(m["date"])
+        if key == "us":
+            live = yahoo_us([it["id"] for it in rows_out])
+            for it in rows_out:
+                m = live.get(it["id"])
+                if m and m["date"] > it["date"]:     # 昨晚的美股收盤（FinMind 還沒更新）
+                    sp = (it.get("spark") or [])[:]
+                    newer = [d for d in m["dates"] if d > it["date"]]
+                    if len(newer) == 1:
+                        sp = sp[-(MARKET_SPARK - 1):] + [round(m["close"], 2)]
+                    it.update({"date": m["date"], "close": round(m["close"], 2), "chg": round(m["close"] - m["prev"], 2),
+                               "pct": round((m["close"] - m["prev"]) / m["prev"] * 100, 2), "spark": sp})
                     dates.append(m["date"])
         if rows_out:
             out[key] = {"date": max(dates) if dates else (old.get(key) or {}).get("date"), "items": rows_out}

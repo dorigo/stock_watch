@@ -6,6 +6,7 @@ on:
     - cron: "17 9 * * 1-5"   # 台北 17:17（收盤、三大法人）
     - cron: "7 14 * * 1-5"   # 台北 22:07（補上融資餘額）
     - cron: "47 5 * * 1-5"   # 台北 13:47（只更新大盤收盤）
+    - cron: "23 22 * * 1-5"  # 台北 週二～週六 06:23（只更新大盤，補上前一晚美股收盤）
   workflow_dispatch:          # 可在 Actions 頁面手動執行
   push:
     branches: [main]
@@ -36,7 +37,7 @@ jobs:
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
         run: |
-          if [ "${{ github.event.schedule }}" = "47 5 * * 1-5" ]; then
+          if [ "${{ github.event.schedule }}" = "47 5 * * 1-5" ] || [ "${{ github.event.schedule }}" = "23 22 * * 1-5" ]; then
             python scripts/fetch.py --market || echo "FETCH_FAILED=1" >> "$GITHUB_ENV"
             echo "MARKET_ONLY=1" >> "$GITHUB_ENV"
           else

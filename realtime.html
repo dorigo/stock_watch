@@ -174,6 +174,20 @@ select.sel{font:inherit;font-size:13px;height:32px;border-radius:999px;border:2p
 .empty{grid-column:1/-1;text-align:center;padding:40px 16px;color:var(--ink-2);background:var(--panel);border:2px dashed var(--line);border-radius:24px}
 .empty .big{font-size:40px}
 
+/* 個股明細彈窗 */
+.card{cursor:pointer}
+.card:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.dm-bg{position:fixed;inset:0;background:rgba(40,25,15,.5);z-index:60;display:none;align-items:center;justify-content:center;padding:16px}
+.dm-bg.show{display:flex}
+.dm{background:var(--bg);border:2px solid var(--line);border-radius:24px;width:min(1180px,100%);height:min(900px,calc(100vh - 32px));display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.dm header{display:flex;align-items:center;gap:10px;padding:12px 16px 12px 20px;border-bottom:2px solid var(--line-2);background:var(--panel)}
+.dm header h3{margin:0;font-size:17px;font-weight:900;flex:1;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.dm header h3 .cd{font-family:var(--num);font-size:13px;color:var(--ink-3)}
+.dm header h3 .q{font-family:var(--num);font-size:15px}
+.dm header a{font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap}
+.dm iframe{flex:1;border:0;width:100%;background:var(--bg)}
+@media (max-width:720px){.dm-bg{padding:0}.dm{height:100vh;height:100dvh;border-radius:0;border:0}}
+
 /* 視窗 */
 .modal-bg{position:fixed;inset:0;background:rgba(40,25,15,.45);z-index:50;display:none;align-items:flex-start;justify-content:center;padding:8vh 16px 16px;overflow-y:auto}
 .modal-bg.show{display:flex}
@@ -278,6 +292,13 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
 </main>
 
 <footer class="site"><div class="wrap">本站非證券投資顧問事業，即時報價僅供參考，不構成投資建議。 · <a href="./">回到追蹤清單</a></div></footer>
+
+<div class="dm-bg" id="dmBg">
+  <div class="dm" role="dialog" aria-modal="true" aria-labelledby="dmTitle">
+    <header><h3 id="dmTitle"></h3><a id="dmLink" href="./" target="_blank" rel="noopener">在追蹤清單開啟 ↗</a><button class="x" id="dmClose" aria-label="關閉" style="border:0;background:none;color:var(--ink-3);font-size:24px;cursor:pointer;line-height:1">×</button></header>
+    <iframe id="dmFrame" title="個股明細" loading="lazy"></iframe>
+  </div>
+</div>
 
 <div class="modal-bg" id="setBg">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="setTitle">
@@ -633,7 +654,7 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
       <div><span class="k">成交量</span><span class="v">${fmt(q.vol)} <small>張</small></span></div>
       <div><span class="k">買一／賣一</span><span class="v wrap">${pd(q.bid)}<small class="ln">賣 ${pd(q.ask)}</small></span></div>
       ${x.held ? `<div><span class="k">市值</span><span class="v">${r.val == null ? "—" : fmt(Math.round(r.val))}</span></div>` : `<div><span class="k">漲停／跌停</span><span class="v"><small class="up">${pd(q.up)}</small> <small>/</small> <small class="down">${pd(q.dn)}</small></span></div>`}`;
-    return `<article class="card${r.stopHit ? " stop" : ""}${q.flash ? " flash-" + q.flash : ""}" data-code="${esc(c)}">
+    return `<article class="card${r.stopHit ? " stop" : ""}${q.flash ? " flash-" + q.flash : ""}" data-code="${esc(c)}" tabindex="0" title="點一下看 K 線、籌碼分數、基本面">
       <div class="c-head"><span class="nm">${esc(nameOf(c))}</span><span class="cd">${esc(c)}</span>${pills.join("")}<span class="t">${esc(q.time || "")}</span></div>
       <div class="c-price"><span class="p num ${dir}">${r.p == null ? "—" : pd(r.p)}</span><span class="chg ${dir}">${arrow}${r.chg == null ? "—" : fmt(Math.abs(r.chg), 2)}　${r.pct == null ? "" : sgn(r.pct, 2) + "%"}</span></div>
       <div class="c-chart">${chart(c, r)}</div>
@@ -712,6 +733,22 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
   }
 
   function showErr(m){ const e = $("#err"); e.textContent = m; e.hidden = !m; }
+
+  // ── 個股明細（重用追蹤清單的明細畫面） ──
+  function openDetail(code){
+    const r = calc(code);
+    $("#dmTitle").innerHTML = `${esc(nameOf(code))} <span class="cd">${esc(code)}</span>${r.p != null ? ` <span class="q ${cls(r.chg)}">${pd(r.p)}（${r.pct == null ? "—" : sgn(r.pct, 2) + "%"}）</span>` : ""}`;
+    $("#dmLink").href = "./#list";
+    const src = `./?embed=${encodeURIComponent(code)}`;
+    if ($("#dmFrame").dataset.src !== src){ $("#dmFrame").src = src; $("#dmFrame").dataset.src = src; }
+    $("#dmBg").classList.add("show"); document.body.style.overflow = "hidden";
+  }
+  function closeDetail(){ $("#dmBg").classList.remove("show"); document.body.style.overflow = ""; }
+  $("#grid").addEventListener("click", e => { const c = e.target.closest(".card[data-code]"); if (c && !e.target.closest("a,button")) openDetail(c.dataset.code); });
+  $("#grid").addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches(".card[data-code]")){ e.preventDefault(); openDetail(e.target.dataset.code); } });
+  $("#dmClose").addEventListener("click", closeDetail);
+  $("#dmBg").addEventListener("click", e => { if (e.target.id === "dmBg") closeDetail(); });
+  addEventListener("keydown", e => { if (e.key === "Escape" && $("#dmBg").classList.contains("show")) closeDetail(); });
 
   // ── 轉送站設定 ──
   const openSet = () => { $("#pxInput").value = S.proxy; $("#pxMsg").textContent = ""; $("#setBg").classList.add("show"); setTimeout(() => $("#pxInput").focus(), 50); };

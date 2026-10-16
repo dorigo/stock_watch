@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Nunito:wght@700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>try{var _e=new URLSearchParams(location.search).get("embed");if(_e)document.documentElement.classList.add("embed")}catch(e){}</script>
 <style>
 :root{
   --bg:#f5f3ee; --panel:#ffffff; --ink:#1b1d22; --ink-2:#5b6070; --ink-3:#8b90a0;
@@ -390,6 +391,15 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
   nav.links a:hover,nav.links a.on{background:var(--bg)}
   .brand{font-size:14px}
 }
+
+/* 嵌入模式（盤中即時看板的彈出視窗）：只顯示單一股票的明細 */
+html.embed header.top,html.embed .hero,html.embed #mkt,html.embed .stats,html.embed #xalert,html.embed #holdings,html.embed #divs,
+html.embed #risers,html.embed .block,html.embed body > footer,html.embed #list .controls,html.embed #list thead,html.embed .fixhead{display:none!important}
+html.embed .wrap{max-width:none;padding:0}
+html.embed #list{border:0;box-shadow:none;background:transparent;margin:0}
+html.embed #list table{min-width:0}
+html.embed .dwrap{position:static;width:auto}
+html.embed tr.detail > td{background:transparent}
 </style>
 </head>
 <body>
@@ -590,7 +600,9 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
 (function(){
   "use strict";
   const $ = s => document.querySelector(s);
+  const EMBED = (new URLSearchParams(location.search).get("embed") || "").toUpperCase();
   const state = { data:null, market:"all", sort:"score", dir:"desc", hsort:{key:"pnl",dir:"desc"}, dsort:{key:"ex",dir:"asc"}, q:"", open:null, tab:"kline", charts:null, fund:null, holdings:{} };
+  if (EMBED){ state.open = EMBED; state.tab = new URLSearchParams(location.search).get("tab") || "kline"; }
 
   // ── 深淺色 ──
   const root = document.documentElement;
@@ -623,7 +635,7 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
     await Promise.all([
       getJSON("data/charts.json").then(j => state.charts = j).catch(() => {}),
       getJSON("data/fundamentals.json").then(j => state.fund = j).catch(() => {}),
-      getJSON("data/market.json").then(renderMarket).catch(() => {})
+      EMBED ? null : getJSON("data/market.json").then(renderMarket).catch(() => {})
     ]);
     await load("data/latest.json");
   }
@@ -896,6 +908,11 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
 
   function render(){
     if (!state.data) return;
+    if (EMBED){
+      const s = state.data.stocks.find(x => x.code === EMBED);
+      $("#tbody").innerHTML = s ? detail(s) : `<tr><td colspan="14" class="empty">${esc(EMBED)} 不在自選股清單裡，所以沒有 K 線、籌碼與基本面資料。<br>可以到追蹤清單按「管理自選股」把它加進來，下次更新後就看得到。</td></tr>`;
+      return;
+    }
     renderMeta();
     const all = state.data.stocks.filter(s => state.market === "all" || s.market === state.market);
     renderStats(all);

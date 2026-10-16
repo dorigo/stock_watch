@@ -447,16 +447,25 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
       }
     }
   }
+  const canNotify = () => "Notification" in window && window.isSecureContext;
   function notifyLabel(){
     const b = $("#notifyBtn");
-    if (!("Notification" in window)){ b.hidden = true; return; }
-    b.textContent = Notification.permission === "granted" ? "🔔 通知已開啟" : "🔔 停損通知";
-    b.disabled = Notification.permission === "granted";
+    b.hidden = false;
+    if (!canNotify()){ b.textContent = "🔕 不支援通知"; return; }
+    const p = Notification.permission;
+    b.textContent = p === "granted" ? "🔔 通知已開啟" : p === "denied" ? "🔕 通知被封鎖" : "🔔 停損通知";
   }
   $("#notifyBtn").addEventListener("click", async () => {
+    if (!canNotify()){ showErr("這個瀏覽器不支援網頁通知（常見於 App 內建的瀏覽器）。請改用 Chrome、Edge 或 Safari 開啟這個網址；跌破停損的卡片仍會框紅提醒。"); return; }
+    if (Notification.permission === "granted"){
+      try { new Notification("🔔 停損通知已開啟", { body: "持股跌破停損價時會在這裡提醒你（頁面需保持開啟）。", icon: "favicon.svg" }); } catch(e){}
+      return;
+    }
+    if (Notification.permission === "denied"){ showErr("瀏覽器封鎖了這個網站的通知。請點網址列左邊的圖示 →「網站設定」→ 通知改為「允許」，再重新整理頁面。"); return; }
     try { await Notification.requestPermission(); } catch(e){}
     notifyLabel();
-    if (Notification.permission === "denied") showErr("瀏覽器封鎖了通知。可到網址列左邊的網站設定中改為允許。");
+    if (Notification.permission === "granted"){ try { new Notification("🔔 停損通知已開啟", { body: "持股跌破停損價時會在這裡提醒你（頁面需保持開啟）。", icon: "favicon.svg" }); } catch(e){} }
+    else if (Notification.permission === "denied") showErr("瀏覽器封鎖了這個網站的通知。請點網址列左邊的圖示 →「網站設定」→ 通知改為「允許」，再重新整理頁面。");
   });
 
   // ── 計算 ──

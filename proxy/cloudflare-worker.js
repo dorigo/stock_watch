@@ -1,4 +1,4 @@
-// 盤中即時看板 — Cloudflare Worker 轉送站（免費方案即可）
+// 盤中即時看板 — Cloudflare Worker 轉送站（免費方案即可）  版本 2：支援大盤與類股指數
 // 用途：瀏覽器不能直接讀證交所的即時報價（沒有 CORS），由這支程式代為轉送。
 // 只允許兩種請求：證交所即時報價、Yahoo 當日分時線；只接受下面列出的網站呼叫。
 
@@ -25,17 +25,17 @@ export default {
     let target, headers = { "User-Agent": UA, "Accept": "application/json" };
 
     if (src === "ping") {
-      return json({ ok: true, from: "cloudflare-worker" }, cors);
+      return json({ ok: true, from: "cloudflare-worker", v: 2 }, cors);
     } else if (src === "mis") {
       const q = url.searchParams.get("q") || "";
-      if (!/^(?:(?:tse|otc)_[0-9A-Z]{4,6}\.tw)(?:\|(?:tse|otc)_[0-9A-Z]{4,6}\.tw){0,79}$/.test(q))
+      if (!/^(?:(?:tse|otc)_[0-9A-Za-z]{2,8}\.tw)(?:\|(?:tse|otc)_[0-9A-Za-z]{2,8}\.tw){0,79}$/.test(q))
         return json({ error: "bad q" }, cors, 400);
       target = `https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=${q}&json=1&delay=0&_=${Date.now()}`;
       headers["Referer"] = "https://mis.twse.com.tw/stock/index.jsp";
     } else if (src === "yh") {
       const s = url.searchParams.get("s") || "";
-      if (!/^[0-9A-Z]{4,6}\.TWO?$/.test(s)) return json({ error: "bad s" }, cors, 400);
-      target = `https://query1.finance.yahoo.com/v8/finance/chart/${s}?range=1d&interval=1m`;
+      if (!/^(?:[0-9A-Z]{4,6}\.TWO?|\^TWII)$/.test(s)) return json({ error: "bad s" }, cors, 400);
+      target = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(s)}?range=1d&interval=1m`;
     } else {
       return json({ error: "unknown src" }, cors, 400);
     }

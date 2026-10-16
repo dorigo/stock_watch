@@ -1,5 +1,5 @@
 <?php
-// 盤中即時看板 — PHP 轉送站（放在任何支援 PHP + cURL 的主機即可）
+// 盤中即時看板 — PHP 轉送站（放在任何支援 PHP + cURL 的主機即可）  版本 2：支援大盤與類股指數
 // 用途：瀏覽器不能直接讀證交所的即時報價（沒有 CORS），由這支程式代為轉送。
 // 只允許兩種請求：證交所即時報價、Yahoo 當日分時線；只接受下面列出的網站呼叫。
 
@@ -22,16 +22,16 @@ $src = $_GET['src'] ?? '';
 $headers = ['Accept: application/json'];
 
 if ($src === 'ping') {
-    out(['ok' => true, 'from' => 'php']);
+    out(['ok' => true, 'from' => 'php', 'v' => 2]);
 } elseif ($src === 'mis') {
     $q = $_GET['q'] ?? '';
-    if (!preg_match('/^(?:(?:tse|otc)_[0-9A-Z]{4,6}\.tw)(?:\|(?:tse|otc)_[0-9A-Z]{4,6}\.tw){0,79}$/', $q)) out(['error' => 'bad q'], 400);
+    if (!preg_match('/^(?:(?:tse|otc)_[0-9A-Za-z]{2,8}\.tw)(?:\|(?:tse|otc)_[0-9A-Za-z]{2,8}\.tw){0,79}$/', $q)) out(['error' => 'bad q'], 400);
     $target = 'https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=' . $q . '&json=1&delay=0&_=' . round(microtime(true) * 1000);
     $headers[] = 'Referer: https://mis.twse.com.tw/stock/index.jsp';
 } elseif ($src === 'yh') {
     $s = $_GET['s'] ?? '';
-    if (!preg_match('/^[0-9A-Z]{4,6}\.TWO?$/', $s)) out(['error' => 'bad s'], 400);
-    $target = 'https://query1.finance.yahoo.com/v8/finance/chart/' . $s . '?range=1d&interval=1m';
+    if (!preg_match('/^(?:[0-9A-Z]{4,6}\.TWO?|\^TWII)$/', $s)) out(['error' => 'bad s'], 400);
+    $target = 'https://query1.finance.yahoo.com/v8/finance/chart/' . rawurlencode($s) . '?range=1d&interval=1m';
 } else {
     out(['error' => 'unknown src'], 400);
 }

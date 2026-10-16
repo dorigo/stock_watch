@@ -70,6 +70,25 @@ select.sel{font:inherit;font-size:13px;height:32px;border-radius:999px;border:2p
 @keyframes bob{50%{transform:translateY(-3px) rotate(-8deg)}}
 .hero p{color:var(--ink-2);margin:0;max-width:640px;font-size:14px}
 
+/* 大盤即時 */
+.ix{margin:16px 0 0;padding:12px 14px 10px;border-radius:24px;border:2px solid var(--line);box-shadow:var(--shadow);
+  background:radial-gradient(circle at 4% 0,var(--blob1) 0 60px,transparent 61px),radial-gradient(circle at 98% 120%,var(--blob2) 0 90px,transparent 91px),var(--panel)}
+.ix-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 2px 8px}
+.ix-top b{font-size:15px;font-weight:900;padding:3px 12px 3px 10px;border-radius:999px;background:var(--pill);color:var(--pill-ink)}
+.ix-top span{font-size:12.5px;color:var(--ink-3);font-weight:700}
+.ix-top .t{font-family:var(--num);margin-left:auto}
+.ix-tiles{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:thin;scrollbar-color:var(--line) transparent;scroll-snap-type:x proximity}
+.ix-t{flex:1 0 150px;min-width:150px;padding:9px 12px 6px;border-radius:18px;background:var(--line-2);scroll-snap-align:start}
+.ix-t.main{flex-basis:200px;min-width:200px;background:var(--bg)}
+.ix-t .n{font-size:12.5px;font-weight:700;color:var(--ink-2);display:flex;justify-content:space-between;gap:6px;white-space:nowrap}
+.ix-t .n em{font-style:normal;font-family:var(--num);font-size:11px;color:var(--ink-3)}
+.ix-t .v{font-family:var(--num);font-weight:900;font-size:19px;line-height:1.3;font-variant-numeric:tabular-nums}
+.ix-t.main .v{font-size:23px}
+.ix-t .chg{font-size:11.5px;padding:1px 8px}
+.ix-t svg{display:block;width:100%;height:auto;margin-top:4px}
+.ix-msg{font-size:13px;font-weight:700;color:var(--warn);background:var(--warn-soft);border-radius:14px;padding:8px 12px;margin:0 2px 6px}
+@media (max-width:720px){.ix-t{flex:0 0 44%;min-width:44%}.ix-t.main{flex-basis:60%;min-width:60%}}
+
 /* 狀態列 */
 .bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:16px 0 0;padding:10px 12px 10px 14px;border-radius:22px;background:var(--panel);border:2px solid var(--line);box-shadow:var(--shadow)}
 .mstate{display:inline-flex;align-items:center;gap:8px;font-weight:900;font-size:14px;padding:4px 12px 4px 10px;border-radius:999px;background:var(--flat-soft);color:var(--flat)}
@@ -190,6 +209,8 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
     </div>
   </section>
 
+  <section class="ix" id="ix" hidden aria-label="台股大盤即時行情"></section>
+
   <div class="bar" id="bar">
     <span class="mstate" id="mstate">準備中</span>
     <span class="info" id="tinfo"></span>
@@ -289,6 +310,13 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
     yhAt: 0, lastTick: 0, nextAt: 0, timer: null, busy: false, notified: {},
   };
   try { S.holdings = JSON.parse(ls.get("holdings_v1", "{}")) || {}; } catch(e){}
+  // 大盤與類股指數（證交所基本市況報導的代號）
+  const IDX = [
+    { id: "t00", ex: "tse", name: "加權指數", main: true }, { id: "o00", ex: "otc", name: "櫃買指數", main: true },
+    { id: "t24", ex: "tse", name: "半導體" }, { id: "t13", ex: "tse", name: "電子" }, { id: "t25", ex: "tse", name: "電腦週邊" },
+    { id: "t15", ex: "tse", name: "航運" }, { id: "t03", ex: "tse", name: "塑膠" }, { id: "t17", ex: "tse", name: "金融保險" },
+  ];
+  S.idx = {}; S.idxErr = "";
   $("#ivSel").value = String(S.iv); $("#showWatch").checked = S.showWatch; $("#sortSel").value = S.sort;
 
   // ── 台北時間 ──
@@ -392,14 +420,47 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
   }
   function saveSeries(){ ls.set(SKEY(), JSON.stringify(S.series)); }
 
+  async function fetchIdx(){
+    try {
+      const j = await getJSON(pxUrl({ src: "mis", q: IDX.map(x => `${x.ex}_${x.id}.tw`).join("|") }));
+      for (const r of (j.msgArray || [])){
+        const id = String(r.ch || r.c || "").replace(/\.tw$/, ""), prev = S.idx[id] || {};
+        const q = { date: r.d, time: r.t || r["%"], y: nv(r.y), o: nv(r.o), h: nv(r.h), l: nv(r.l),
+                    price: nv(r.z) ?? (prev.date === r.d ? prev.price : null) };
+        S.idx[id] = q; pushPoint("IDX:" + id, q);
+      }
+      S.idxErr = "";
+    } catch(e){
+      S.idxErr = /HTTP 400/.test(e.message)
+        ? "大盤即時需要更新轉送站程式：請把最新的 cloudflare-worker.js（或 proxy.php）重新貼上並部署。"
+        : "大盤指數暫時讀取失敗，下次更新會再試。";
+    }
+  }
+  async function fetchIdxSeries(){
+    try {
+      const j = await getJSON(pxUrl({ src: "yh", s: "^TWII" }), 8000);
+      const r = j.chart && j.chart.result && j.chart.result[0];
+      if (!r || !r.timestamp) return;
+      const c = r.indicators.quote[0].close, today = tpe().iso, pts = [];
+      r.timestamp.forEach((ts, i) => {
+        if (c[i] == null) return;
+        const d = new Date((ts + 8 * 3600) * 1000);
+        if (d.toISOString().slice(0, 10) === today) pts.push([d.getUTCHours() * 60 + d.getUTCMinutes() - 540, c[i]]);
+      });
+      if (pts.length) S.series["IDX:t00"] = mergeSeries(pts, S.series["IDX:t00"] || []);
+    } catch(e){}
+  }
+
   async function tick(force){
     if (S.busy) return;
     const list = codes(), ph = phase();
     renderBar(ph);
     if (!S.proxy){ $("#setup").hidden = false; render(); return; }
     $("#setup").hidden = true;
-    if (!list.length){ render(); return; }
     S.busy = true;
+    const ixP = fetchIdx();
+    if (force || !S.yhAt || (ph.poll && Date.now() - S.yhAt > 60000)) fetchIdxSeries().then(renderIdx);
+    if (!list.length){ await ixP; S.busy = false; if (force || !S.yhAt) S.yhAt = Date.now(); saveSeries(); render(); renderIdx(); renderBar(ph); return; }
     try {
       const old = S.q, nq = await fetchMis(list);
       for (const c in nq){
@@ -416,8 +477,8 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
       checkStops();
     } catch(e){
       showErr("讀取即時報價失敗：" + (e.name === "AbortError" ? "連線逾時" : e.message) + "。請確認轉送站網址正確，或稍後再試。");
-    } finally { S.busy = false; }
-    render(); renderBar(ph);
+    } finally { await ixP; S.busy = false; }
+    saveSeries(); render(); renderIdx(); renderBar(ph);
   }
 
   // ── 排程 ──
@@ -489,7 +550,7 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
   function renderBar(ph){
     const st = $("#mstate");
     let label = ph.label, k = ph.k;
-    const anyQ = Object.values(S.q)[0];
+    const anyQ = Object.values(S.q)[0] || S.idx.t00;
     if (anyQ && anyQ.date && anyQ.date !== tpe().date && k !== "off"){ label = "今日休市"; k = "off"; }
     st.className = "mstate " + (k === "live" ? "live" : k === "pre" ? "pre" : "");
     st.textContent = S.paused && ph.poll ? label + "（已暫停）" : label;
@@ -600,6 +661,41 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
     for (const c in S.q) S.q[c].flash = "";
     // 分頁標題顯示今日損益
     document.title = held.length && n ? `${day > 0 ? "▲" : day < 0 ? "▼" : ""}${sgn(Math.round(day))}｜盤中即時看板` : "盤中即時看板";
+  }
+
+  function ixLine(id, q){
+    const s = (S.series["IDX:" + id] || []).filter(p => p[0] >= 0 && p[0] <= 270);
+    const W = 200, H = 40, X = m => 2 + m / 270 * (W - 4);
+    const vals = s.map(p => p[1]).concat(q.y ? [q.y] : []);
+    if (!vals.length) return "";
+    let mn = Math.min(...vals), mx = Math.max(...vals); const pad = (mx - mn) * 0.15 || mx * 0.002 || 1; mn -= pad; mx += pad;
+    const Y = v => 3 + (mx - v) / (mx - mn) * (H - 6);
+    const col = `var(--${cls(q.price != null && q.y ? q.price - q.y : 0)})`, id2 = "ix" + id;
+    const path = s.map((p, i) => (i ? "L" : "M") + X(p[0]).toFixed(1) + " " + Y(p[1]).toFixed(1)).join("");
+    const last = s[s.length - 1];
+    return `<svg viewBox="0 0 ${W} ${H}" aria-hidden="true">
+      <defs><linearGradient id="${id2}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".25"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+      ${q.y ? `<line x1="2" x2="${W - 2}" y1="${Y(q.y).toFixed(1)}" y2="${Y(q.y).toFixed(1)}" stroke="var(--ink-3)" stroke-dasharray="3 3" opacity=".6"/>` : ""}
+      ${s.length > 1 ? `<path d="${path}L${X(last[0]).toFixed(1)} ${H}L${X(s[0][0]).toFixed(1)} ${H}Z" fill="url(#${id2})"/><path d="${path}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>` : ""}
+      ${last ? `<circle cx="${X(last[0]).toFixed(1)}" cy="${Y(last[1]).toFixed(1)}" r="3" fill="var(--panel)" stroke="${col}" stroke-width="2"/>` : ""}</svg>`;
+  }
+  function renderIdx(){
+    const box = $("#ix");
+    const have = IDX.filter(x => S.idx[x.id] && (S.idx[x.id].price != null || S.idx[x.id].y));
+    if (!S.proxy || (!have.length && !S.idxErr)){ box.hidden = true; return; }
+    const t0 = S.idx.t00 || {};
+    const tiles = IDX.filter(x => S.idx[x.id]).map(x => {
+      const q = S.idx[x.id], p = q.price ?? q.y, chg = q.price != null && q.y ? q.price - q.y : null, pct = chg != null ? chg / q.y * 100 : null, d = cls(chg);
+      return `<div class="ix-t${x.main ? " main" : ""}" title="${esc(x.name)}　最高 ${pd(q.h)}／最低 ${pd(q.l)}">
+        <div class="n"><span>${esc(x.name)}</span><em>${esc((q.time || "").slice(0, 5))}</em></div>
+        <div class="v ${d}">${pd(p)}</div>
+        <span class="chg ${d}">${chg > 0 ? "▲" : chg < 0 ? "▼" : ""}${chg == null ? "—" : fmt(Math.abs(chg), 2)}　${pct == null ? "" : sgn(pct, 2) + "%"}</span>
+        ${ixLine(x.id, q)}</div>`;
+    }).join("");
+    box.innerHTML = `<div class="ix-top"><b>🍊 台股大盤</b><span>即時指數，跟著下方報價一起更新</span>${t0.time ? `<span class="t">${esc(t0.time)}</span>` : ""}</div>
+      ${S.idxErr ? `<div class="ix-msg">⚠ ${esc(S.idxErr)}</div>` : ""}
+      ${tiles ? `<div class="ix-tiles">${tiles}</div>` : ""}`;
+    box.hidden = false;
   }
 
   function showErr(m){ const e = $("#err"); e.textContent = m; e.hidden = !m; }

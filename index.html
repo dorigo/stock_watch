@@ -361,6 +361,9 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
 .hold-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line)}
 .hold-head h2{font-size:18px;margin:0 auto 0 0}
 .sync-chip{font-size:12.5px;color:var(--ink-3);white-space:nowrap}
+.mail-note{flex-basis:100%;text-align:right;font-size:12.5px;color:var(--ink-3);margin-top:-4px}
+.mail-note b{color:var(--ink-2);font-family:var(--mono);font-weight:600}
+@media (max-width:720px){.mail-note{text-align:left}}
 .sync-chip.ok{color:var(--down)} .sync-chip.bad{color:var(--up);cursor:pointer;text-decoration:underline dotted}
 .hold-sum{display:flex;gap:22px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line-2)}
 .hold-sum div{font-size:12.5px;color:var(--ink-3)}
@@ -1114,7 +1117,8 @@ html.embed tr.detail > td{background:transparent}
       <button class="btn" data-hact="mail" title="把持股同步到 GitHub Secret「HOLDINGS」，每日 Email 日報才會提醒停損">📧 同步到 Email 日報</button>
       <button class="btn" data-hact="export" title="下載持股資料，可在其他裝置匯入">匯出</button>
       <button class="btn" data-hact="import" title="匯入先前匯出的持股資料">匯入</button>
-      <input type="file" id="hImport" accept="application/json" hidden></div>`;
+      <input type="file" id="hImport" accept="application/json" hidden>
+      <div class="mail-note">📧 Email 日報：交易日晚上約 <b>22:10～22:30</b> 寄出（當天資料提早齊全時約 17:20～17:40）；週末與國定假日不寄。</div></div>`;
     if (!codes.length){
       el.innerHTML = `<div class="card">${head}<div class="hold-empty">還沒有記錄持股。點開表格中任一檔股票 →「我的持股」分頁，輸入買進價格、股數與停損價，就會在這裡顯示損益與停損提醒。資料只存在這台裝置的瀏覽器，不會公開。</div></div>`;
       return;

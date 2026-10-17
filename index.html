@@ -59,8 +59,12 @@ nav.links a:hover{color:var(--ink)}
 .hero h1{font-size:clamp(28px,4.4vw,44px);line-height:1.15;margin:6px 0 10px;font-weight:900;letter-spacing:-.01em}
 .hero p{color:var(--ink-2);margin:0;max-width:720px}
 .meta-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
-.refresh-bar{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
-.refresh-bar .btn{height:30px;font-size:13px;padding:0 12px}
+.meta-row{align-items:center}
+.meta-part{display:contents}
+.refresh-bar{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
+.refresh-bar .btn{height:28px;font-size:13px;padding:0 12px;border-radius:999px;background:var(--warn-soft);border-color:color-mix(in srgb,var(--warn) 45%,transparent);color:var(--warn);font-weight:700}
+.refresh-bar .btn:hover{border-color:var(--warn)}
+.refresh-bar .btn:disabled{opacity:.6;cursor:default}
 .refresh-bar .rmsg{font-size:13px;color:var(--ink-2);display:inline-flex;align-items:center;gap:8px}
 .refresh-bar .rmsg.err{color:var(--up)} .refresh-bar .rmsg.ok{color:var(--down)}
 .chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:4px 10px;border-radius:999px;background:var(--panel);border:1px solid var(--line);color:var(--ink-2)}
@@ -434,10 +438,13 @@ html.embed tr.detail > td{background:transparent}
     <div class="eyebrow">盤後資料 · 法人 · 大戶 · 融資</div>
     <h1>我的自選股籌碼追蹤</h1>
     <p>每個交易日盤後比對證交所、櫃買中心與集保結算所的公開資料，針對自選清單計算三大法人、千張大戶與融資變化的分數。</p>
-    <div class="meta-row" id="metaRow"></div>
-    <div class="refresh-bar" id="refreshBar" hidden>
-      <button class="btn" id="refreshBtn" title="立即重新抓取資料（約 1～2 分鐘）">↻ 立即更新資料</button>
-      <span class="rmsg" id="refreshMsg"></span>
+    <div class="meta-row">
+      <span class="meta-part" id="metaRow"></span>
+      <span class="refresh-bar" id="refreshBar" hidden>
+        <button class="btn" id="refreshBtn" title="立即重新抓取資料（約 1～2 分鐘）">↻ 立即更新資料</button>
+        <span class="rmsg" id="refreshMsg"></span>
+      </span>
+      <span class="meta-part" id="metaWarn"></span>
     </div>
     <div class="notice" data-tip-key="tip_guide_off"><span>第一次使用？先看 <a href="guide.html"><b>📖 新手指南</b></a>，5 分鐘了解怎麼用。</span><button class="nx" type="button" aria-label="不再顯示這則提示" title="不再顯示">×</button></div>
     <div class="notice" data-tip-key="tip_disc_off"><span>本站非證券投資顧問事業，內容僅為公開資料整理與規則計分，不構成投資建議。<a href="#disclaimer">閱讀完整免責聲明</a></span><button class="nx" type="button" aria-label="不再顯示這則提示" title="不再顯示">×</button></div>
@@ -678,10 +685,12 @@ html.embed tr.detail > td{background:transparent}
     chips.push(`<span class="chip">資料日期 <b class="num">${esc(d.date)}</b></span>`);
     chips.push(`<span class="chip">更新於 <b class="num">${esc((d.updated||"").replace("T"," ").slice(0,16))}</b></span>`);
     if (d.tdccDate) chips.push(`<span class="chip">集保資料 <b class="num">${esc(d.tdccDate)}</b></span>`);
-    if (d.demo) chips.push(`<span class="chip warn">示範資料，執行 Actions 後會換成真實資料</span>`);
-    if (!d.complete) chips.push(`<span class="chip warn">部分資料尚未公布，晚上會再更新</span>`);
-    if (d.notFound && d.notFound.length) chips.push(`<span class="chip warn">查無代號：${esc(d.notFound.join("、"))}</span>`);
+    const warns = [];
+    if (d.demo) warns.push(`<span class="chip warn">示範資料，執行 Actions 後會換成真實資料</span>`);
+    if (!d.complete) warns.push(`<span class="chip warn">部分資料尚未公布，晚上會再更新</span>`);
+    if (d.notFound && d.notFound.length) warns.push(`<span class="chip warn">查無代號：${esc(d.notFound.join("、"))}</span>`);
     $("#metaRow").innerHTML = chips.join("");
+    $("#metaWarn").innerHTML = warns.join("");
     $("#footUpd").textContent = "最後更新 " + (d.updated||"").replace("T"," ").slice(0,16);
   }
 

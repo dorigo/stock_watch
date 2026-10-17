@@ -138,7 +138,7 @@ select.sel{font:inherit;font-size:13px;height:32px;border-radius:999px;border:2p
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:14px;margin-bottom:28px}
 .card{position:relative;background:var(--panel);border:2px solid var(--line);border-radius:24px;padding:14px 16px 12px;box-shadow:var(--shadow);transition:transform .25s cubic-bezier(.3,1.6,.5,1),border-color .3s}
 .card:hover{transform:translateY(-3px)}
-.card.stop{border-color:var(--up);box-shadow:0 0 0 4px var(--up-soft),var(--shadow)}
+.card.stop{border-color:var(--down);box-shadow:0 0 0 4px var(--down-soft),var(--shadow)}
 .card.flash-up{animation:fu 1.2s ease-out} .card.flash-down{animation:fd 1.2s ease-out}
 @keyframes fu{0%{background:var(--up-soft)}100%{background:var(--panel)}}
 @keyframes fd{0%{background:var(--down-soft)}100%{background:var(--panel)}}
@@ -148,7 +148,7 @@ select.sel{font:inherit;font-size:13px;height:32px;border-radius:999px;border:2p
 .c-head .cd{font-family:var(--num);font-weight:700;font-size:12.5px;color:var(--ink-3)}
 .pill{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:800;padding:1px 9px;border-radius:999px;background:var(--pill);color:var(--pill-ink);white-space:nowrap}
 .pill.watch{background:var(--flat-soft);color:var(--flat)}
-.pill.red{background:var(--up);color:#fff}
+.pill.red{background:var(--down);color:#fff}
 .pill.warn{background:var(--warn-soft);color:var(--warn)}
 .pill.lim-up{background:var(--up);color:#fff} .pill.lim-dn{background:var(--down);color:#fff}
 .c-head .t{margin-left:auto;font-family:var(--num);font-size:11.5px;color:var(--ink-3);font-weight:700}
@@ -555,7 +555,7 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
       <div class="kv">
         <div><span class="k">投入成本</span><span class="v">${fmt(Math.round(r.cost))}</span></div>
         <div><span class="k">${D.fee ? "賣出可拿回" : "目前市值"}</span><span class="v">${r.net == null ? "—" : fmt(Math.round(r.net))}</span></div>
-        <div><span class="k">停損價</span><span class="v ${r.stopHit ? "up" : ""}">${t.stop ? pd(t.stop) : "未設定"}</span></div>
+        <div><span class="k">停損價</span><span class="v ${r.stopHit ? "down" : ""}">${t.stop ? pd(t.stop) : "未設定"}</span></div>
       </div>
       <div class="bm ${beat == null ? "" : beat >= 0 ? "win" : "lose"}">${b == null ? `同期 0050：資料不足（只保留近 60 個交易日）`
         : `同期買 0050：<b class="${cls(b)}">${sgn(b, 2)}%</b><br>${beat >= 0 ? `🏆 贏大盤 ${fmt(beat, 2)} 個百分點` : `🐢 輸大盤 ${fmt(-beat, 2)} 個百分點`}`}</div>

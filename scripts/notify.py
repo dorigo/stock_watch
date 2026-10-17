@@ -203,7 +203,7 @@ def build(report, market, holdings, url):
         to_stop = (c - h["stop"]) / c * 100 if h["stop"] else None
         if h["stop"] and c <= h["stop"]:
             stop_hits += 1
-            state = f'<span style="color:#fff;background:{UP};border-radius:99px;padding:1px 8px;font-size:12px;font-weight:700">跌破停損</span>'
+            state = f'<span style="color:#fff;background:{DOWN};border-radius:99px;padding:1px 8px;font-size:12px;font-weight:700">跌破停損</span>'
             alerts.insert(0, f'<b>{esc(name)}</b> 收盤 {fnum(c, 2)}，已跌破停損價 {fnum(h["stop"], 2)}，請依照自己的計畫處理。')
         elif to_stop is not None and to_stop < NEAR_STOP:
             state = f'<span style="color:#b07a10;background:#fff0c9;border-radius:99px;padding:1px 8px;font-size:12px;font-weight:700">接近停損</span>'

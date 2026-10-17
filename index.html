@@ -373,7 +373,7 @@ small.unit{font-size:12px;color:var(--ink-3);font-family:"Noto Sans TC",sans-ser
 .hold table{min-width:820px}
 .hold-empty{padding:16px;font-size:14px;color:var(--ink-3)}
 .tag.held{background:var(--accent);color:var(--panel)}
-.tag.stop{background:var(--up);color:#fff}
+.tag.stop{background:var(--down);color:#fff}
 .hform{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:720px}
 @media (max-width:640px){.hform{grid-template-columns:1fr}}
 .hform label{font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:4px}
@@ -1139,7 +1139,7 @@ html.embed tr.detail > td{background:transparent}
         <td class="num ${k ? cls(k.pnl) : ""}">${k ? sgn(Math.round(k.pnl)) : "—"}</td>
         <td class="num ${k ? cls(k.pct) : ""}">${k ? sgn(k.pct, 2) + "%" : (s ? "—" : "不在自選股")}</td>
         <td class="num">${h.stop ? fmt(h.stop, 2) : "未設定"}</td>
-        <td class="num ${k && k.toStop != null && k.toStop < 3 ? "up" : ""}">${k && k.toStop != null ? (k.stopHit ? "已跌破" : fmt(k.toStop, 1) + "%") : "—"}</td>
+        <td class="num ${k && k.toStop != null && k.toStop < 3 ? "down" : ""}">${k && k.toStop != null ? (k.stopHit ? "已跌破" : fmt(k.toStop, 1) + "%") : "—"}</td>
       </tr>`;
     }).join("");
     const pnl = tv - tc;
@@ -1148,7 +1148,7 @@ html.embed tr.detail > td{background:transparent}
         <div>總成本<b>${fmt(tc)}</b></div><div>目前市值<b>${fmt(tv)}</b></div>
         <div>未實現損益<b class="${cls(pnl)}">${sgn(Math.round(pnl))}</b></div>
         <div>報酬率<b class="${cls(pnl)}">${tc ? sgn(pnl / tc * 100, 2) + "%" : "—"}</b></div>
-        ${hits ? `<div>停損警示<b class="up">${hits} 檔跌破</b></div>` : ""}
+        ${hits ? `<div>停損警示<b class="down">${hits} 檔跌破</b></div>` : ""}
       </div>
       <div class="table-wrap"><table>
         <thead><tr><th data-sort="name">股票</th><th data-sort="shares">股數</th><th data-sort="cost">買進均價</th><th data-sort="close">最新收盤</th><th data-sort="val">市值</th><th data-tip="pnl" data-sort="pnl">損益</th><th data-tip="pnl" data-sort="pct">報酬率</th><th data-tip="stop" data-sort="stop">停損價</th><th data-sort="toStop">距停損</th></tr></thead>
@@ -1475,7 +1475,7 @@ html.embed tr.detail > td{background:transparent}
     const step = Math.ceil(n / (small ? 4 : 6)), dates = rows.map((r, i) => i % step === 0 ? `<text x="${x(i).toFixed(1)}" y="${H-4}" font-size="10" text-anchor="middle" fill="var(--ink-3)" font-family="IBM Plex Mono,monospace">${esc(r[0].slice(5))}</text>` : "").join("");
     return `<svg class="kline" data-code="${esc(code)}" viewBox="0 0 ${W} ${H}" role="img" aria-label="近 ${n} 日 K 線圖">
       ${grid}${candles}${maLine(7, "var(--warn)")}${maLine(8, "var(--ma20)")}${maLine(9, "#9b7bd6")}
-      ${hold ? hl(hold.cost, "var(--accent)", "成本") + hl(hold.stop, "var(--up)", "停損") : ""}${xmarks}
+      ${hold ? hl(hold.cost, "var(--accent)", "成本") + hl(hold.stop, "var(--down)", "停損") : ""}${xmarks}
       <text x="${L}" y="${iy0 - 6}" font-size="11" fill="var(--ink-3)">三大法人買賣超（張）</text>
       <line x1="${L}" x2="${W-R}" y1="${imid}" y2="${imid}" stroke="var(--line)"/>${ibars}
       <text x="${W-R+6}" y="${iy0+10}" font-size="10" fill="var(--ink-3)" font-family="IBM Plex Mono,monospace">+${fmt(imax)}</text>
@@ -1564,7 +1564,7 @@ html.embed tr.detail > td{background:transparent}
     const h = state.holdings[s.code] || {}, k = holdCalc(s.close, h);
     const calc = k ? `<div class="hcalc">
         市值 <b class="num">${fmt(k.val)}</b> 元　未實現損益 <b class="num ${cls(k.pnl)}">${sgn(Math.round(k.pnl))}</b> 元（<span class="num ${cls(k.pct)}">${sgn(k.pct,2)}%</span>）<br>
-        ${h.stop ? (k.stopHit ? `<b class="up">⚠ 最新收盤 ${fmt(s.close,2)} 已跌破停損價 ${fmt(h.stop,2)}。</b>`
+        ${h.stop ? (k.stopHit ? `<b class="down">⚠ 最新收盤 ${fmt(s.close,2)} 已跌破停損價 ${fmt(h.stop,2)}。</b>`
           : `距離停損還有 <b class="num">${fmt(k.toStop,1)}%</b>；若觸發停損，相對買進成本約${k.risk >= 0 ? "虧損" : "獲利"} <b class="num">${fmt(Math.abs(Math.round(k.risk)))}</b> 元（${fmt(Math.abs((h.cost - h.stop) / h.cost * 100),1)}%）。`)
           : "還沒設定停損價。建議先想好「跌到哪裡就認錯」，例如買進價的 -8%。"}
       </div>` : "";

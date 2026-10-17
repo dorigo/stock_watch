@@ -138,7 +138,7 @@ select.sel{font:inherit;font-size:13px;height:32px;border-radius:999px;border:2p
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:14px;margin-bottom:28px}
 .card{position:relative;background:var(--panel);border:2px solid var(--line);border-radius:24px;padding:14px 16px 12px;box-shadow:var(--shadow);transition:transform .25s cubic-bezier(.3,1.6,.5,1),border-color .3s}
 .card:hover{transform:translateY(-3px)}
-.card.stop{border-color:var(--up);box-shadow:0 0 0 4px var(--up-soft),var(--shadow)}
+.card.stop{border-color:var(--down);box-shadow:0 0 0 4px var(--down-soft),var(--shadow)}
 .card.flash-up{animation:fu 1.2s ease-out} .card.flash-down{animation:fd 1.2s ease-out}
 @keyframes fu{0%{background:var(--up-soft)}100%{background:var(--panel)}}
 @keyframes fd{0%{background:var(--down-soft)}100%{background:var(--panel)}}
@@ -148,7 +148,7 @@ select.sel{font:inherit;font-size:13px;height:32px;border-radius:999px;border:2p
 .c-head .cd{font-family:var(--num);font-weight:700;font-size:12.5px;color:var(--ink-3)}
 .pill{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:800;padding:1px 9px;border-radius:999px;background:var(--pill);color:var(--pill-ink);white-space:nowrap}
 .pill.watch{background:var(--flat-soft);color:var(--flat)}
-.pill.red{background:var(--up);color:#fff}
+.pill.red{background:var(--down);color:#fff}
 .pill.warn{background:var(--warn-soft);color:var(--warn)}
 .pill.lim-up{background:var(--up);color:#fff} .pill.lim-dn{background:var(--down);color:#fff}
 .c-head .t{margin-left:auto;font-family:var(--num);font-size:11.5px;color:var(--ink-3);font-weight:700}
@@ -421,11 +421,12 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
         const j = await getJSON(pxUrl({ src: "yh", s: x.code + (mkt(x.code) === "otc" ? ".TWO" : ".TW") }), 8000);
         const r = j.chart && j.chart.result && j.chart.result[0];
         if (!r || !r.timestamp) continue;
-        const c = r.indicators.quote[0].close, today = tpe().iso, pts = [];
+        const c = r.indicators.quote[0].close, pts = [];
+        const day = new Date((r.timestamp[r.timestamp.length - 1] + 8 * 3600) * 1000).toISOString().slice(0, 10);
         r.timestamp.forEach((ts, i) => {
           if (c[i] == null) return;
           const d = new Date((ts + 8 * 3600) * 1000);
-          if (d.toISOString().slice(0, 10) !== today) return;
+          if (d.toISOString().slice(0, 10) !== day) return;
           pts.push([d.getUTCHours() * 60 + d.getUTCMinutes() - 540, c[i]]);
         });
         if (pts.length) S.series[x.code] = mergeSeries(pts, S.series[x.code] || []);
@@ -475,11 +476,12 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
       const j = await getJSON(pxUrl({ src: "yh", s: "^TWII" }), 8000);
       const r = j.chart && j.chart.result && j.chart.result[0];
       if (!r || !r.timestamp) return;
-      const c = r.indicators.quote[0].close, today = tpe().iso, pts = [];
+      const c = r.indicators.quote[0].close, pts = [];
+      const day = new Date((r.timestamp[r.timestamp.length - 1] + 8 * 3600) * 1000).toISOString().slice(0, 10);
       r.timestamp.forEach((ts, i) => {
         if (c[i] == null) return;
         const d = new Date((ts + 8 * 3600) * 1000);
-        if (d.toISOString().slice(0, 10) === today) pts.push([d.getUTCHours() * 60 + d.getUTCMinutes() - 540, c[i]]);
+        if (d.toISOString().slice(0, 10) === day) pts.push([d.getUTCHours() * 60 + d.getUTCMinutes() - 540, c[i]]);
       });
       if (pts.length) S.series["IDX:t00"] = mergeSeries(pts, S.series["IDX:t00"] || []);
     } catch(e){}
@@ -620,7 +622,7 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
     return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(nameOf(code))} 今日分時走勢">
       <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".28"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
       ${r.y ? `<line x1="${L}" x2="${W - R}" y1="${Y(r.y).toFixed(1)}" y2="${Y(r.y).toFixed(1)}" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="4 4" opacity=".7"/><text x="${L + 2}" y="${(Y(r.y) - 3).toFixed(1)}" font-size="9.5" fill="var(--ink-3)" font-weight="700">平盤 ${pd(r.y)}</text>` : ""}
-      ${showCost ? hl(r.h.cost, "var(--cost)", "成本") : ""}${showStop ? hl(r.h.stop, "var(--up)", "停損") : ""}
+      ${showCost ? hl(r.h.cost, "var(--cost)", "成本") : ""}${showStop ? hl(r.h.stop, "var(--down)", "停損") : ""}
       ${area ? `<path d="${area}" fill="url(#${id})"/>` : ""}
       ${path ? `<path d="${path}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>` : `<text x="${W / 2}" y="${H / 2}" font-size="11" text-anchor="middle" fill="var(--ink-3)">開盤後會畫出今日走勢</text>`}
       ${last ? `<circle cx="${X(last[0]).toFixed(1)}" cy="${Y(last[1]).toFixed(1)}" r="4" fill="var(--panel)" stroke="${col}" stroke-width="2.5"/>` : ""}
@@ -648,7 +650,7 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
     const kv = x.held ? `
       <div><span class="k">今日損益</span><span class="v ${cls(r.day)}">${sgn(r.day == null ? null : Math.round(r.day))}</span></div>
       <div><span class="k">總損益</span><span class="v wrap ${cls(r.tot)}">${sgn(r.tot == null ? null : Math.round(r.tot))}<small class="ln">${r.totPct == null ? "" : sgn(r.totPct, 1) + "%"}</small></span></div>
-      <div title="${h.stop ? "停損價 " + pd(h.stop) : ""}"><span class="k">${h.stop ? "距停損" : "停損價"}</span><span class="v ${r.stopHit ? "up" : ""}">${!h.stop ? "未設定" : r.stopHit ? "已跌破" : r.toStop == null ? "—" : fmt(r.toStop, 1) + "%"}</span></div>`
+      <div title="${h.stop ? "停損價 " + pd(h.stop) : ""}"><span class="k">${h.stop ? "距停損" : "停損價"}</span><span class="v ${r.stopHit ? "down" : ""}">${!h.stop ? "未設定" : r.stopHit ? "已跌破" : r.toStop == null ? "—" : fmt(r.toStop, 1) + "%"}</span></div>`
       : `<div><span class="k">昨收</span><span class="v">${pd(r.y)}</span></div>`;
     const kv2 = `
       <div><span class="k">成交量</span><span class="v">${fmt(q.vol)} <small>張</small></span></div>
@@ -681,7 +683,7 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
       <div class="sc"><div class="k">持股市值</div><div class="v">${fmt(Math.round(val))}</div><div class="s">共 ${held.length} 檔${n < held.length ? `，${held.length - n} 檔尚無報價` : ""}</div></div>
       <div class="sc"><div class="k">總損益（未實現）</div><div class="v ${cls(tot)}">${sgn(Math.round(tot))}</div><div class="s">報酬率 <b class="${cls(totPct)}">${totPct == null ? "—" : sgn(totPct, 2) + "%"}</b></div></div>
       <div class="sc"><div class="k">上漲／下跌</div><div class="v"><span class="up">${up}</span> / <span class="down">${dn}</span></div><div class="s">平盤或未成交 ${held.length - up - dn} 檔</div></div>
-      <div class="sc"><div class="k">跌破停損</div><div class="v ${hits ? "up" : ""}">${hits}</div><div class="s">${hits ? "請依照自己的計畫處理" : "目前都在停損價之上"}</div></div>` : "";
+      <div class="sc"><div class="k">跌破停損</div><div class="v ${hits ? "down" : ""}">${hits}</div><div class="s">${hits ? "請依照自己的計畫處理" : "目前都在停損價之上"}</div></div>` : "";
     // 卡片
     const key = {
       pct: x => -(calc(x.code).pct ?? -1e9), day: x => -(calc(x.code).day ?? -1e15), tot: x => -(calc(x.code).totPct ?? -1e9),

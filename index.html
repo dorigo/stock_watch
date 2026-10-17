@@ -66,7 +66,11 @@ nav.links a:hover{color:var(--ink)}
 .chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:4px 10px;border-radius:999px;background:var(--panel);border:1px solid var(--line);color:var(--ink-2)}
 .chip b{color:var(--ink);font-weight:600}
 .chip.warn{background:var(--warn-soft);border-color:transparent;color:var(--warn)}
-.notice{margin:18px 0 0;padding:10px 14px;border-radius:10px;background:var(--panel);border:1px solid var(--line);font-size:13px;color:var(--ink-2)}
+.notice{margin:18px 0 0;padding:8px 8px 8px 14px;border-radius:10px;background:var(--panel);border:1px solid var(--line);font-size:13px;color:var(--ink-2);display:flex;align-items:center;gap:10px}
+.notice + .notice{margin-top:8px}
+.notice > span{flex:1}
+.notice .nx{flex:none;border:0;background:none;color:var(--ink-3);font-size:18px;line-height:1;width:28px;height:28px;border-radius:8px;cursor:pointer}
+.notice .nx:hover{background:var(--bg);color:var(--ink)}
 
 /* 統計卡 */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0}
@@ -435,7 +439,9 @@ html.embed tr.detail > td{background:transparent}
       <button class="btn" id="refreshBtn" title="立即重新抓取資料（約 1～2 分鐘）">↻ 立即更新資料</button>
       <span class="rmsg" id="refreshMsg"></span>
     </div>
-    <div class="notice">第一次使用？先看 <a href="guide.html"><b>📖 新手指南</b></a>，5 分鐘了解怎麼用。<br>本站非證券投資顧問事業，內容僅為公開資料整理與規則計分，不構成投資建議。<a href="#disclaimer">閱讀完整免責聲明</a></div>
+    <div class="notice" data-tip-key="tip_guide_off"><span>第一次使用？先看 <a href="guide.html"><b>📖 新手指南</b></a>，5 分鐘了解怎麼用。</span><button class="nx" type="button" aria-label="不再顯示這則提示" title="不再顯示">×</button></div>
+    <div class="notice" data-tip-key="tip_disc_off"><span>本站非證券投資顧問事業，內容僅為公開資料整理與規則計分，不構成投資建議。<a href="#disclaimer">閱讀完整免責聲明</a></span><button class="nx" type="button" aria-label="不再顯示這則提示" title="不再顯示">×</button></div>
+    <script>document.querySelectorAll(".notice[data-tip-key]").forEach(n => { try { if (localStorage.getItem(n.dataset.tipKey)) n.hidden = true; } catch(e){} n.querySelector(".nx").addEventListener("click", () => { n.hidden = true; try { localStorage.setItem(n.dataset.tipKey, "1"); } catch(e){} }); });</script>
   </section>
 
   <section class="mkt" id="mkt" hidden aria-label="台股與美股收盤行情"></section>
@@ -609,7 +615,7 @@ html.embed tr.detail > td{background:transparent}
 </div>
 
 <div id="tip" role="tooltip"></div>
-<footer><div class="wrap">資料每個交易日盤後自動更新 · <span id="footUpd"></span><div class="credit"><span>作者 <b>@DORIGO</b></span><a class="thanks" href="https://p.ecpay.com.tw/9EE4BD6" target="_blank" rel="noopener">☕ 感謝作者</a></div></div></footer>
+<footer><div class="wrap">資料每個交易日盤後自動更新 · <span id="footUpd"></span> · 本站非證券投資顧問事業，內容不構成投資建議（<a href="#disclaimer">免責聲明</a>）<div class="credit"><span>作者 <b>@DORIGO</b></span><a class="thanks" href="https://p.ecpay.com.tw/9EE4BD6" target="_blank" rel="noopener">☕ 感謝作者</a></div></div></footer>
 
 <script>
 (function(){

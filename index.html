@@ -404,6 +404,12 @@ html.embed #list{border:0;box-shadow:none;background:transparent;margin:0}
 html.embed #list table{min-width:0}
 html.embed .dwrap{position:static;width:auto}
 html.embed tr.detail > td{background:transparent}
+
+/* 頁尾作者 */
+.credit{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:14px;font-size:13px;color:var(--ink-3)}
+.credit b{color:var(--ink-2);letter-spacing:.04em}
+.credit .thanks{display:inline-flex;align-items:center;gap:4px;font-weight:700;font-size:13px;text-decoration:none;padding:5px 14px;border-radius:999px;background:#d9733f;color:#fff;box-shadow:0 2px 0 rgba(0,0,0,.08);transition:transform .15s}
+.credit .thanks:hover{transform:translateY(-1px)}
 </style>
 </head>
 <body>
@@ -598,7 +604,7 @@ html.embed tr.detail > td{background:transparent}
 </div>
 
 <div id="tip" role="tooltip"></div>
-<footer><div class="wrap">資料每個交易日盤後自動更新 · <span id="footUpd"></span></div></footer>
+<footer><div class="wrap">資料每個交易日盤後自動更新 · <span id="footUpd"></span><div class="credit"><span>作者 <b>@DORIGO</b></span><a class="thanks" href="https://p.ecpay.com.tw/9EE4BD6" target="_blank" rel="noopener">☕ 感謝作者</a></div></div></footer>
 
 <script>
 (function(){

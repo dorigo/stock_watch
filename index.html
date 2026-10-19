@@ -565,7 +565,7 @@ html.embed tr.detail > td{background:transparent}
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="csTitle" style="max-width:520px">
     <header><h3 id="csTitle">☁ 持股雲端同步</h3><button class="x" id="csClose" aria-label="關閉">×</button></header>
     <div class="body">
-      <p style="margin:0 0 10px;font-size:14px;color:var(--ink-2)">設定後，這台和其他電腦上的「我的持股」會自動同步。持股會用你設定的<b>同步密碼</b>加密後存到 GitHub，沒有密碼的人只會看到亂碼。</p>
+      <p style="margin:0 0 10px;font-size:14px;color:var(--ink-2)">設定後，這台和其他電腦上的「我的持股」與「模擬投資」紀錄會自動同步。持股會用你設定的<b>同步密碼</b>加密後存到 GitHub，沒有密碼的人只會看到亂碼。</p>
       <ol class="steps">
         <li>每台電腦都要先設定過 GitHub 金鑰（「管理自選股」用的那組）。</li>
         <li>每台電腦輸入<b>相同</b>的同步密碼（至少 8 個字）。</li>
@@ -1165,6 +1165,7 @@ html.embed tr.detail > td{background:transparent}
     if (!window.HoldSync || !HoldSync.enabled()) return;
     const r = await HoldSync.sync({ silent });
     if (r && r.changed){ state.holdings = loadH(); render(); queueSync(); }
+    if (window.SimSync && SimSync.enabled()) SimSync.sync({ silent: true }).catch(() => {});
     renderCloudChip();
     return r;
   }

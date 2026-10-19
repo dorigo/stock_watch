@@ -280,6 +280,8 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
     <button class="btn sm" id="expBtn" title="下載模擬紀錄，可在其他裝置匯入">匯出</button>
     <button class="btn sm" id="impBtn" title="匯入先前匯出的模擬紀錄">匯入</button>
     <input type="file" id="impFile" accept="application/json" hidden>
+    <span class="info" id="simCloud"></span>
+    <button class="btn sm" id="cloudBtn" title="讓多台電腦的模擬紀錄自動同步">☁ 雲端同步</button>
     <button class="btn sm" id="setBtn">⚙ 設定</button>
   </div>
   <div class="err" id="err" hidden></div>
@@ -376,6 +378,7 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
   </div>
 </div>
 
+<script src="vendor/holdsync.js"></script>
 <script>
 (() => {
   const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
@@ -406,7 +409,8 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
   let D;
   try { D = Object.assign({}, DEF, JSON.parse(ls.get(KEY, "null")) || {}); } catch(e){ D = { ...DEF }; }
   if (!Array.isArray(D.trades)) D.trades = [];
-  const save = () => { if (!ls.set(KEY, JSON.stringify(D))) showErr("瀏覽器無法儲存資料（可能是無痕模式或空間不足）。"); };
+  const save = () => { if (!ls.set(KEY, JSON.stringify(D))) showErr("瀏覽器無法儲存資料（可能是無痕模式或空間不足）。"); if (window.SimSync) SimSync.markChanged(); };
+  const reloadD = () => { try { D = Object.assign({}, DEF, JSON.parse(ls.get(KEY, "null")) || {}); } catch(e){ D = { ...DEF }; } if (!Array.isArray(D.trades)) D.trades = []; };
   const S = { latest: null, all: {}, charts: {}, px: {}, pxAt: null, pxSrc: "", proxy: ls.get("rt_proxy", ""), sort: ls.get("sim_sort", "pct") };
   $("#sortSel").value = S.sort;
 
@@ -754,6 +758,37 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
   setInterval(async () => { if (S.proxy && marketOpen() && !document.hidden){ await fetchPrices(); render(); } }, 60000);
   addEventListener("storage", e => { if (e.key === KEY){ try { D = Object.assign({}, DEF, JSON.parse(e.newValue) || {}); } catch(_){} render(); } });
 
+  // ── 雲端同步（與首頁「我的持股」共用同一組同步密碼） ──
+  function cloudChip(){
+    const el = $("#simCloud"); if (!window.SimSync || !SimSync.hasPass()){ el.innerHTML = ""; return; }
+    const i = SimSync.state();
+    if (!i){ el.innerHTML = "☁ 同步中…"; return; }
+    const t = new Date(i.at), ts = `${t.getMonth() + 1}/${t.getDate()} ${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}`;
+    el.innerHTML = i.ok ? `<span style="color:var(--down)">☁ 雲端已同步 ${ts}</span>`
+      : `<span style="color:var(--up)">☁ ${i.code === "badpass" ? "密碼和雲端不符" : i.code === "perm" ? "金鑰沒有寫入權限" : "同步失敗"}</span>`;
+  }
+  async function cloudSync(silent){
+    if (!window.SimSync || !SimSync.enabled()) { cloudChip(); return; }
+    const r = await SimSync.sync({ silent });
+    if (r && r.changed){ reloadD(); render(); }
+    cloudChip(); return r;
+  }
+  if (window.SimSync) SimSync.onChange(cloudChip);
+  let cloudLast = 0;
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && Date.now() - cloudLast > 60000){ cloudLast = Date.now(); cloudSync(true); } });
+  $("#cloudBtn").addEventListener("click", async () => {
+    if (!SimSync.hasToken()){ alert("這台瀏覽器還沒有設定 GitHub 金鑰。\n請先到首頁按右上角「＋ 管理自選股」設定金鑰，再回來同步。"); return; }
+    if (!SimSync.hasPass() || (SimSync.state() || {}).code === "badpass"){
+      const p = prompt("輸入同步密碼（至少 8 個字）。\n請和首頁「我的持股 → ☁ 雲端同步」使用同一組密碼，每台電腦都要一樣。");
+      if (p == null) return;
+      if (p.length < 8){ alert("同步密碼至少 8 個字。"); return; }
+      SimSync.setPass(p);
+    }
+    const r = await cloudSync(false);
+    if (r && r.error) alert(r.error.code === "badpass" ? "同步密碼和雲端資料不符，請再按一次「☁ 雲端同步」輸入正確的密碼。" : "同步失敗：" + r.error.message);
+    else if (r && r.changed) alert(`已從雲端取得 ${D.trades.length} 筆模擬紀錄。`);
+  });
+
   // ── 開始 ──
   (async () => {
     await Promise.all([
@@ -761,7 +796,9 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
       fetch("data/all_stocks.json").then(r => r.json()).then(j => S.all = j.stocks || {}).catch(() => {}),
       fetch("data/charts.json", { cache: "no-cache" }).then(r => r.json()).then(j => S.charts = j.stocks || {}).catch(() => {}),
     ]);
-    render(); await fetchPrices(); render();
+    render();
+    cloudLast = Date.now(); await cloudSync(false);
+    await fetchPrices(); render();
   })();
 })();
 </script>

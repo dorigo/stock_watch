@@ -271,6 +271,15 @@ b.red{color:var(--up)}
 .credit b{color:var(--ink-2);letter-spacing:.04em}
 .credit .thanks{display:inline-flex;align-items:center;gap:4px;font-weight:700;font-size:13px;text-decoration:none;padding:5px 14px;border-radius:999px;background:#d9733f;color:#fff;box-shadow:0 2px 0 rgba(0,0,0,.08);transition:transform .15s}
 .credit .thanks:hover{transform:translateY(-1px)}
+
+/* 回到頂端 */
+.to-top{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));z-index:30;width:44px;height:44px;border-radius:50%;
+  border:1px solid var(--line);background:var(--panel);color:var(--ink-2);box-shadow:0 4px 14px rgba(0,0,0,.15);cursor:pointer;display:grid;place-items:center;
+  opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .2s,transform .2s}
+.to-top.show{opacity:1;transform:none;pointer-events:auto}
+.to-top:hover{color:var(--ink);border-color:var(--ink-3)}
+html.embed .to-top{display:none}
+@media print{.to-top{display:none}}
 </style>
 </head>
 <body>
@@ -413,6 +422,15 @@ b.red{color:var(--up)}
   h.querySelectorAll("nav.links a").forEach(a => a.addEventListener("click", () => set(false)));
   document.addEventListener("click", e => { if (!h.contains(e.target)) set(false); });
   addEventListener("keydown", e => { if (e.key === "Escape") set(false); });
+})();
+</script>
+<button class="to-top" id="toTop" type="button" aria-label="回到頂端" title="回到頂端"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+<script>
+(() => {
+  const b = document.getElementById("toTop");
+  const upd = () => b.classList.toggle("show", scrollY > 400);
+  addEventListener("scroll", upd, { passive: true }); upd();
+  b.addEventListener("click", () => scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }));
 })();
 </script>
 </body>

@@ -215,6 +215,13 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
 }
 
 /* 新手指南 */
+.kbox{margin-top:14px;background:var(--bg);border-radius:18px;padding:12px 16px}
+.kbox h3{margin:0 0 6px;font-size:16px}
+.kgrid{display:grid;grid-template-columns:minmax(240px,420px) 1fr;gap:8px 22px;align-items:center}
+.kgrid svg{width:100%;height:auto}
+.kgrid ul{margin:0;padding-left:20px;font-size:14px;color:var(--ink-2)} .kgrid li{margin:4px 0}
+.upc{color:var(--up)} .downc{color:var(--down)}
+@media (max-width:720px){.kgrid{grid-template-columns:1fr}}
 .g{}
 .toc{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 6px}
 .toc a{font-size:13px;font-weight:700;text-decoration:none;color:var(--ink-2);background:var(--panel);border:2px solid var(--line);border-radius:999px;padding:4px 12px}
@@ -365,7 +372,7 @@ html.embed .to-top{display:none}
     <p class="lead">在首頁（或盤中即時看板）點任一檔股票，會出現四個分頁：</p>
     <div class="dlist">
       <div class="ditem"><div class="dt">K 線與法人</div>
-        <div class="dd">上面是股價走勢；下面的長條是三大法人（外資、投信、自營商）每天買賣多少。
+        <div class="dd">上面是股價走勢（每一根「K 棒」代表一天，怎麼看見下方圖解）；下面的長條是三大法人（外資、投信、自營商）每天買賣多少。
           <div class="chips"><span class="chip up">紅色長條越來越多 → 大戶在買</span><span class="chip down">綠色長條越來越多 → 大戶在賣</span></div></div></div>
       <div class="ditem"><div class="dt">籌碼分數</div>
         <div class="dd">0～100 分，綜合法人、大戶、散戶的動向。<b>看分數的「變化」，不要只看高低</b>：從 10 分連續升到 50 分，比一直停在 50 分更值得注意。</div></div>
@@ -373,6 +380,31 @@ html.embed .to-top{display:none}
         <div class="dd"><b>本益比</b>標「昂貴區」＝比這家公司過去 5 年都貴。<br><b>營收年增率</b>紅色＝比去年同月成長，代表生意變好。</div></div>
       <div class="ditem"><div class="dt">我的持股</div>
         <div class="dd">記錄或修改你的買進成本和停損價。</div></div>
+    </div>
+    <div class="kbox">
+      <h3>📖 K 棒怎麼看？</h3>
+      <div class="kgrid"><svg viewBox="0 0 460 210" class="kbar-svg" role="img" aria-label="紅 K 與綠 K 的構造">
+    <g font-size="12" fill="var(--ink-2)" font-family="Noto Sans TC,sans-serif">
+      <text x="95" y="16" text-anchor="middle" font-weight="700" fill="var(--up)">紅 K（收盤 &gt; 開盤）</text>
+      <line x1="95" x2="95" y1="30" y2="190" stroke="var(--up)" stroke-width="2"/>
+      <rect x="77" y="60" width="36" height="90" rx="2" fill="var(--up)"/>
+      <g stroke="var(--ink-3)" stroke-dasharray="3 3"><line x1="118" x2="165" y1="30" y2="30"/><line x1="118" x2="165" y1="60" y2="60"/><line x1="118" x2="165" y1="150" y2="150"/><line x1="118" x2="165" y1="190" y2="190"/></g>
+      <text x="170" y="34">最高價</text><text x="170" y="64">收盤價</text><text x="170" y="154">開盤價</text><text x="170" y="194">最低價</text>
+      <text x="40" y="49" text-anchor="end">上影線</text><text x="40" y="109" text-anchor="end">實體</text><text x="40" y="174" text-anchor="end">下影線</text>
+      <text x="335" y="16" text-anchor="middle" font-weight="700" fill="var(--down)">綠 K（收盤 &lt; 開盤）</text>
+      <line x1="335" x2="335" y1="30" y2="190" stroke="var(--down)" stroke-width="2"/>
+      <rect x="317" y="60" width="36" height="90" rx="2" fill="var(--down)"/>
+      <g stroke="var(--ink-3)" stroke-dasharray="3 3"><line x1="358" x2="400" y1="30" y2="30"/><line x1="358" x2="400" y1="60" y2="60"/><line x1="358" x2="400" y1="150" y2="150"/><line x1="358" x2="400" y1="190" y2="190"/></g>
+      <text x="405" y="34">最高價</text><text x="405" y="64">開盤價</text><text x="405" y="154">收盤價</text><text x="405" y="194">最低價</text>
+    </g></svg>
+        <ul>
+          <li><b>一根 K 棒＝一天</b>。粗的「實體」是開盤價到收盤價；上下的細線是「影線」，代表當天的最高價和最低價。</li>
+          <li><b class="upc">紅 K</b>：收盤比開盤高，買方佔上風。<b class="downc">綠 K</b>：收盤比開盤低，賣方佔上風。</li>
+          <li>紅綠看的是「收盤 vs 開盤」，不是跟昨天比。</li>
+          <li><b>上影線長</b>＝漲上去又被賣回來，上方有賣壓；<b>下影線長</b>＝跌下去又被買回來，下方有支撐。</li>
+          <li>單看一根意義不大，要搭配均線方向和成交量一起看。</li>
+        </ul>
+      </div>
     </div>
     <p class="tip">💡 看不懂的欄位名稱，把滑鼠移上去（手機用手指點一下）會跳出白話說明；首頁最下面也有「名詞小辭典」。</p>
   </section>

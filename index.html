@@ -432,6 +432,16 @@ html.embed #list table{min-width:0}
 html.embed .dwrap{position:static;width:auto}
 html.embed tr.detail > td{background:transparent}
 
+/* K 棒說明 */
+.kguide{margin:10px 0 4px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.kguide summary{cursor:pointer;padding:9px 14px;font-weight:600;font-size:14px;color:var(--ink);list-style:none}
+.kguide summary::-webkit-details-marker{display:none}
+.kguide summary::after{content:"▾";float:right;color:var(--ink-3)}
+.kguide[open] summary::after{content:"▴"}
+.kguide-in{display:grid;grid-template-columns:minmax(260px,420px) 1fr;gap:10px 22px;padding:4px 16px 14px;align-items:center}
+.kguide-in ul{margin:0;padding-left:20px;font-size:13.5px;color:var(--ink-2)} .kguide-in li{margin:4px 0}
+.kbar-svg{width:100%;height:auto}
+@media (max-width:720px){.kguide-in{grid-template-columns:1fr}}
 /* 頁尾作者 */
 .credit{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:14px;font-size:13px;color:var(--ink-3)}
 .credit b{color:var(--ink-2);letter-spacing:.04em}
@@ -1040,9 +1050,35 @@ html.embed .to-top{display:none}
   }
 
   // ════════ 名詞解說 ════════
+  // ── K 棒說明（K 線分頁與新手用） ──
+  const KBAR_SVG = `<svg viewBox="0 0 460 210" class="kbar-svg" role="img" aria-label="紅 K 與綠 K 的構造">
+    <g font-size="12" fill="var(--ink-2)" font-family="Noto Sans TC,sans-serif">
+      <text x="95" y="16" text-anchor="middle" font-weight="700" fill="var(--up)">紅 K（收盤 &gt; 開盤）</text>
+      <line x1="95" x2="95" y1="30" y2="190" stroke="var(--up)" stroke-width="2"/>
+      <rect x="77" y="60" width="36" height="90" rx="2" fill="var(--up)"/>
+      <g stroke="var(--ink-3)" stroke-dasharray="3 3"><line x1="118" x2="165" y1="30" y2="30"/><line x1="118" x2="165" y1="60" y2="60"/><line x1="118" x2="165" y1="150" y2="150"/><line x1="118" x2="165" y1="190" y2="190"/></g>
+      <text x="170" y="34">最高價</text><text x="170" y="64">收盤價</text><text x="170" y="154">開盤價</text><text x="170" y="194">最低價</text>
+      <text x="40" y="49" text-anchor="end">上影線</text><text x="40" y="109" text-anchor="end">實體</text><text x="40" y="174" text-anchor="end">下影線</text>
+      <text x="335" y="16" text-anchor="middle" font-weight="700" fill="var(--down)">綠 K（收盤 &lt; 開盤）</text>
+      <line x1="335" x2="335" y1="30" y2="190" stroke="var(--down)" stroke-width="2"/>
+      <rect x="317" y="60" width="36" height="90" rx="2" fill="var(--down)"/>
+      <g stroke="var(--ink-3)" stroke-dasharray="3 3"><line x1="358" x2="400" y1="30" y2="30"/><line x1="358" x2="400" y1="60" y2="60"/><line x1="358" x2="400" y1="150" y2="150"/><line x1="358" x2="400" y1="190" y2="190"/></g>
+      <text x="405" y="34">最高價</text><text x="405" y="64">開盤價</text><text x="405" y="154">收盤價</text><text x="405" y="194">最低價</text>
+    </g></svg>`;
+  const kbarHelp = () => `<details class="kguide"${(() => { try { return localStorage.getItem("kguide_open") === "1" ? " open" : ""; } catch(e){ return ""; } })()}><summary>📖 K 棒怎麼看？</summary><div class="kguide-in">${KBAR_SVG}
+    <ul>
+      <li><b>一根 K 棒＝一天</b>。粗的「實體」是開盤價到收盤價；上下的細線是「影線」，代表當天曾經到過的最高價和最低價。</li>
+      <li><b class="up">紅 K</b>：收盤比開盤高，當天是買方佔上風、一路漲上去。<b class="down">綠 K</b>：收盤比開盤低，當天是賣方佔上風。</li>
+      <li>紅綠看的是「<b>收盤 vs 開盤</b>」，不是跟昨天比。所以可能出現綠 K、但其實比昨天漲的情況（開很高、之後往下走）。</li>
+      <li><b>上影線很長</b>：盤中曾經漲很高，但被賣壓壓回來，上方有人在賣。<b>下影線很長</b>：盤中曾經跌很深，但有人進場買回來，下方有支撐。</li>
+      <li><b>實體越長</b>代表當天力道越強；實體很短、上下影線都長（十字線），代表買賣雙方拉鋸、方向不明。</li>
+      <li>單看一根 K 棒意義不大，要搭配<b>均線方向</b>（股價在季線上或下）和<b>成交量</b>一起看。</li>
+    </ul></div></details>`;
+  document.addEventListener("toggle", e => { if (e.target.classList && e.target.classList.contains("kguide")){ try { localStorage.setItem("kguide_open", e.target.open ? "1" : "0"); } catch(_){} } }, true);
   const GLOSS = {
     "基本": {
       close: ["收盤價", "當天最後一筆成交的價格，也是隔天漲跌的比較基準。"],
+      kbar: ["K 棒（K 線）", "一根 K 棒代表一天：粗的實體是開盤價到收盤價，上下細線是當天最高價和最低價。收盤高於開盤是紅 K，低於開盤是綠 K（看的是收盤 vs 開盤，不是跟昨天比）。長上影線代表上方有賣壓，長下影線代表下方有買盤。"],
       chg: ["漲跌幅", "今天收盤比昨天收盤漲或跌了多少百分比。台股紅色代表上漲、綠色代表下跌，和歐美相反。"],
       vol: ["成交量（張）", "當天總共成交多少張。1 張 = 1,000 股。下方的「量比」是今天成交量 ÷ 前 4 日平均，大於 2 代表今天特別熱絡。"],
       tags: ["股票與訊號", "左邊的數字是依分數排的名次，下方小標籤是系統依規則自動標出的狀況，滑鼠移上去可以看說明。"],
@@ -1756,7 +1792,7 @@ html.embed .to-top{display:none}
     return `<div class="kinfo">${rows && rows.length ? kinfoText(rows, rows.length - 1) : ""}</div>
       ${klineSVG(s.code, rows, hold)}
       <div class="legend"><span><i style="background:var(--warn)"></i>MA5 週線</span><span><i style="background:var(--ma20)"></i>MA20 月線</span><span><i style="background:#9b7bd6"></i>MA60 季線</span><span style="color:var(--up)">▲週／▲月：週線、月線突破季線</span><span style="color:var(--down)">▼：跌破季線</span>${hold ? `<span><i style="background:var(--up)"></i>你的停損價</span>` : ""}</div>
-      <div class="hint2">紅 K：收盤比開盤高；綠 K：收盤比開盤低。滑鼠移到圖上（手機用手指滑）可以看每天的數字。下方長條是三大法人買賣超，對照看看法人買的時候股價怎麼走。</div>${note}`;
+      <div class="hint2">紅 K：收盤比開盤高；綠 K：收盤比開盤低。滑鼠移到圖上（手機用手指滑）可以看每天的數字。下方長條是三大法人買賣超，對照看看法人買的時候股價怎麼走。</div>${kbarHelp()}${note}`;
   }
 
   // ════════ 基本面 ════════

@@ -50,14 +50,16 @@ W_INST_TODAY = 25   # 法人當日買超 ÷ 5 日均量
 W_INST_5D = 25      # 法人 5 日累計買超
 W_STREAK = 10       # 外資、投信連續買超天數
 W_BIG = 25          # 千張大戶持股比例週增減
-W_MARGIN = 15       # 融資餘額減少
+W_MARGIN = 15       # 融資餘額 5 日減少（法人明顯賣超時不計分）
 
 # 滿分門檻
 FULL_INST_TODAY = 0.20   # 當日法人買超達 5 日均量 20%
 FULL_INST_5D = 0.50      # 5 日累計達 5 日均量 50%
 FULL_STREAK = 5          # 連買 5 天
 FULL_BIG = 0.50          # 千張大戶一週增加 0.5 個百分點
-FULL_MARGIN = 0.03       # 融資餘額單日減少 3%
+FULL_MARGIN = 0.03       # 融資大增標籤：單日增加 3%
+FULL_MARGIN_5D = 0.08    # 融資餘額 5 日減少 8% 滿分
+INST_SELL_BLOCK = -0.10  # 法人 5 日累計賣超達 5 日均量 10% 以上時，融資減少不加分
 
 
 DEBUG = []
@@ -552,7 +554,13 @@ def score_stock(code, days, tdcc):
     p2 = clamp01((sum5 / avg5) / FULL_INST_5D) * W_INST_5D if avg5 and sum5 > 0 else 0
     p3 = min(max(f_streak, t_streak), FULL_STREAK) / FULL_STREAK * W_STREAK
     p4 = clamp01(big_delta / FULL_BIG) * W_BIG if big_delta and big_delta > 0 else 0
-    p5 = clamp01(m_ratio / FULL_MARGIN) * W_MARGIN if m_ratio and m_ratio > 0 else 0
+    # 融資：看 5 個交易日的累計變化（單日太容易跳動）；法人同時明顯賣超時，散戶退場不算籌碼轉好
+    m_old = next((s.get("margin") for s in series[5:6] if s and s.get("margin") is not None), None)
+    if m_old is None:
+        m_old = next((s.get("margin") for s in reversed(series[1:5]) if s and s.get("margin") is not None), None)
+    m_ratio5 = ((m_old - m) / m_old) if (m is not None and m_old) else None
+    inst_selling = bool(avg5) and sum5 / avg5 <= INST_SELL_BLOCK
+    p5 = clamp01(m_ratio5 / FULL_MARGIN_5D) * W_MARGIN if m_ratio5 and m_ratio5 > 0 and not inst_selling else 0
     score = round(p1 + p2 + p3 + p4 + p5, 1)
 
     tags = []
@@ -594,6 +602,7 @@ def score_stock(code, days, tdcc):
         "fStreak": f_streak, "tStreak": t_streak,
         "bigPct": big_pct, "bigDelta": big_delta, "bigPeople": big_people,
         "margin": m, "marginChg": m_chg,
+        "margin5Pct": round(-m_ratio5 * 100, 2) if m_ratio5 is not None else None, "instSelling": inst_selling,
         "score": score,
         "parts": {"instToday": round(p1, 1), "inst5d": round(p2, 1), "streak": round(p3, 1),
                   "big": round(p4, 1), "margin": round(p5, 1)},

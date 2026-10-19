@@ -37,7 +37,8 @@
     async function api(method, body){
       const r = await fetch(cfg.url + (method === "GET" ? "?ref=main&t=" + Date.now() : ""), {
         method, cache: "no-store",
-        headers: { "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "Authorization": "Bearer " + get(TOKEN),
+        headers: { "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28",
+                   ...(get(TOKEN) ? { "Authorization": "Bearer " + get(TOKEN) } : {}),   // 公開 repo：沒有金鑰也能讀
                    ...(body ? { "Content-Type": "application/json" } : {}) },
         body: body ? JSON.stringify(body) : undefined,
       });
@@ -61,7 +62,8 @@
     let busy = null, timer = null;
     async function push(sha, force){
       const pass = get(PASS);
-      if (!pass || !get(TOKEN)) return { skip: true };
+      if (!pass) return { skip: true };
+      if (!get(TOKEN)){ setState({ ok: true, dir: "readonly", n: cfg.count(localHold()) }); return { readonly: true }; }
       if (!get(cfg.upd)) set(cfg.upd, new Date().toISOString());
       const payload = await encrypt({ [cfg.field]: localHold(), updated: get(cfg.upd) }, pass);
       const body = { message: cfg.msg, content: btoa(JSON.stringify(payload)), branch: "main" };
@@ -81,10 +83,10 @@
       if (busy) return busy;
       busy = (async () => {
         const pass = get(PASS);
-        if (!pass || !get(TOKEN)) return { skip: true };
+        if (!pass) return { skip: true };
         try {
           const r = await readRemote();
-          if (!r){ await push(undefined, true); return { changed: false }; }
+          if (!r){ if (get(TOKEN)) await push(undefined, true); else setState({ ok: true, dir: "empty", n: 0 }); return { changed: false }; }
           const remote = await decrypt(r.file, pass);
           const lu = get(cfg.upd) || "", ru = remote.updated || "";
           if (ru > lu){
@@ -97,8 +99,8 @@
             setState({ ok: true, dir: "down", n: cfg.count(theirs) });
             return { changed: true };
           }
-          if (lu > ru){ await push(r.sha); return { changed: false }; }
-          setState({ ok: true, dir: "same", n: cfg.count(localHold()) });
+          if (lu > ru && get(TOKEN)){ await push(r.sha); return { changed: false }; }
+          setState({ ok: true, dir: get(TOKEN) ? "same" : "readonly", n: cfg.count(localHold()) });
           return { changed: false };
         } catch(e){
           setState({ ok: false, code: e.code || (e.status === 401 || e.status === 403 ? "perm" : "err"), err: e.message });
@@ -110,13 +112,15 @@
 
     function markChanged(){
       set(cfg.upd, new Date().toISOString());
-      if (!get(PASS) || !get(TOKEN)) return;
+      if (!get(PASS)) return;
+      if (!get(TOKEN)){ setState({ ok: true, dir: "readonly", n: cfg.count(localHold()) }); return; }
       clearTimeout(timer);
       timer = setTimeout(() => { push().catch(e => setState({ ok: false, code: e.code || "err", err: e.message })); }, 1200);
     }
 
     return {
-      enabled: () => !!(get(PASS) && get(TOKEN)),
+      enabled: () => !!get(PASS),
+      canWrite: () => !!(get(PASS) && get(TOKEN)),
       hasToken: () => !!get(TOKEN),
       hasPass: () => !!get(PASS),
       setPass: p => { set(PASS, p || null); if (!p){ set(cfg.st, null); } emit(); },

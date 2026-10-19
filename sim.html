@@ -764,7 +764,8 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
     const i = SimSync.state();
     if (!i){ el.innerHTML = "☁ 同步中…"; return; }
     const t = new Date(i.at), ts = `${t.getMonth() + 1}/${t.getDate()} ${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}`;
-    el.innerHTML = i.ok ? `<span style="color:var(--down)">☁ 雲端已同步 ${ts}</span>`
+    el.innerHTML = i.ok && i.dir === "readonly" ? `<span style="color:var(--down)" title="這台沒有 GitHub 金鑰：會讀取雲端的紀錄，但這台的修改不會上傳">☁ 已同步（唯讀）${ts}</span>`
+      : i.ok ? `<span style="color:var(--down)">☁ 雲端已同步 ${ts}</span>`
       : `<span style="color:var(--up)">☁ ${i.code === "badpass" ? "密碼和雲端不符" : i.code === "perm" ? "金鑰沒有寫入權限" : "同步失敗"}</span>`;
   }
   async function cloudSync(silent){
@@ -777,7 +778,6 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
   let cloudLast = 0;
   document.addEventListener("visibilitychange", () => { if (!document.hidden && Date.now() - cloudLast > 60000){ cloudLast = Date.now(); cloudSync(true); } });
   $("#cloudBtn").addEventListener("click", async () => {
-    if (!SimSync.hasToken()){ alert("這台瀏覽器還沒有設定 GitHub 金鑰。\n請先到首頁按右上角「＋ 管理自選股」設定金鑰，再回來同步。"); return; }
     if (!SimSync.hasPass() || (SimSync.state() || {}).code === "badpass"){
       const p = prompt("輸入同步密碼（至少 8 個字）。\n請和首頁「我的持股 → ☁ 雲端同步」使用同一組密碼，每台電腦都要一樣。");
       if (p == null) return;
@@ -786,7 +786,8 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
     }
     const r = await cloudSync(false);
     if (r && r.error) alert(r.error.code === "badpass" ? "同步密碼和雲端資料不符，請再按一次「☁ 雲端同步」輸入正確的密碼。" : "同步失敗：" + r.error.message);
-    else if (r && r.changed) alert(`已從雲端取得 ${D.trades.length} 筆模擬紀錄。`);
+    else if (r && r.changed) alert(`已從雲端取得 ${D.trades.length} 筆模擬紀錄。` + (SimSync.hasToken() ? "" : "\n\n這台沒有 GitHub 金鑰，只能讀取；在這台新增或修改的紀錄不會同步到其他裝置。"));
+    else if (!SimSync.hasToken()) alert("已同步（唯讀）。\n這台沒有 GitHub 金鑰，只能讀取其他電腦同步上來的紀錄。");
   });
 
   // ── 開始 ──

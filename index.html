@@ -1155,6 +1155,7 @@ html.embed tr.detail > td{background:transparent}
     const i = HoldSync.state();
     if (!i) return `<span class="sync-chip">☁ 同步中…</span>`;
     const t = new Date(i.at), ts = `${t.getMonth() + 1}/${t.getDate()} ${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}`;
+    if (i.ok && i.dir === "readonly") return `<span class="sync-chip ok" title="這台沒有 GitHub 金鑰：會讀取雲端的持股，但這台的修改不會上傳">☁ 已同步（唯讀）${ts}</span>`;
     if (i.ok) return `<span class="sync-chip ok" title="${i.dir === "down" ? "已從雲端取得最新持股" : "雲端已是最新"}">☁ 雲端已同步 ${ts}</span>`;
     const why = i.code === "badpass" ? "密碼和雲端不符" : i.code === "perm" ? "金鑰沒有寫入權限" : "同步失敗";
     return `<span class="sync-chip bad" data-hact="cloud" title="${esc(i.err || "")}">☁ ${why}</span>`;
@@ -1173,10 +1174,11 @@ html.embed tr.detail > td{background:transparent}
   document.addEventListener("visibilitychange", () => { if (!document.hidden && Date.now() - cloudLast > 60000){ cloudLast = Date.now(); cloudSync(true); } });
   function csMsg(t, k){ const el = $("#csMsg"); el.className = "msg" + (t ? " show " + k : ""); el.textContent = t || ""; }
   function openCloud(){
-    if (!hasTok()){ alert("這台瀏覽器還沒有設定 GitHub 金鑰。\n請先按右上角「＋ 管理自選股」設定金鑰，再回來設定雲端同步。"); return; }
     const i = window.HoldSync && HoldSync.state();
     $("#csPass").value = ""; $("#csPass").type = "password"; $("#csShow").textContent = "顯示";
-    csMsg(HoldSync.hasPass() ? (i && !i.ok ? (i.code === "badpass" ? "這台的同步密碼和雲端資料不符。請輸入另一台電腦設定的密碼；或按「以這台覆蓋雲端」改用這台的資料。" : "上次同步失敗：" + (i.err || "")) : "這台已啟用同步。要更換密碼請輸入新密碼。") : "", i && !i.ok ? "err" : "info");
+    csMsg(HoldSync.hasPass() ? (i && !i.ok ? (i.code === "badpass" ? "這台的同步密碼和雲端資料不符。請輸入另一台電腦設定的密碼；或按「以這台覆蓋雲端」改用這台的資料。" : "上次同步失敗：" + (i.err || "")) : "這台已啟用同步。要更換密碼請輸入新密碼。")
+      : (!hasTok() ? "這台沒有設定 GitHub 金鑰（例如手機）：輸入同步密碼後，可以讀取其他電腦同步上來的資料，但在這台修改的內容不會上傳。" : ""), i && !i.ok ? "err" : "info");
+    $("#csOver").hidden = !hasTok();
     $("#csOff").hidden = !HoldSync.hasPass();
     $("#csBg").classList.add("show"); setTimeout(() => $("#csPass").focus(), 50);
   }
@@ -1194,6 +1196,7 @@ html.embed tr.detail > td{background:transparent}
     setTimeout(closeCloud, 1400);
   });
   $("#csOver").addEventListener("click", async () => {
+    if (!hasTok()){ csMsg("這台沒有 GitHub 金鑰，無法上傳。", "err"); return; }
     const v = $("#csPass").value ? csPassOk() : (HoldSync.hasPass() ? "__keep__" : csPassOk()); if (!v) return;
     if (!confirm(`用這台的 ${Object.keys(state.holdings).length} 檔持股覆蓋雲端資料？其他電腦下次打開時會改成這份。`)) return;
     if (v !== "__keep__") HoldSync.setPass(v);

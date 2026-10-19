@@ -843,8 +843,9 @@ html.embed .to-top{display:none}
     const x = i => padX + i * (W - padX*2) / (pts.length - 1);
     const y = v => padT + (1 - (v - lo) / (hi - lo)) * (H - padT - padB);
     const d = pts.map((v,i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1)).join(" ");
-    const rising = pts[pts.length-1] >= pts[0];
-    const color = `var(${rising ? "--up" : "--down"})`;
+    // 三種顏色：10 日內上升超過 5 分＝紅、下降超過 5 分＝綠、變化不大＝灰
+    const diff = pts[pts.length-1] - pts[0];
+    const color = `var(${diff > 5 ? "--up" : diff < -5 ? "--down" : "--ink-3"})`;
     if (mini) return `<svg class="tl" ${wide ? 'style="width:100%;height:auto"' : `width="${W}" height="${H}"`} viewBox="0 0 ${W} ${H}" aria-hidden="true"><path d="${d}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${x(pts.length-1).toFixed(1)}" cy="${y(pts[pts.length-1]).toFixed(1)}" r="2.2" fill="${color}"/></svg>`;
     const grid = [0,25,50,75,100].map(g => `<line x1="${padX}" x2="${W-padX}" y1="${y(g)}" y2="${y(g)}" stroke="var(--line)" stroke-dasharray="${g%50?"3 4":"0"}"/><text x="${padX-6}" y="${y(g)+4}" text-anchor="end" font-size="10" fill="var(--ink-3)" font-family="IBM Plex Mono,monospace">${g}</text>`).join("");
     const area = d + ` L${x(pts.length-1).toFixed(1)} ${y(0)} L${x(0).toFixed(1)} ${y(0)} Z`;
@@ -1031,7 +1032,7 @@ html.embed .to-top{display:none}
     "籌碼": {
       big: ["千張大戶", "持股超過 1,000 張的大股東合計占了多少比例（集保結算所每週公布）。比例逐週上升，代表籌碼往大戶集中；下降代表大戶在分散出貨。"],
       margin: ["融資增減", "融資是散戶向券商借錢買股票。融資減少（綠）通常被視為健康，代表籌碼從散戶流向較穩定的買方；融資大增代表散戶追進，股價一跌容易出現賣壓。單位：張。"],
-      score: ["分數", "依法人買超、連買天數、大戶增減、融資變化算出的籌碼分數（0～100）。旁邊的 ▲▼ 是和前一天比的變化。注意：回測顯示單看分數買賣效果有限，請當作參考資訊。"]
+      score: ["分數", "依法人買超、連買天數、大戶增減、融資變化算出的籌碼分數（0～100）。旁邊的 ▲▼ 是和前一天比的變化；小走勢線的顏色看 10 日頭尾：上升超過 5 分為紅色、下降超過 5 分為綠色、變化不大為灰色。注意：回測顯示單看分數買賣效果有限，請當作參考資訊。"]
     },
     "基本面": {
       per: ["本益比", "股價 ÷ 每股盈餘（近四季）。意思是用現在的價格買，要幾年的獲利才能「回本」。越高代表市場期待越高、也越貴。旁邊的標籤是和這檔股票自己過去 5 年相比的位置。虧損公司沒有本益比。"],
@@ -1731,7 +1732,7 @@ html.embed .to-top{display:none}
       <td class="num">${fmt(h.v)}</td><td class="num ${cls(h.f)}">${sgn(h.f)}</td><td class="num ${cls(h.t)}">${sgn(h.t)}</td>
       <td class="num ${cls(h.dl)}">${sgn(h.dl)}</td><td class="num ${cls(h.i)}"><b>${sgn(h.i)}</b></td><td class="num">${fmt(h.m)}</td><td class="num"><b>${h.s==null?"—":fmt(h.s,1)}</b></td></tr>`).join("");
     return `<div class="detail-inner" style="padding:0">
-      <div class="trend-box"><h4>近 ${(s.trend||[]).length} 個交易日分數走勢${s.scoreChg5!=null?` · 5 日 ${sgn(s.scoreChg5,1)}`:""}</h4>${trendSVG(s.trend, false)}</div>
+      <div class="trend-box"><h4>近 ${(s.trend||[]).length} 個交易日分數走勢${s.scoreChg5!=null?` · 5 日 ${sgn(s.scoreChg5,1)}`:""}</h4>${trendSVG(s.trend, false)}<div class="hint2" style="margin-top:4px">線的顏色：10 日內上升超過 5 分為<span class="up">紅色</span>、下降超過 5 分為<span class="down">綠色</span>、變化不大為灰色。</div></div>
       <div><h4>分數組成 · ${fmt(s.score,1)} 分</h4>${parts}
         <div class="kv">5 日均量 <b class="num">${fmt(s.avg5)}</b> 張<br>
         外資連買 <b class="num">${s.fStreak}</b> 天 · 投信連買 <b class="num">${s.tStreak}</b> 天<br>

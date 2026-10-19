@@ -736,7 +736,7 @@ html.embed .to-top{display:none}
   function openDetail(code){
     const p = priceOf(code), y = S.px[code] && S.px[code].y, chg = p != null && y ? (p - y) / y * 100 : null;
     $("#dmTitle").innerHTML = `${esc(nameOf(code))} <span class="cd">${esc(code)}</span>${p != null ? ` <span class="q ${cls(chg)}">${pd(p)}${chg == null ? "" : `（${sgn(chg, 2)}%）`}</span>` : ""}`;
-    const src = `./?embed=${encodeURIComponent(code)}`;
+    const src = `./?embed=${encodeURIComponent(code)}&v=${Math.floor(Date.now() / 300000)}`;   // 最多 5 分鐘就重新載入，避免看到舊資料
     if ($("#dmFrame").dataset.src !== src){ $("#dmFrame").src = src; $("#dmFrame").dataset.src = src; }
     $("#dmBg").classList.add("show"); document.body.style.overflow = "hidden";
   }

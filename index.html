@@ -368,6 +368,25 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
 .hold .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
 .hold-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line)}
 .hold-head h2{font-size:18px;margin:0 auto 0 0}
+.hold th.cmp-th,.hold td.cmp-td{width:44px;text-align:center!important;padding-left:12px;padding-right:4px}
+.hold td.cmp-td input{width:17px;height:17px;accent-color:var(--accent);cursor:pointer;vertical-align:middle}
+.hold th.nm-th,.hold td.nm-td{text-align:left}
+.cmp-bar{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--ink-3)}
+.cmp-bar .btn:disabled{opacity:.45;cursor:default}
+.cmp-seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.cmp-seg button{border:0;background:var(--panel);color:var(--ink-2);font:inherit;font-size:13px;padding:4px 12px;cursor:pointer}
+.cmp-seg button.on{background:var(--accent);color:var(--panel);font-weight:600}
+.cmp-legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:8px 0 4px;font-size:13.5px}
+.cmp-legend span{display:inline-flex;align-items:center;gap:6px}
+.cmp-legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.cmp-tbl{width:100%;border-collapse:collapse;font-size:13.5px;min-width:0;margin-top:10px}
+.cmp-tbl th,.cmp-tbl td{padding:7px 10px;border-bottom:1px solid var(--line-2);text-align:right;white-space:nowrap}
+.cmp-tbl th:first-child,.cmp-tbl td:first-child{text-align:left;color:var(--ink-2);position:sticky;left:0;background:var(--panel);z-index:1}
+.cmp-tbl tr.grp td:first-child{background:var(--bg)}
+.cmp-tbl thead th{font-size:14px;color:var(--ink);border-bottom:2px solid var(--line)}
+.cmp-tbl thead th i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+.cmp-tbl td.best{background:var(--accent-soft);font-weight:700;border-radius:6px}
+.cmp-tbl tr.grp td{background:var(--bg);font-size:12px;color:var(--ink-3);font-weight:600;letter-spacing:.06em;padding-top:10px}
 .sync-chip{font-size:12.5px;color:var(--ink-3);white-space:nowrap}
 .mail-note{flex-basis:100%;text-align:right;font-size:12.5px;color:var(--ink-3);margin-top:-4px}
 .mail-note b{color:var(--ink-2);font-family:var(--mono);font-weight:600}
@@ -571,6 +590,13 @@ html.embed .to-top{display:none}
 </main>
 
 
+<div class="modal-bg" id="cmpBg" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="cmpTitle" style="max-width:1080px">
+    <header><h3 id="cmpTitle">📊 持股比較</h3><button class="x" id="cmpClose" aria-label="關閉">×</button></header>
+    <div class="body" id="cmpBody"></div>
+  </div>
+</div>
+
 <div class="modal-bg" id="csBg" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="csTitle" style="max-width:520px">
     <header><h3 id="csTitle">☁ 持股雲端同步</h3><button class="x" id="csClose" aria-label="關閉">×</button></header>
@@ -661,7 +687,7 @@ html.embed .to-top{display:none}
   "use strict";
   const $ = s => document.querySelector(s);
   const EMBED = (new URLSearchParams(location.search).get("embed") || "").toUpperCase();
-  const state = { data:null, market:"all", sort:"score", dir:"desc", hsort:{key:"pnl",dir:"desc"}, dsort:{key:"ex",dir:"asc"}, q:"", open:null, tab:"kline", charts:null, fund:null, holdings:{} };
+  const state = { data:null, market:"all", sort:"score", dir:"desc", hsort:{key:"pnl",dir:"desc"}, dsort:{key:"ex",dir:"asc"}, q:"", open:null, tab:"kline", charts:null, fund:null, holdings:{}, cmp:[], cmpDays:60 };
   if (EMBED){ state.open = EMBED; state.tab = new URLSearchParams(location.search).get("tab") || "kline"; }
 
   // ── 深淺色 ──
@@ -1244,6 +1270,7 @@ html.embed .to-top{display:none}
       el.innerHTML = `<div class="card">${head}<div class="hold-empty">還沒有記錄持股。點開表格中任一檔股票 →「我的持股」分頁，輸入買進價格、股數與停損價，就會在這裡顯示損益與停損提醒。資料存在這台瀏覽器；開啟「☁ 雲端同步」後會加密存到 GitHub，多台電腦自動同步。</div></div>`;
       return;
     }
+    state.cmp = state.cmp.filter(c => H[c] && stockOf(c));
     let tc = 0, tv = 0, hits = 0;
     const items = codes.map(c => { const h = H[c], s = stockOf(c), k = holdCalc(s && s.close, h); return { c, h, s, k }; });
     const HG = { name: x => x.s ? x.s.name : (x.h.name || x.c), shares: x => x.h.shares, cost: x => x.h.cost, close: x => x.s && x.s.close,
@@ -1251,8 +1278,10 @@ html.embed .to-top{display:none}
     items.sort(cmpBy(HG[state.hsort.key] || HG.pnl, state.hsort.dir));
     const rows = items.map(({ c, h, s, k }) => {
       if (k){ tc += k.cost; tv += k.val; if (k.stopHit) hits++; }
+      const on = state.cmp.includes(c), full = state.cmp.length >= 4 && !on;
       return `<tr data-code="${esc(c)}" class="hrow" style="cursor:pointer">
-        <td><b>${esc(s ? s.name : (h.name || c))}</b> <span class="num" style="color:var(--ink-3);font-size:12px">${esc(c)}</span>${k && k.stopHit ? ` <span class="tag stop" data-tip="t_stop">跌破停損</span>` : ""}</td>
+        <td class="cmp-td"><input type="checkbox" class="cmpchk" data-code="${esc(c)}" ${on ? "checked" : ""} ${full || !s ? "disabled" : ""} title="${!s ? "不在自選股清單，沒有資料可比較" : full ? "最多比較 4 檔" : "勾選後可比較"}" aria-label="比較 ${esc(s ? s.name : c)}"></td>
+        <td class="nm-td"><b>${esc(s ? s.name : (h.name || c))}</b> <span class="num" style="color:var(--ink-3);font-size:12px">${esc(c)}</span>${k && k.stopHit ? ` <span class="tag stop" data-tip="t_stop">跌破停損</span>` : ""}</td>
         <td class="num" style="white-space:nowrap">${fmt(h.shares)} <small class="unit">股</small>${h.shares % 1000 === 0 ? `<span class="sub">${fmt(h.shares/1000)} 張</span>` : ""}</td>
         <td class="num">${fmt(h.cost, 2)}</td>
         <td class="num">${s ? fmt(s.close, 2) : "—"}</td>
@@ -1270,13 +1299,101 @@ html.embed .to-top{display:none}
         <div>未實現損益<b class="${cls(pnl)}">${sgn(Math.round(pnl))}</b></div>
         <div>報酬率<b class="${cls(pnl)}">${tc ? sgn(pnl / tc * 100, 2) + "%" : "—"}</b></div>
         ${hits ? `<div>停損警示<b class="down">${hits} 檔跌破</b></div>` : ""}
+        <div class="cmp-bar">${state.cmp.length < 2 ? "勾選 2～4 檔持股" : `已選 ${state.cmp.length} 檔`}
+          <button class="btn primary" data-hact="compare" ${state.cmp.length < 2 ? "disabled" : ""}>📊 比較${state.cmp.length >= 2 ? " " + state.cmp.length + " 檔" : ""}</button>
+          ${state.cmp.length ? `<button class="btn ghost" data-hact="cmpclear">清除</button>` : ""}</div>
       </div>
       <div class="table-wrap"><table>
-        <thead><tr><th data-sort="name">股票</th><th data-sort="shares">股數</th><th data-sort="cost">買進均價</th><th data-sort="close">最新收盤</th><th data-sort="val">市值</th><th data-tip="pnl" data-sort="pnl">損益</th><th data-tip="pnl" data-sort="pct">報酬率</th><th data-tip="stop" data-sort="stop">停損價</th><th data-sort="toStop">距停損</th></tr></thead>
+        <thead><tr><th class="cmp-th" title="勾選 2～4 檔後按「比較」">比較</th><th class="nm-th" data-sort="name">股票</th><th data-sort="shares">股數</th><th data-sort="cost">買進均價</th><th data-sort="close">最新收盤</th><th data-sort="val">市值</th><th data-tip="pnl" data-sort="pnl">損益</th><th data-tip="pnl" data-sort="pct">報酬率</th><th data-tip="stop" data-sort="stop">停損價</th><th data-sort="toStop">距停損</th></tr></thead>
         <tbody>${rows}</tbody></table></div>
       <div class="hint2" style="padding:0 16px 14px">以最新收盤價計算，未扣手續費與證交稅。點標題可排序，點任一列可修改。資料存在這台瀏覽器；按「☁ 雲端同步」可讓多台電腦自動同步（加密後存到 GitHub），也可用「匯出／匯入」。</div></div>`;
   }
+  // ════════ 持股比較（2～4 檔） ════════
+  const CMP_COLORS = ["#2f7ed8", "#e8902a", "#8e5bd6", "#14a39a"];
+  function cmpChart(codes, days){
+    const series = codes.map(c => (state.charts && state.charts.stocks && state.charts.stocks[c]) || []);
+    const dateSets = series.map(rows => new Set(rows.map(r => r[0])));
+    let dates = [...dateSets[0]].filter(d => dateSets.every(st => st.has(d))).sort().slice(-days);
+    if (dates.length < 2) return `<div class="hint2">K 線資料不足，無法畫比較圖。</div>`;
+    const lines = series.map(rows => { const m = new Map(rows.map(r => [r[0], r[4]])); const base = m.get(dates[0]); return dates.map(d => (m.get(d) / base - 1) * 100); });
+    const all = lines.flat(), mn = Math.min(0, ...all), mx = Math.max(0, ...all), pad = (mx - mn) * 0.08 || 1;
+    const W = chartW(980), H = 260, L = 8, R = 56, T = 12, B = 26, lo = mn - pad, hi = mx + pad;
+    const X = i => L + i / (dates.length - 1) * (W - L - R), Y = v => T + (hi - v) / (hi - lo) * (H - T - B);
+    const step = (hi - lo) > 40 ? 10 : (hi - lo) > 16 ? 5 : (hi - lo) > 6 ? 2 : 1;
+    let grid = "";
+    for (let v = Math.ceil(lo / step) * step; v <= hi; v += step)
+      grid += `<line x1="${L}" x2="${W - R}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="var(--line)" ${v === 0 ? 'stroke-width="1.6"' : 'stroke-dasharray="3 4"'}/><text x="${W - R + 6}" y="${(Y(v) + 4).toFixed(1)}" font-size="11" fill="var(--ink-3)" font-family="IBM Plex Mono,monospace">${v > 0 ? "+" : ""}${v}%</text>`;
+    const ticks = [0, Math.floor((dates.length - 1) / 2), dates.length - 1].map((i, k) => `<text x="${X(i).toFixed(1)}" y="${H - 6}" font-size="11" fill="var(--ink-3)" text-anchor="${k === 0 ? "start" : k === 2 ? "end" : "middle"}" font-family="IBM Plex Mono,monospace">${esc(dates[i].slice(5))}</text>`).join("");
+    const paths = lines.map((ln, k) => `<path d="${ln.map((v, i) => (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(v).toFixed(1)).join("")}" fill="none" stroke="${CMP_COLORS[k]}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${X(ln.length - 1).toFixed(1)}" cy="${Y(ln[ln.length - 1]).toFixed(1)}" r="3.5" fill="${CMP_COLORS[k]}"/>`).join("");
+    const legend = codes.map((c, k) => { const v = lines[k][lines[k].length - 1]; return `<span><i style="background:${CMP_COLORS[k]}"></i>${esc(stockOf(c).name)} <b class="num ${cls(v)}">${sgn(v, 2)}%</b></span>`; }).join("");
+    state.cmpRange = Object.fromEntries(codes.map((c, k) => [c, lines[k][lines[k].length - 1]]));
+    return `<div class="cmp-legend">${legend}</div>
+      <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto" role="img" aria-label="近 ${dates.length} 個交易日漲跌比較">${grid}${paths}${ticks}</svg>
+      <div class="hint2">以 ${esc(dates[0])} 的收盤價為起點（0%），比較之後每天的漲跌幅，股價高低不同也能放在一起比。</div>`;
+  }
+  function cmpTable(codes){
+    const tot = codes.reduce((a, c) => { const k = holdCalc(stockOf(c).close, state.holdings[c]); return a + (k ? k.val : 0); }, 0);
+    const allVal = Object.keys(state.holdings).reduce((a, c) => { const s = stockOf(c), k = s && holdCalc(s.close, state.holdings[c]); return a + (k ? k.val : 0); }, 0);
+    const D = codes.map(c => { const s = stockOf(c), h = state.holdings[c], k = holdCalc(s.close, h); return { c, s, h, k }; });
+    // [標題, 取值, 顯示, 越大越好(1)/越小越好(-1)/不比(0)]
+    const R = [
+      ["grp", "價格與損益"],
+      ["收盤", d => d.s.close, v => fmt(v, 2), 0],
+      ["今日漲跌", d => d.s.chgPct, v => `<span class="${cls(v)}">${sgn(v, 2)}%</span>`, 0],
+      [`近 ${state.cmpDays} 日漲跌`, d => state.cmpRange ? state.cmpRange[d.c] : null, v => `<span class="${cls(v)}">${sgn(v, 2)}%</span>`, 1],
+      ["我的報酬率", d => d.k && d.k.pct, v => `<span class="${cls(v)}">${sgn(v, 2)}%</span>`, 1],
+      ["未實現損益", d => d.k && d.k.pnl, v => `<span class="${cls(v)}">${sgn(Math.round(v))}</span>`, 1],
+      ["占全部持股市值", d => d.k && allVal ? d.k.val / allVal * 100 : null, v => fmt(v, 1) + "%", 0],
+      ["距停損", d => d.k && d.k.toStop, v => v <= 0 ? `<span class="down">已跌破</span>` : fmt(v, 1) + "%", 1],
+      ["grp", "籌碼"],
+      ["籌碼分數", d => d.s.score, v => fmt(v, 1), 1],
+      ["分數 5 日變化", d => d.s.scoreChg5, v => `<span class="${cls(v)}">${sgn(v, 1)}</span>`, 1],
+      ["法人 5 日買賣超（張）", d => d.s.sum5, v => `<span class="${cls(v)}">${sgn(v)}</span>`, 1],
+      ["外資／投信連買", d => Math.max(d.s.fStreak || 0, d.s.tStreak || 0), (v, d) => `${d.s.fStreak || 0} ／ ${d.s.tStreak || 0} 天`, 1],
+      ["千張大戶", d => d.s.bigPct, v => fmt(v, 2) + "%", 0],
+      ["大戶週增減", d => d.s.bigDelta, v => `<span class="${cls(v)}">${sgn(v, 2)}</span>`, 1],
+      ["融資 5 日增減", d => d.s.margin5Pct, v => `<span class="${cls(-v)}">${sgn(v, 2)}%</span>`, -1],
+      ["grp", "基本面與技術面"],
+      ["本益比", d => d.s.per, v => fmt(v, 1), 0],
+      ["本益比 5 年位置", d => d.s.perPct, v => fmt(v, 0) + "%", -1],
+      ["殖利率", d => d.s.yield, v => fmt(v, 2) + "%", 1],
+      ["營收年增率", d => d.s.revYoy, v => `<span class="${cls(v)}">${sgn(v, 1)}%</span>`, 1],
+      ["收盤 vs 季線", d => d.s.ma && d.s.ma.vs60, v => `<span class="${cls(v)}">${sgn(v, 1)}%</span>`, 0],
+    ];
+    const head = `<tr><th></th>${D.map((d, k) => `<th><i style="background:${CMP_COLORS[k]}"></i>${esc(d.s.name)} <span class="num" style="color:var(--ink-3);font-size:12px;font-weight:400">${esc(d.c)}</span></th>`).join("")}</tr>`;
+    const body = R.map(r => {
+      if (r[0] === "grp") return `<tr class="grp"><td colspan="${D.length + 1}">${r[1]}</td></tr>`;
+      const [label, get, show, dir] = r, vals = D.map(d => { const v = get(d); return v == null || isNaN(v) ? null : v; });
+      const ok = vals.filter(v => v != null), best = dir && ok.length > 1 ? (dir > 0 ? Math.max(...ok) : Math.min(...ok)) : null;
+      const allSame = ok.length > 1 && ok.every(v => v === ok[0]);
+      return `<tr><td>${label}</td>${vals.map((v, i) => `<td class="num${best != null && !allSame && v === best ? " best" : ""}">${v == null ? "—" : show(v, D[i])}</td>`).join("")}</tr>`;
+    }).join("");
+    return `<div class="table-wrap"><table class="cmp-tbl"><thead>${head}</thead><tbody>${body}</tbody></table></div>
+      <div class="hint2">藍底是該項目表現較好的一檔（例如分數較高、融資減少較多、本益比位置較低）。只是逐項比較，不代表哪一檔比較值得買。</div>`;
+  }
+  function renderCompare(){
+    const codes = state.cmp.filter(c => stockOf(c));
+    $("#cmpTitle").textContent = `📊 持股比較（${codes.length} 檔）`;
+    const chart = cmpChart(codes, state.cmpDays);
+    $("#cmpBody").innerHTML = `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <b style="font-size:15px">漲跌走勢比較</b>
+        <span class="cmp-seg" id="cmpSeg">${[20, 60].map(n => `<button data-d="${n}" class="${n === state.cmpDays ? "on" : ""}">近 ${n} 日</button>`).join("")}</span></div>
+      ${chart}${cmpTable(codes)}`;
+  }
+  function openCompare(){
+    if (state.cmp.length < 2) return;
+    renderCompare(); $("#cmpBg").classList.add("show"); $("#cmpBg").setAttribute("aria-hidden", "false");
+  }
+  const closeCompare = () => { $("#cmpBg").classList.remove("show"); $("#cmpBg").setAttribute("aria-hidden", "true"); };
+  $("#cmpClose").addEventListener("click", closeCompare);
+  $("#cmpBg").addEventListener("click", e => {
+    if (e.target.id === "cmpBg") return closeCompare();
+    const b = e.target.closest("#cmpSeg button"); if (b){ state.cmpDays = +b.dataset.d; renderCompare(); }
+  });
+  addEventListener("keydown", e => { if (e.key === "Escape" && $("#cmpBg").classList.contains("show")) closeCompare(); });
+
   $("#holdings").addEventListener("click", e => {
+    if (e.target.closest(".cmp-td")) return;
     const th = e.target.closest("th[data-sort]");
     if (th){ const k = th.dataset.sort; state.hsort = { key: k, dir: nextDir(state.hsort.key, state.hsort.dir, k, k === "name" ? "asc" : "desc") }; renderHoldings(); return; }
     const act = e.target.closest("[data-hact]");
@@ -1286,6 +1403,8 @@ html.embed .to-top{display:none}
       return;
     }
     if (act && act.dataset.hact === "import"){ $("#hImport").click(); return; }
+    if (act && act.dataset.hact === "compare"){ openCompare(); return; }
+    if (act && act.dataset.hact === "cmpclear"){ state.cmp = []; renderHoldings(); return; }
     if (act && act.dataset.hact === "cloud"){ openCloud(); return; }
     if (act && act.dataset.hact === "synchelp"){
       const i = syncInfo();
@@ -1318,6 +1437,11 @@ html.embed .to-top{display:none}
     }
   });
   $("#holdings").addEventListener("change", e => {
+    if (e.target.classList.contains("cmpchk")){
+      const c = e.target.dataset.code;
+      state.cmp = e.target.checked ? [...new Set([...state.cmp, c])].slice(0, 4) : state.cmp.filter(x => x !== c);
+      renderHoldings(); return;
+    }
     if (e.target.id !== "hImport" || !e.target.files[0]) return;
     e.target.files[0].text().then(t => {
       const obj = JSON.parse(t);

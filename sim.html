@@ -200,6 +200,22 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
   .brand{font-size:14px}
 }
 
+/* 個股明細彈窗 */
+.card{cursor:pointer}
+.card .acts,.card .acts *{cursor:auto}
+.card .acts .btn{cursor:pointer}
+.card:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.dm-bg{position:fixed;inset:0;background:rgba(40,25,15,.5);z-index:60;display:none;align-items:center;justify-content:center;padding:16px}
+.dm-bg.show{display:flex}
+.dm{background:var(--bg);border:2px solid var(--line);border-radius:24px;width:min(1180px,100%);height:min(900px,calc(100vh - 32px));display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.dm header{display:flex;align-items:center;gap:10px;padding:12px 16px 12px 20px;border-bottom:2px solid var(--line-2);background:var(--panel)}
+.dm header h3{margin:0;font-size:17px;font-weight:900;flex:1;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.dm header h3 .cd{font-family:var(--num);font-size:13px;color:var(--ink-3)}
+.dm header h3 .q{font-family:var(--num);font-size:15px}
+.dm header a{font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap}
+.dm iframe{flex:1;border:0;width:100%;background:var(--bg)}
+@media (max-width:720px){.dm-bg{padding:0}.dm{height:100vh;height:100dvh;border-radius:0;border:0}}
+
 /* 模擬投資 */
 .c-price .p{font-size:30px}
 .path{display:flex;align-items:center;gap:10px;margin:8px 0;padding:8px 12px;border-radius:16px;background:var(--line-2)}
@@ -319,6 +335,13 @@ html.embed .to-top{display:none}
 </main>
 
 <footer class="site"><div class="wrap">本頁為模擬練習，不涉及真實交易。手續費以 0.1425%（可在設定中打折、最低 20 元）、證交稅以股票 0.3%／ETF 0.1% 估算。 · <a href="./">回到追蹤清單</a><div class="credit"><span>作者 <b>@DORIGO</b></span><a class="thanks" href="https://p.ecpay.com.tw/9EE4BD6" target="_blank" rel="noopener">☕ 感謝作者</a></div></div></footer>
+
+<div class="dm-bg" id="dmBg">
+  <div class="dm" role="dialog" aria-modal="true" aria-labelledby="dmTitle">
+    <header><h3 id="dmTitle"></h3><a id="dmLink" href="./" target="_blank" rel="noopener">在追蹤清單開啟 ↗</a><button class="x" id="dmClose" aria-label="關閉" style="border:0;background:none;color:var(--ink-3);font-size:24px;cursor:pointer;line-height:1">×</button></header>
+    <iframe id="dmFrame" title="個股明細" loading="lazy"></iframe>
+  </div>
+</div>
 
 <!-- 買進／編輯 -->
 <div class="modal-bg" id="tBg">
@@ -538,7 +561,7 @@ html.embed .to-top{display:none}
       $("#hist").innerHTML = `<div class="tbl"><table>
         <thead><tr><th>股票</th><th>買進</th><th>賣出</th><th>股數</th><th>持有</th><th>損益</th><th>報酬率</th><th>同期 0050</th><th>理由／心得</th><th></th></tr></thead>
         <tbody>${closed.map(t => { const c = calcClosed(t); return `<tr>
-          <td><b>${esc(t.name || nameOf(t.code))}</b> <span class="cd">${esc(t.code)}</span></td>
+          <td><button class="lnk" data-detail="${esc(t.code)}" title="看 K 線、籌碼分數、基本面"><b>${esc(t.name || nameOf(t.code))}</b></button> <span class="cd">${esc(t.code)}</span></td>
           <td class="n">${md(t.date)} <span class="dim">@</span>${pd(t.price)}</td>
           <td class="n">${md(t.sellDate)} <span class="dim">@</span>${pd(t.sellPrice)}</td>
           <td class="n">${fmt(t.shares)}</td>
@@ -558,7 +581,7 @@ html.embed .to-top{display:none}
     const pills = [];
     if (r.stopHit) pills.push(`<span class="pill red">⚠ 跌破停損</span>`);
     else if (t.stop && r.p != null && (r.p - t.stop) / r.p * 100 < 3) pills.push(`<span class="pill warn">接近停損</span>`);
-    return `<article class="card${r.stopHit ? " stop" : ""}">
+    return `<article class="card${r.stopHit ? " stop" : ""}" data-code="${esc(t.code)}" tabindex="0" title="點一下看 K 線、籌碼分數、基本面">
       <div class="c-head"><span class="nm">${esc(t.name || nameOf(t.code))}</span><span class="cd">${esc(t.code)}</span>
         <span class="pill">${t.shares % 1000 === 0 ? fmt(t.shares / 1000) + " 張" : fmt(t.shares) + " 股"}</span>${pills.join("")}
         <span class="t">持有 ${held} 天</span></div>
@@ -708,6 +731,22 @@ html.embed .to-top{display:none}
     t.sellPrice = p; t.sellDate = d; t.sellNote = $("#sNote").value.trim();
     save(); closeAll(); render();
   });
+
+  // ── 個股明細（重用追蹤清單的明細畫面） ──
+  function openDetail(code){
+    const p = priceOf(code), y = S.px[code] && S.px[code].y, chg = p != null && y ? (p - y) / y * 100 : null;
+    $("#dmTitle").innerHTML = `${esc(nameOf(code))} <span class="cd">${esc(code)}</span>${p != null ? ` <span class="q ${cls(chg)}">${pd(p)}${chg == null ? "" : `（${sgn(chg, 2)}%）`}</span>` : ""}`;
+    const src = `./?embed=${encodeURIComponent(code)}`;
+    if ($("#dmFrame").dataset.src !== src){ $("#dmFrame").src = src; $("#dmFrame").dataset.src = src; }
+    $("#dmBg").classList.add("show"); document.body.style.overflow = "hidden";
+  }
+  function closeDetail(){ $("#dmBg").classList.remove("show"); document.body.style.overflow = ""; }
+  $("#grid").addEventListener("click", e => { const c = e.target.closest(".card[data-code]"); if (c && !e.target.closest("a,button,.acts")) openDetail(c.dataset.code); });
+  $("#grid").addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches(".card[data-code]")){ e.preventDefault(); openDetail(e.target.dataset.code); } });
+  $("#hist").addEventListener("click", e => { const b = e.target.closest("[data-detail]"); if (b) openDetail(b.dataset.detail); });
+  $("#dmClose").addEventListener("click", closeDetail);
+  $("#dmBg").addEventListener("click", e => { if (e.target.id === "dmBg") closeDetail(); });
+  addEventListener("keydown", e => { if (e.key === "Escape" && $("#dmBg").classList.contains("show")) closeDetail(); });
 
   // ── 卡片與表格的按鈕 ──
   document.addEventListener("click", e => {

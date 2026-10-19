@@ -561,6 +561,27 @@ html.embed tr.detail > td{background:transparent}
 </main>
 
 
+<div class="modal-bg" id="csBg" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="csTitle" style="max-width:520px">
+    <header><h3 id="csTitle">☁ 持股雲端同步</h3><button class="x" id="csClose" aria-label="關閉">×</button></header>
+    <div class="body">
+      <p style="margin:0 0 10px;font-size:14px;color:var(--ink-2)">設定後，這台和其他電腦上的「我的持股」會自動同步。持股會用你設定的<b>同步密碼</b>加密後存到 GitHub，沒有密碼的人只會看到亂碼。</p>
+      <ol class="steps">
+        <li>每台電腦都要先設定過 GitHub 金鑰（「管理自選股」用的那組）。</li>
+        <li>每台電腦輸入<b>相同</b>的同步密碼（至少 8 個字）。</li>
+        <li>忘記密碼就解不開雲端的資料，請自己記好。</li>
+      </ol>
+      <div class="field"><input type="password" id="csPass" placeholder="同步密碼（至少 8 個字）" autocomplete="new-password"><button class="btn" id="csShow" type="button">顯示</button></div>
+      <div class="msg" id="csMsg"></div>
+    </div>
+    <footer class="mf">
+      <button class="btn ghost" id="csOff" title="這台瀏覽器停止同步（雲端資料不會刪除）">停用這台</button>
+      <button class="btn" id="csOver" title="用這台的持股覆蓋雲端（會用目前輸入的密碼重新加密）">以這台覆蓋雲端</button>
+      <button class="btn primary" id="csSave">儲存並同步</button>
+    </footer>
+  </div>
+</div>
+
 <div class="modal-bg" id="aiBg" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="aiTitle" style="max-width:820px">
     <header><h3 id="aiTitle">匯出給 AI 分析</h3><button class="x" id="aiClose" aria-label="關閉">×</button></header>
@@ -624,6 +645,7 @@ html.embed tr.detail > td{background:transparent}
 <div id="tip" role="tooltip"></div>
 <footer><div class="wrap">資料每個交易日盤後自動更新 · <span id="footUpd"></span> · 本站非證券投資顧問事業，內容不構成投資建議（<a href="#disclaimer">免責聲明</a>）<div class="credit"><span>作者 <b>@DORIGO</b></span><a class="thanks" href="https://p.ecpay.com.tw/9EE4BD6" target="_blank" rel="noopener">☕ 感謝作者</a></div></div></footer>
 
+<script src="vendor/holdsync.js"></script>
 <script>
 (function(){
   "use strict";
@@ -666,6 +688,7 @@ html.embed tr.detail > td{background:transparent}
       EMBED ? null : getJSON("data/market.json").then(renderMarket).catch(() => {})
     ]);
     await load("data/latest.json");
+    cloudLast = Date.now(); cloudSync(false);
   }
 
   async function load(url){
@@ -1083,10 +1106,10 @@ html.embed tr.detail > td{background:transparent}
   document.addEventListener("click", e => { const el = e.target.closest("th[data-tip]"); if (el){ showTip(el); setTimeout(hideTip, 4000); } });
   addEventListener("scroll", hideTip, {passive:true});
 
-  // ════════ 我的持股（只存在這台裝置的瀏覽器） ════════
+  // ════════ 我的持股（存在瀏覽器；可加密同步到 GitHub） ════════
   const HKEY = "holdings_v1";
   function loadH(){ try { return JSON.parse(localStorage.getItem(HKEY) || "{}") || {}; } catch(e){ return {}; } }
-  function saveH(){ try { localStorage.setItem(HKEY, JSON.stringify(state.holdings)); } catch(e){} queueSync(); }
+  function saveH(){ try { localStorage.setItem(HKEY, JSON.stringify(state.holdings)); } catch(e){} if (window.HoldSync) HoldSync.markChanged(); queueSync(); }
 
   // ── 持股自動同步到 GitHub Secret「HOLDINGS」（Email 日報用；需要金鑰有 Secrets 權限） ──
   const SYNC_KEY = "hold_sync_v1";
@@ -1121,10 +1144,65 @@ html.embed tr.detail > td{background:transparent}
     if (st === "busy") return `<span class="sync-chip">同步中…</span>`;
     if (!i) return `<span class="sync-chip">尚未同步到 Email 日報</span>`;
     const t = new Date(i.at), ts = `${t.getMonth() + 1}/${t.getDate()} ${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}`;
-    return i.ok ? `<span class="sync-chip ok" title="Email 日報會使用這份持股">✓ 已同步 ${ts}</span>`
+    return i.ok ? `<span class="sync-chip ok" title="Email 日報會使用這份持股">✓ 日報已同步 ${ts}</span>`
       : `<span class="sync-chip bad" data-hact="synchelp" title="點一下看說明">⚠ ${i.perm ? "金鑰缺少 Secrets 權限" : "同步失敗"}</span>`;
   }
   function renderSyncChip(st){ const el = document.getElementById("syncChip"); if (el) el.innerHTML = syncChipHTML(st); }
+
+  // ── 持股雲端同步（多台電腦） ──
+  function cloudChipHTML(){
+    if (!window.HoldSync || !HoldSync.hasPass()) return "";
+    const i = HoldSync.state();
+    if (!i) return `<span class="sync-chip">☁ 同步中…</span>`;
+    const t = new Date(i.at), ts = `${t.getMonth() + 1}/${t.getDate()} ${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}`;
+    if (i.ok) return `<span class="sync-chip ok" title="${i.dir === "down" ? "已從雲端取得最新持股" : "雲端已是最新"}">☁ 雲端已同步 ${ts}</span>`;
+    const why = i.code === "badpass" ? "密碼和雲端不符" : i.code === "perm" ? "金鑰沒有寫入權限" : "同步失敗";
+    return `<span class="sync-chip bad" data-hact="cloud" title="${esc(i.err || "")}">☁ ${why}</span>`;
+  }
+  function renderCloudChip(){ const el = document.getElementById("cloudChip"); if (el) el.innerHTML = cloudChipHTML(); }
+  if (window.HoldSync) HoldSync.onChange(renderCloudChip);
+  async function cloudSync(silent){
+    if (!window.HoldSync || !HoldSync.enabled()) return;
+    const r = await HoldSync.sync({ silent });
+    if (r && r.changed){ state.holdings = loadH(); render(); queueSync(); }
+    renderCloudChip();
+    return r;
+  }
+  let cloudLast = 0;
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && Date.now() - cloudLast > 60000){ cloudLast = Date.now(); cloudSync(true); } });
+  function csMsg(t, k){ const el = $("#csMsg"); el.className = "msg" + (t ? " show " + k : ""); el.textContent = t || ""; }
+  function openCloud(){
+    if (!hasTok()){ alert("這台瀏覽器還沒有設定 GitHub 金鑰。\n請先按右上角「＋ 管理自選股」設定金鑰，再回來設定雲端同步。"); return; }
+    const i = window.HoldSync && HoldSync.state();
+    $("#csPass").value = ""; $("#csPass").type = "password"; $("#csShow").textContent = "顯示";
+    csMsg(HoldSync.hasPass() ? (i && !i.ok ? (i.code === "badpass" ? "這台的同步密碼和雲端資料不符。請輸入另一台電腦設定的密碼；或按「以這台覆蓋雲端」改用這台的資料。" : "上次同步失敗：" + (i.err || "")) : "這台已啟用同步。要更換密碼請輸入新密碼。") : "", i && !i.ok ? "err" : "info");
+    $("#csOff").hidden = !HoldSync.hasPass();
+    $("#csBg").classList.add("show"); setTimeout(() => $("#csPass").focus(), 50);
+  }
+  const closeCloud = () => $("#csBg").classList.remove("show");
+  $("#csClose").addEventListener("click", closeCloud);
+  $("#csBg").addEventListener("click", e => { if (e.target.id === "csBg") closeCloud(); });
+  $("#csShow").addEventListener("click", () => { const p = $("#csPass"); p.type = p.type === "password" ? "text" : "password"; $("#csShow").textContent = p.type === "password" ? "顯示" : "隱藏"; });
+  const csPassOk = () => { const v = $("#csPass").value; if (v.length < 8){ csMsg("同步密碼至少 8 個字。", "err"); return null; } return v; };
+  $("#csSave").addEventListener("click", async () => {
+    const v = csPassOk(); if (!v) return;
+    HoldSync.setPass(v); csMsg("同步中…", "info");
+    const r = await cloudSync(false);
+    if (r && r.error){ csMsg(r.error.code === "badpass" ? "密碼和雲端資料不符。請輸入另一台電腦設定的同步密碼。" : "同步失敗：" + r.error.message, "err"); return; }
+    csMsg(r && r.changed ? `已從雲端取得 ${Object.keys(state.holdings).length} 檔持股。` : "同步完成。之後在任一台電腦修改持股，都會自動同步。", "ok");
+    setTimeout(closeCloud, 1400);
+  });
+  $("#csOver").addEventListener("click", async () => {
+    const v = $("#csPass").value ? csPassOk() : (HoldSync.hasPass() ? "__keep__" : csPassOk()); if (!v) return;
+    if (!confirm(`用這台的 ${Object.keys(state.holdings).length} 檔持股覆蓋雲端資料？其他電腦下次打開時會改成這份。`)) return;
+    if (v !== "__keep__") HoldSync.setPass(v);
+    try { await HoldSync.overwriteRemote(); csMsg("已用這台的持股覆蓋雲端。", "ok"); renderCloudChip(); setTimeout(closeCloud, 1400); }
+    catch(e){ csMsg("上傳失敗：" + e.message, "err"); }
+  });
+  $("#csOff").addEventListener("click", () => {
+    if (!confirm("停用這台瀏覽器的雲端同步？（雲端資料和這台的持股都不會被刪除）")) return;
+    HoldSync.setPass(null); renderCloudChip(); closeCloud();
+  });
   setTimeout(() => { if (hasTok() && !syncInfo() && Object.keys(state.holdings).length) queueSync(); }, 0);
   state.holdings = loadH();
   const stockOf = code => state.data && state.data.stocks.find(s => s.code === code);
@@ -1139,6 +1217,8 @@ html.embed tr.detail > td{background:transparent}
     const H = state.holdings, codes = Object.keys(H), el = $("#holdings");
     const head = `<div class="hold-head"><h2>我的持股</h2>
       <a class="btn" href="realtime.html" style="text-decoration:none" title="開盤時間即時看持股的股價與損益">🍊 盤中即時看板</a>
+      <span id="cloudChip">${cloudChipHTML()}</span>
+      <button class="btn" data-hact="cloud" title="讓多台電腦的持股自動同步">☁ 雲端同步</button>
       <span id="syncChip">${syncChipHTML()}</span>
       <button class="btn" data-hact="mail" title="把持股同步到 GitHub Secret「HOLDINGS」，每日 Email 日報才會提醒停損">📧 同步到 Email 日報</button>
       <button class="btn" data-hact="export" title="下載持股資料，可在其他裝置匯入">匯出</button>
@@ -1146,7 +1226,7 @@ html.embed tr.detail > td{background:transparent}
       <input type="file" id="hImport" accept="application/json" hidden>
       <div class="mail-note">📧 Email 日報：交易日晚上約 <b>22:10～22:30</b> 寄出（當天資料提早齊全時約 17:20～17:40）；週末與國定假日不寄。</div></div>`;
     if (!codes.length){
-      el.innerHTML = `<div class="card">${head}<div class="hold-empty">還沒有記錄持股。點開表格中任一檔股票 →「我的持股」分頁，輸入買進價格、股數與停損價，就會在這裡顯示損益與停損提醒。資料只存在這台裝置的瀏覽器，不會公開。</div></div>`;
+      el.innerHTML = `<div class="card">${head}<div class="hold-empty">還沒有記錄持股。點開表格中任一檔股票 →「我的持股」分頁，輸入買進價格、股數與停損價，就會在這裡顯示損益與停損提醒。資料存在這台瀏覽器；開啟「☁ 雲端同步」後會加密存到 GitHub，多台電腦自動同步。</div></div>`;
       return;
     }
     let tc = 0, tv = 0, hits = 0;
@@ -1179,7 +1259,7 @@ html.embed tr.detail > td{background:transparent}
       <div class="table-wrap"><table>
         <thead><tr><th data-sort="name">股票</th><th data-sort="shares">股數</th><th data-sort="cost">買進均價</th><th data-sort="close">最新收盤</th><th data-sort="val">市值</th><th data-tip="pnl" data-sort="pnl">損益</th><th data-tip="pnl" data-sort="pct">報酬率</th><th data-tip="stop" data-sort="stop">停損價</th><th data-sort="toStop">距停損</th></tr></thead>
         <tbody>${rows}</tbody></table></div>
-      <div class="hint2" style="padding:0 16px 14px">以最新收盤價計算，未扣手續費與證交稅。點標題可排序，點任一列可修改。資料只存在這台裝置的瀏覽器，換裝置請用「匯出／匯入」。</div></div>`;
+      <div class="hint2" style="padding:0 16px 14px">以最新收盤價計算，未扣手續費與證交稅。點標題可排序，點任一列可修改。資料存在這台瀏覽器；按「☁ 雲端同步」可讓多台電腦自動同步（加密後存到 GitHub），也可用「匯出／匯入」。</div></div>`;
   }
   $("#holdings").addEventListener("click", e => {
     const th = e.target.closest("th[data-sort]");
@@ -1191,6 +1271,7 @@ html.embed tr.detail > td{background:transparent}
       return;
     }
     if (act && act.dataset.hact === "import"){ $("#hImport").click(); return; }
+    if (act && act.dataset.hact === "cloud"){ openCloud(); return; }
     if (act && act.dataset.hact === "synchelp"){
       const i = syncInfo();
       if (i && i.perm){ alert(SYNC_PERM_HELP); window.open("https://github.com/settings/personal-access-tokens", "_blank", "noopener"); }
@@ -1602,7 +1683,7 @@ html.embed tr.detail > td{background:transparent}
       </div>
       ${calc}
       <div class="hbtns"><button class="btn primary" data-hs="save">儲存</button>${state.holdings[s.code] ? `<button class="btn ghost" data-hs="del">刪除這筆持股</button>` : ""}</div>
-      <div class="hint2">資料只存在這台裝置的瀏覽器，不會上傳到 GitHub，別人看不到。損益以最新收盤價計算，未扣手續費與證交稅。</div>`;
+      <div class="hint2">資料存在這台瀏覽器；開啟「☁ 雲端同步」時會用你的同步密碼加密後存到 GitHub，沒有密碼的人看不到內容。損益以最新收盤價計算，未扣手續費與證交稅。</div>`;
   }
   $("#tbody").addEventListener("click", e => {
     const tab = e.target.closest(".dtabs button");

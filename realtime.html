@@ -318,6 +318,7 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
   </div>
 </div>
 
+<script src="vendor/holdsync.js"></script>
 <script>
 (() => {
   const $ = s => document.querySelector(s);
@@ -802,7 +803,11 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
       fetch("data/latest.json", { cache: "no-cache" }).then(r => r.json()).then(j => S.latest = j).catch(() => {}),
       fetch("data/all_stocks.json").then(r => r.json()).then(j => S.all = j.stocks || {}).catch(() => {}),
     ]);
-    render(); await tick(true); schedule();
+    render();
+    if (window.HoldSync && HoldSync.enabled()){
+      try { const r = await HoldSync.sync({ silent: true }); if (r && r.changed) S.holdings = JSON.parse(ls.get("holdings_v1", "{}")) || {}; } catch(e){}
+    }
+    await tick(true); schedule();
   })();
 })();
 </script>

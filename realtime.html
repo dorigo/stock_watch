@@ -177,6 +177,7 @@ select.sel{font:inherit;font-size:13px;height:32px;border-radius:999px;border:2p
 /* 個股明細彈窗 */
 .card{cursor:pointer}
 .c-acts{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;padding-top:8px;border-top:1.5px dashed var(--line-2);font-size:12px;color:var(--ink-3);font-weight:700}
+.pill.tgt{background:var(--up);color:#fff}
 .c-acts b{font-family:var(--num);color:var(--ink-2)}
 .btn.sell{color:var(--down);border-color:color-mix(in srgb,var(--down) 45%,var(--line))}
 .btn.sell:hover{background:var(--down-soft)}
@@ -566,12 +567,17 @@ html.embed .to-top{display:none}
   function checkStops(){
     for (const c in S.holdings){
       const h = S.holdings[c], q = S.q[c];
-      if (!h || !h.stop || !q || q.price == null || q.price > h.stop) continue;
-      const key = tpe().date + c;
-      if (S.notified[key]) continue;
-      S.notified[key] = 1;
-      if ("Notification" in window && Notification.permission === "granted"){
-        try { new Notification(`⚠ ${nameOf(c)} 跌破停損`, { body: `最新價 ${pd(q.price)}，停損價 ${pd(h.stop)}`, tag: key, icon: "favicon.svg" }); } catch(e){}
+      if (!h || !q || q.price == null) continue;
+      const hits = [];
+      if (h.stop && q.price <= h.stop) hits.push(["s", `⚠ ${nameOf(c)} 跌破停損`, `最新價 ${pd(q.price)}，停損價 ${pd(h.stop)}`]);
+      if (h.target && q.price >= h.target) hits.push(["t", `🎯 ${nameOf(c)} 漲到目標價`, `最新價 ${pd(q.price)}，目標價 ${pd(h.target)}`]);
+      for (const [k, title, body] of hits){
+        const key = tpe().date + c + k;
+        if (S.notified[key]) continue;
+        S.notified[key] = 1;
+        if ("Notification" in window && Notification.permission === "granted"){
+          try { new Notification(title, { body, tag: key, icon: "favicon.svg" }); } catch(e){}
+        }
       }
     }
   }
@@ -581,7 +587,7 @@ html.embed .to-top{display:none}
     b.hidden = false;
     if (!canNotify()){ b.textContent = "🔕 不支援通知"; return; }
     const p = Notification.permission;
-    b.textContent = p === "granted" ? "🔔 通知已開啟" : p === "denied" ? "🔕 通知被封鎖" : "🔔 停損通知";
+    b.textContent = p === "granted" ? "🔔 通知已開啟" : p === "denied" ? "🔕 通知被封鎖" : "🔔 停損／目標價通知";
   }
   $("#notifyBtn").addEventListener("click", async () => {
     if (!canNotify()){ showErr("這個瀏覽器不支援網頁通知（常見於 App 內建的瀏覽器）。請改用 Chrome、Edge 或 Safari 開啟這個網址；跌破停損的卡片仍會框紅提醒。"); return; }
@@ -668,6 +674,7 @@ html.embed .to-top{display:none}
     if (q.up && r.p != null && r.p >= q.up) pills.push(`<span class="pill lim-up">漲停</span>`);
     if (q.dn && r.p != null && r.p <= q.dn) pills.push(`<span class="pill lim-dn">跌停</span>`);
     if (r.stopHit) pills.push(`<span class="pill red">⚠ 跌破停損</span>`);
+    if (h && h.target && r.p != null && r.p >= h.target) pills.push(`<span class="pill tgt">🎯 達目標價</span>`);
     else if (r.toStop != null && r.toStop < 2) pills.push(`<span class="pill warn">接近停損</span>`);
     if (q.date && !q.traded) pills.push(`<span class="pill watch">尚未成交</span>`);
     // 今日區間條
@@ -693,7 +700,7 @@ html.embed .to-top{display:none}
       <div class="c-chart">${chart(c, r)}</div>
       ${range}
       <div class="kv">${kv}${kv2}</div>
-      ${x.held ? `<div class="c-acts"><span>買進均價 <b>${pd(h.cost)}</b></span><button class="btn sm sell" data-sell="${esc(c)}" title="賣出後損益記到股票帳本，持有股數自動扣掉">賣出</button></div>` : ""}
+      ${x.held ? `<div class="c-acts"><span>買進均價 <b>${pd(h.cost)}</b>${h.target ? `　目標價 <b>${pd(h.target)}</b>${r.p != null && r.p < h.target ? `<small>（差 ${fmt((h.target - r.p) / r.p * 100, 1)}%）</small>` : ""}` : ""}</span><button class="btn sm sell" data-sell="${esc(c)}" title="賣出後損益記到股票帳本，持有股數自動扣掉">賣出</button></div>` : ""}
     </article>`;
   }
 

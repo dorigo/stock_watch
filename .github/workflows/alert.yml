@@ -1,0 +1,44 @@
+name: 盤中到價通知
+
+# 開盤日 8:43（台北）啟動，等到 9:00 開盤後每分鐘檢查一次持股價格，13:31 結束。
+# 漲到「目標價」或跌破「停損價」時寄 Email（和 Email 日報共用同一組 MAIL_* Secrets）。
+# 網頁上修改目標價／停損價後，會寫入 alert.txt 重新啟動，讓新設定當天就生效。
+on:
+  schedule:
+    - cron: "43 0 * * 1-5"   # 台北 08:43（週一～週五）
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - alert.txt             # 網頁修改目標價後自動重新啟動
+
+permissions:
+  contents: write
+
+concurrency:
+  group: intraday-alert
+  cancel-in-progress: true    # 新設定啟動時，停掉舊的那一個
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: 盤中每分鐘檢查目標價與停損價
+        env:
+          MAIL_USER: ${{ secrets.MAIL_USER }}
+          MAIL_PASS: ${{ secrets.MAIL_PASS }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+          MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
+          MAIL_PORT: ${{ secrets.MAIL_PORT }}
+          HOLDINGS: ${{ secrets.HOLDINGS }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          python scripts/intraday_alert.py

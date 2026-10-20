@@ -406,7 +406,10 @@ small.unit{font-size:12px;color:var(--ink-3);font-family:"Noto Sans TC",sans-ser
 .hold-empty{padding:16px;font-size:14px;color:var(--ink-3)}
 .tag.held{background:var(--accent);color:var(--panel)}
 .tag.stop{background:var(--down);color:#fff}
-.hform{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:720px}
+.hform{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;max-width:960px}
+.alert-note{margin-top:10px;padding:8px 12px;border-radius:10px;background:var(--line-2);max-width:960px}
+.tag.tgt{background:var(--up-soft);color:var(--up)}
+@media (max-width:900px){.hform{grid-template-columns:1fr 1fr}}
 @media (max-width:640px){.hform{grid-template-columns:1fr}}
 .hform label{font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:4px}
 .hform input{font:inherit;font-size:14px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:0 10px;height:38px}
@@ -1138,6 +1141,7 @@ html.embed .to-top{display:none}
     },
     "風險管理": {
       stop: ["停損", "事先決定好「跌到多少就賣」的價格，避免小虧變大虧。例如買在 100 元、停損設 92 元，最多就虧 8%。新手最常見的錯誤就是不停損、越攤越平。"],
+      target: ["目標價", "事先想好「漲到多少要考慮賣出（獲利了結）」的價格。設定後，開盤時間股價漲到這個價格會寄 Email 通知你。到了不一定要賣，但可以提醒你照計畫檢查一次。"],
       pnl: ["損益與報酬率", "損益 =（收盤價 − 買進價）× 股數；報酬率 = 損益 ÷ 買進成本。這裡的數字未扣手續費與證交稅（買賣一趟約 0.4%～0.6%）。"]
     },
     "股利": {
@@ -1228,12 +1232,26 @@ html.embed .to-top{display:none}
       const k = await gh("/actions/secrets/public-key");
       await gh("/actions/secrets/HOLDINGS", { method: "PUT", body: JSON.stringify({ encrypted_value: window.sealBox(k.key, JSON.stringify(state.holdings)), key_id: k.key_id }) });
       setSyncInfo({ ok: true, at: new Date().toISOString(), n: Object.keys(state.holdings).length, sig: JSON.stringify(state.holdings) });
+      pingAlert().catch(() => {});
       if (manual) alert(`已同步 ${Object.keys(state.holdings).length} 檔持股到 Email 日報。之後在這裡修改持股，會自動同步。`);
     } catch(e){
       const perm = e.status === 403 || e.status === 404;
       setSyncInfo({ ok: false, at: new Date().toISOString(), perm, err: e.message });
       if (manual) alert(perm ? SYNC_PERM_HELP : "同步失敗：" + e.message);
     } finally { syncBusy = false; renderSyncChip(); }
+  }
+  // 交易日盤中改了目標價／停損價：寫入 alert.txt，讓「盤中到價通知」用新設定重新啟動（當天就生效）
+  async function pingAlert(){
+    const sig = JSON.stringify(Object.entries(state.holdings).filter(([, h]) => h && (h.target || h.stop)).map(([c, h]) => [c, h.target || 0, h.stop || 0]).sort());
+    let last = ""; try { last = localStorage.getItem("alert_sig") || ""; } catch(e){}
+    if (sig === last) return;
+    const t = tpeNow();
+    if (t.wk && t.min >= 7 * 60 && t.min < 13 * 60 + 25 && sig !== "[]"){
+      let sha; try { sha = (await gh("/contents/alert.txt")).sha; } catch(e){ if (e.status !== 404) throw e; }
+      await gh("/contents/alert.txt", { method: "PUT", body: JSON.stringify({ message: "更新到價通知設定（網頁）",
+        content: b64enc("最後一次更新目標價／停損價：" + new Date().toISOString() + "\n"), ...(sha ? { sha } : {}) }) });
+    }
+    try { localStorage.setItem("alert_sig", sig); } catch(e){}
   }
   const SYNC_PERM_HELP = "這組 GitHub 金鑰還沒有「Secrets」權限，所以無法自動同步持股到 Email 日報。\n\n設定一次就好：\n1. 打開 github.com/settings/personal-access-tokens（按確定後會自動開啟）\n2. 點你建立的那組金鑰 → Edit\n3. Repository permissions → Secrets 改為「Read and write」→ Update\n4. 回到這裡按「📧 同步到 Email 日報」\n\n金鑰本身不會改變，不需要重新貼。";
   function syncChipHTML(st){
@@ -1324,7 +1342,8 @@ html.embed .to-top{display:none}
     if (close == null || !h || !h.cost || !h.shares) return null;
     const cost = h.cost * h.shares, val = close * h.shares, pnl = val - cost;
     return { cost, val, pnl, pct: pnl / cost * 100, stopHit: !!(h.stop && close <= h.stop),
-      toStop: h.stop ? (close - h.stop) / close * 100 : null, risk: h.stop ? (h.cost - h.stop) * h.shares : null };
+      toStop: h.stop ? (close - h.stop) / close * 100 : null, risk: h.stop ? (h.cost - h.stop) * h.shares : null,
+      targetHit: !!(h.target && close >= h.target), toTarget: h.target ? (h.target - close) / close * 100 : null };
   }
   function renderHoldings(){
     setTimeout(() => { markSort("#holdings", state.hsort.key, state.hsort.dir); fixHold.build(); });
@@ -1339,7 +1358,7 @@ html.embed .to-top{display:none}
       <button class="btn" data-hact="export" title="下載持股資料，可在其他裝置匯入">匯出</button>
       <button class="btn" data-hact="import" title="匯入先前匯出的持股資料">匯入</button>
       <input type="file" id="hImport" accept="application/json" hidden>
-      <div class="mail-note">📧 Email 日報：交易日晚上約 <b>22:10～22:30</b> 寄出（當天資料提早齊全時約 17:20～17:40）；週末與國定假日不寄。</div></div>`;
+      <div class="mail-note">📧 Email 日報：交易日晚上約 <b>22:10～22:30</b> 寄出（當天資料提早齊全時約 17:20～17:40）；週末與國定假日不寄。<br>🎯 到價通知：在個股的「我的持股」分頁設定<b>目標價</b>，開盤時間漲到目標價或跌破停損價會立刻寄信（約 1～2 分鐘內）。</div></div>`;
     if (!codes.length){
       el.innerHTML = `<div class="card">${head}<div class="hold-empty">還沒有記錄持股。點開表格中任一檔股票 →「我的持股」分頁，輸入買進價格、股數與停損價，就會在這裡顯示損益與停損提醒。資料存在這台瀏覽器；開啟「☁ 雲端同步」後會加密存到 GitHub，多台電腦自動同步。</div></div>`;
       return;
@@ -1348,14 +1367,14 @@ html.embed .to-top{display:none}
     let tc = 0, tv = 0, hits = 0;
     const items = codes.map(c => { const h = H[c], s = stockOf(c), k = holdCalc(s && s.close, h); return { c, h, s, k }; });
     const HG = { name: x => x.s ? x.s.name : (x.h.name || x.c), shares: x => x.h.shares, cost: x => x.h.cost, close: x => x.s && x.s.close,
-      val: x => x.k && x.k.val, pnl: x => x.k && x.k.pnl, pct: x => x.k && x.k.pct, stop: x => x.h.stop, toStop: x => x.k && x.k.toStop };
+      val: x => x.k && x.k.val, pnl: x => x.k && x.k.pnl, pct: x => x.k && x.k.pct, stop: x => x.h.stop, toStop: x => x.k && x.k.toStop, target: x => x.h.target };
     items.sort(cmpBy(HG[state.hsort.key] || HG.pnl, state.hsort.dir));
     const rows = items.map(({ c, h, s, k }) => {
       if (k){ tc += k.cost; tv += k.val; if (k.stopHit) hits++; }
       const on = state.cmp.includes(c), full = state.cmp.length >= 4 && !on;
       return `<tr data-code="${esc(c)}" class="hrow" style="cursor:pointer">
         <td class="cmp-td"><input type="checkbox" class="cmpchk" data-code="${esc(c)}" ${on ? "checked" : ""} ${full || !s ? "disabled" : ""} title="${!s ? "不在自選股清單，沒有資料可比較" : full ? "最多比較 4 檔" : "勾選後可比較"}" aria-label="比較 ${esc(s ? s.name : c)}"></td>
-        <td class="nm-td"><b>${esc(s ? s.name : (h.name || c))}</b> <span class="num" style="color:var(--ink-3);font-size:12px">${esc(c)}</span>${k && k.stopHit ? ` <span class="tag stop" data-tip="t_stop">跌破停損</span>` : ""}</td>
+        <td class="nm-td"><b>${esc(s ? s.name : (h.name || c))}</b> <span class="num" style="color:var(--ink-3);font-size:12px">${esc(c)}</span>${k && k.stopHit ? ` <span class="tag stop" data-tip="t_stop">跌破停損</span>` : ""}${k && k.targetHit ? ` <span class="tag tgt">🎯 達目標價</span>` : ""}</td>
         <td class="num" style="white-space:nowrap">${fmt(h.shares)} <small class="unit">股</small>${h.shares % 1000 === 0 ? `<span class="sub">${fmt(h.shares/1000)} 張</span>` : ""}</td>
         <td class="num">${fmt(h.cost, 2)}</td>
         <td class="num">${s ? fmt(s.close, 2) : "—"}</td>
@@ -1364,6 +1383,7 @@ html.embed .to-top{display:none}
         <td class="num ${k ? cls(k.pct) : ""}">${k ? sgn(k.pct, 2) + "%" : (s ? "—" : "不在自選股")}</td>
         <td class="num">${h.stop ? fmt(h.stop, 2) : "未設定"}</td>
         <td class="num ${k && k.toStop != null && k.toStop < 3 ? "down" : ""}">${k && k.toStop != null ? (k.stopHit ? "已跌破" : fmt(k.toStop, 1) + "%") : "—"}</td>
+        <td class="num">${h.target ? `${fmt(h.target, 2)}<span class="sub ${k && k.targetHit ? "up" : ""}">${k ? (k.targetHit ? "已達到" : "差 " + fmt(k.toTarget, 1) + "%") : ""}</span>` : `<span style="color:var(--ink-3)">未設定</span>`}</td>
         <td class="sell-td"><button class="btn sell-btn" data-sell="${esc(c)}" title="賣出這檔，記到股票帳本">賣出</button></td>
       </tr>`;
     }).join("");
@@ -1379,7 +1399,7 @@ html.embed .to-top{display:none}
           ${state.cmp.length ? `<button class="btn ghost" data-hact="cmpclear">清除</button>` : ""}</div>
       </div>
       <div class="table-wrap"><table>
-        <thead><tr><th class="cmp-th" title="勾選 2～4 檔後按「比較」">比較</th><th class="nm-th" data-sort="name">股票</th><th data-sort="shares">股數</th><th data-sort="cost">買進均價</th><th data-sort="close">最新收盤</th><th data-sort="val">市值</th><th data-tip="pnl" data-sort="pnl">損益</th><th data-tip="pnl" data-sort="pct">報酬率</th><th data-tip="stop" data-sort="stop">停損價</th><th data-sort="toStop">距停損</th><th class="sell-th">賣出</th></tr></thead>
+        <thead><tr><th class="cmp-th" title="勾選 2～4 檔後按「比較」">比較</th><th class="nm-th" data-sort="name">股票</th><th data-sort="shares">股數</th><th data-sort="cost">買進均價</th><th data-sort="close">最新收盤</th><th data-sort="val">市值</th><th data-tip="pnl" data-sort="pnl">損益</th><th data-tip="pnl" data-sort="pct">報酬率</th><th data-tip="stop" data-sort="stop">停損價</th><th data-sort="toStop">距停損</th><th data-tip="target" data-sort="target">目標價</th><th class="sell-th">賣出</th></tr></thead>
         <tbody>${rows}</tbody></table></div>
       <div class="hint2" style="padding:0 16px 14px">以最新收盤價計算，未扣手續費與證交稅。點標題可排序，點任一列可修改；賣出時按「賣出」，損益會記到<a href="ledger.html">股票帳本</a>，股數自動扣掉。資料存在這台瀏覽器；按「☁ 雲端同步」可讓多台電腦自動同步（加密後存到 GitHub），也可用「匯出／匯入」。</div></div>`;
   }
@@ -1526,7 +1546,7 @@ html.embed .to-top{display:none}
       const clean = {};
       for (const [c, h] of Object.entries(obj)){
         if (/^[0-9]{4,6}[A-Z]?$/.test(c) && h && +h.cost > 0 && +h.shares > 0)
-          clean[c] = { cost: +h.cost, shares: +h.shares, stop: +h.stop > 0 ? +h.stop : null, name: String(h.name || "").slice(0, 30) };
+          clean[c] = { cost: +h.cost, shares: +h.shares, stop: +h.stop > 0 ? +h.stop : null, target: +h.target > 0 ? +h.target : null, name: String(h.name || "").slice(0, 30) };
       }
       if (confirm(`匯入 ${Object.keys(clean).length} 檔持股？會覆蓋這台裝置目前的持股資料。`)){ state.holdings = clean; saveH(); render(); }
     }).catch(() => alert("檔案格式不正確"));
@@ -1896,7 +1916,10 @@ html.embed .to-top{display:none}
         <label>持有股數 <span style="color:var(--ink-3)">（1 張 = 1,000 股）</span><input type="number" step="1" min="0" id="hShares" value="${h.shares || ""}" placeholder="例如 1000"></label>
         <label><span data-tip="stop" style="text-decoration:underline dotted">停損價（元）</span><input type="number" step="0.01" min="0" id="hStop" value="${h.stop || ""}" placeholder="跌破就賣的價格">
           <span class="quick">${[5, 8, 10].map(p => `<button type="button" data-hq="${p}">買價 -${p}%</button>`).join("")}</span></label>
+        <label><span data-tip="target" style="text-decoration:underline dotted">目標價（元）</span><input type="number" step="0.01" min="0" id="hTarget" value="${h.target || ""}" placeholder="漲到就通知我">
+          <span class="quick">${[10, 20, 30].map(p => `<button type="button" data-ht="${p}">買價 +${p}%</button>`).join("")}</span></label>
       </div>
+      <div class="hint2 alert-note">📧 <b>盤中到價寄信</b>：開盤時間每分鐘檢查一次，股價<b class="up">漲到目標價</b>或<b class="down">跌破停損價</b>時寄 Email 給你（每天每檔各一次，改了價格會重新通知）。需要先開啟「📧 同步到 Email 日報」。</div>
       ${calc}
       <div class="hbtns"><button class="btn primary" data-hs="save">儲存</button>${state.holdings[s.code] ? `<button class="btn sell-btn" data-hs="sell" title="賣出後損益記到股票帳本，持有股數自動扣掉">賣出</button><button class="btn ghost" data-hs="del">刪除這筆持股</button>` : ""}</div>
       <div class="hint2">資料存在這台瀏覽器；開啟「☁ 雲端同步」時會用你的同步密碼加密後存到 GitHub，沒有密碼的人看不到內容。損益以最新收盤價計算，未扣手續費與證交稅。</div>`;
@@ -1906,15 +1929,18 @@ html.embed .to-top{display:none}
     if (tab){ state.tab = tab.dataset.t; render(); return; }
     const q = e.target.closest("[data-hq]");
     if (q){ const c = parseFloat($("#hCost").value); if (c > 0) $("#hStop").value = (c * (1 - q.dataset.hq / 100)).toFixed(2); else $("#hCost").focus(); return; }
+    const qt = e.target.closest("[data-ht]");
+    if (qt){ const c = parseFloat($("#hCost").value); if (c > 0) $("#hTarget").value = (c * (1 + qt.dataset.ht / 100)).toFixed(2); else $("#hCost").focus(); return; }
     const hs = e.target.closest("[data-hs]");
     if (hs && state.open){
       const code = state.open;
       if (hs.dataset.hs === "sell"){ openSell(code); return; }
       if (hs.dataset.hs === "del"){ if (confirm("刪除這筆持股？\n\n（如果是賣掉了，建議改按「賣出」，損益會記到股票帳本。）")){ delete state.holdings[code]; saveH(); render(); } return; }
-      const cost = parseFloat($("#hCost").value), shares = parseInt($("#hShares").value, 10), stop = parseFloat($("#hStop").value);
+      const cost = parseFloat($("#hCost").value), shares = parseInt($("#hShares").value, 10), stop = parseFloat($("#hStop").value), target = parseFloat($("#hTarget").value);
       if (!(cost > 0) || !(shares > 0)){ alert("請輸入買進均價與持有股數"); return; }
       const s = stockOf(code);
-      state.holdings[code] = { cost, shares, stop: stop > 0 ? stop : null, name: s ? s.name : "" };
+      if (target > 0 && stop > 0 && target <= stop){ alert("目標價要比停損價高"); return; }
+      state.holdings[code] = { ...(state.holdings[code] || {}), cost, shares, stop: stop > 0 ? stop : null, target: target > 0 ? target : null, name: s ? s.name : "" };
       saveH(); render();
     }
   }, true);

@@ -125,6 +125,15 @@ Google 帳戶 → 安全性 → 開啟「兩步驟驗證」→ 搜尋「應用�
 
 **持股自動同步**：把網站用的 GitHub 金鑰多開一個權限（github.com/settings/personal-access-tokens → 點金鑰 → Edit → Repository permissions → **Secrets** 設為 `Read and write`），之後在網站「我的持股」新增、修改、刪除，網站會自動加密並更新 `HOLDINGS`，持股區塊會顯示「✓ 已同步」。沒有這個權限時，「📧 同步到 Email 日報」會改成複製內容，讓你手動貼到 Secret。Secrets 不會出現在公開的 repo 裡，別人看不到。要停止寄信，刪除 `MAIL_PASS` 即可。
 
+### 盤中到價通知
+
+在個股的「我的持股」分頁填**目標價**（也會用到停損價），交易日開盤時間股價**漲到目標價**或**跌破停損價**，就會寄一封 Email（和日報用同一組 `MAIL_*` Secrets，持股與目標價來自自動同步的 `HOLDINGS`）。
+
+- 由 `.github/workflows/alert.yml` 執行 `scripts/intraday_alert.py`：每個交易日台北 08:43 啟動，9:00～13:31 每分鐘查一次證交所即時報價。GitHub 排程偶爾會延遲幾分鐘到十幾分鐘啟動。
+- 每天每檔每種通知只寄一次；修改目標價或停損價後會重新提醒。盤中在網站上修改時，網站會寫入 `alert.txt` 讓通知用新設定重新啟動，當天就生效。
+- repo 是公開的，所以執行紀錄只寫檔數與寄出封數，`data/alert_state.json` 只存雜湊值，看不出是哪一檔、什麼價格。
+- 公開 repo 的 Actions 不計費；這個工作每個交易日大約跑 5 小時。不需要時可到 Actions → 盤中到價通知 → ⋯ → Disable workflow。
+
 ## 修改自選股
 
 **網頁上修改（建議）**：點網站右上角「管理自選股」，可以用代號或名稱搜尋新增、點 × 移除，按「儲存並更新資料」後約 1～2 分鐘網站就會更新。

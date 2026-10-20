@@ -1949,13 +1949,15 @@ html.embed .to-top{display:none}
     if (hs && state.open){
       const code = state.open;
       if (hs.dataset.hs === "sell"){ openSell(code); return; }
-      if (hs.dataset.hs === "del"){ if (confirm("刪除這筆持股？\n\n（如果是賣掉了，建議改按「賣出」，損益會記到股票帳本。）")){ delete state.holdings[code]; saveH(); render(); } return; }
+      if (hs.dataset.hs === "del"){ if (confirm("刪除這筆持股？\n\n（如果是賣掉了，建議改按「賣出」，損益會記到股票帳本。）")){ delete state.holdings[code]; saveH(); render(); if (window.Ledger) Ledger.toast("已刪除這筆持股。", { link: false, ms: 4000 }); } return; }
       const cost = parseFloat($("#hCost").value), shares = parseInt($("#hShares").value, 10), stop = parseFloat($("#hStop").value), target = parseFloat($("#hTarget").value);
       if (!(cost > 0) || !(shares > 0)){ alert("請輸入買進均價與持有股數"); return; }
       const s = stockOf(code);
       if (target > 0 && stop > 0 && target <= stop){ alert("目標價要比停損價高"); return; }
+      const isNew = !state.holdings[code];
       state.holdings[code] = { ...(state.holdings[code] || {}), cost, shares, stop: stop > 0 ? stop : null, target: target > 0 ? target : null, name: s ? s.name : "" };
       saveH(); render();
+      if (window.Ledger) Ledger.toast(`已${isNew ? "新增" : "儲存"}「${esc(s ? s.name : code)}」：${fmt(shares)} 股、均價 ${fmt(cost, 2)}、停損 ${stop > 0 ? fmt(stop, 2) : "未設定"}、目標 ${target > 0 ? fmt(target, 2) : "未設定"}${hasTok() ? "（會自動同步到 Email 日報與到價通知）" : ""}`, { link: false, ms: 5000 });
     }
   }, true);
 

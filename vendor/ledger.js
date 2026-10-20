@@ -279,15 +279,15 @@
 
   /* 右下角小提示（附「看股票帳本」連結） */
   let toastT = null;
-  function toast(html){
+  function toast(html, opts = {}){
     injectCSS();
     let t = document.getElementById("lgToast");
     if (!t){ t = document.createElement("div"); t.id = "lgToast"; t.className = "lg-toast"; t.setAttribute("role", "status"); document.body.appendChild(t); }
     const inFrame = window.top !== window;
-    t.innerHTML = `<span>✓ ${html}</span><a href="ledger.html"${inFrame ? ' target="_top"' : ""}>看股票帳本 →</a><button type="button" aria-label="關閉">×</button>`;
+    t.innerHTML = `<span>✓ ${html}</span>${opts.link === false ? "" : `<a href="ledger.html"${inFrame ? ' target="_top"' : ""}>看股票帳本 →</a>`}<button type="button" aria-label="關閉">×</button>`;
     t.querySelector("button").onclick = () => t.classList.remove("show");
     requestAnimationFrame(() => t.classList.add("show"));
-    clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 7000);
+    clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), opts.ms || 7000);
   }
 
   addEventListener("storage", e => { if (e.key === KEY) emit(); });

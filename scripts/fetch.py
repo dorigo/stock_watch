@@ -724,6 +724,11 @@ def yahoo_us(symbols):
             tz = int(res["meta"].get("gmtoffset") or 0)
             closes = res["indicators"]["quote"][0]["close"]
             pts = [(dt.datetime.fromtimestamp(t + tz, dt.timezone.utc).date().isoformat(), c) for t, c in zip(res["timestamp"], closes) if c]
+            # 美股還在交易中（或剛收盤 10 分鐘內）時，最後一根是盤中價，不是收盤價 → 不採用
+            reg = (res["meta"].get("currentTradingPeriod") or {}).get("regular") or {}
+            if reg.get("end") and time.time() < reg["end"] + 600:
+                live_day = dt.datetime.fromtimestamp(reg["end"] + tz, dt.timezone.utc).date().isoformat()
+                pts = [p for p in pts if p[0] != live_day]
             if len(pts) >= 2:
                 out[sym] = {"date": pts[-1][0], "close": pts[-1][1], "prev": pts[-2][1], "dates": [d for d, _ in pts]}
         except Exception as e:  # noqa: BLE001

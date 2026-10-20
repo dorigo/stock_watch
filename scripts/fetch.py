@@ -311,6 +311,30 @@ def build_charts():
     return out
 
 
+# ───────────────────────── 區間績效（1／2／3 個月）─────────────────────────
+def perf(code):
+    """以最新收盤和 N 個月前（同一天或之前最近的交易日）收盤比較的漲跌幅（%）。只算股價，不含股利。"""
+    days = RAW.get(code) or {}
+    ds = [d for d in sorted(days) if days[d].get("close")]
+    if len(ds) < 2:
+        return None
+    last = ds[-1]
+    ld = dt.date.fromisoformat(last)
+    out = {"date": last}
+    for n in (1, 2, 3):
+        y, m = ld.year, ld.month - n
+        while m <= 0:
+            m += 12
+            y -= 1
+        import calendar
+        target = dt.date(y, m, min(ld.day, calendar.monthrange(y, m)[1])).isoformat()
+        base = next((d for d in reversed(ds) if d <= target), None)
+        if base and base >= ds[0] and not (base == ds[0] and ds[0] > target):
+            out[f"m{n}"] = round((days[last]["close"] / days[base]["close"] - 1) * 100, 2)
+            out[f"m{n}From"] = base
+    return out
+
+
 # ───────────────────────── 均線交叉（週線／月線 vs 季線）─────────────────────────
 CROSS_WINDOW = 10   # 只回報近 N 個交易日內發生的交叉
 
@@ -844,6 +868,7 @@ def main():
         nxt = next((e for e in d.get("upcoming", []) if e.get("ex")), None)
         s["nextEx"] = {"date": nxt["ex"], "type": nxt["type"], "cash": nxt.get("cash"), "stock": nxt.get("stock")} if nxt else None
     for s in stocks:
+        s["perf"] = perf(s["code"])
         s["ma"] = ma_cross(s["code"])
         mc = s["ma"] or {}
         if mc.get("up20") and mc["up20"]["ago"] <= 5:

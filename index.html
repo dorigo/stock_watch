@@ -304,6 +304,13 @@ th[data-tip]{text-decoration:underline dotted var(--ink-3);text-underline-offset
 .kinfo b{color:var(--ink)}
 svg.kline{width:100%;height:auto;max-height:480px;display:block;touch-action:pan-y}
 .dwrap{position:sticky;left:0;width:min(1406px,calc(100vw - 34px))}
+.perf{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 10px}
+.perf .pf{background:var(--line-2);border-radius:10px;padding:7px 10px;display:flex;flex-direction:column;gap:1px;min-width:0}
+.perf .k{font-size:12px;color:var(--ink-3)}
+.perf .v{font-family:var(--mono);font-weight:700;font-size:17px}
+.perf .b{font-size:11.5px;color:var(--ink-3)}
+.perf .pf-note{grid-column:1/-1;font-size:11.5px;color:var(--ink-3)}
+@media (max-width:520px){.perf .v{font-size:15px}.perf .b{font-size:11px}}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-3);margin-top:6px}
 .legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:4px}
 .legend .lg-close{font:inherit;font-size:12px;border:1px solid var(--line);background:var(--panel);color:var(--ink-2);border-radius:999px;padding:0 9px;cursor:pointer}
@@ -1451,6 +1458,8 @@ html.embed .to-top{display:none}
       ["grp", "價格與損益"],
       ["收盤", d => d.s.close, v => fmt(v, 2), 0],
       ["今日漲跌", d => d.s.chgPct, v => `<span class="${cls(v)}">${sgn(v, 2)}%</span>`, 0],
+      ["近 1 個月漲跌", d => d.s.perf && d.s.perf.m1, v => `<span class="${cls(v)}">${sgn(v, 2)}%</span>`, 1],
+      ["近 3 個月漲跌", d => d.s.perf && d.s.perf.m3, v => `<span class="${cls(v)}">${sgn(v, 2)}%</span>`, 1],
       [`近 ${state.cmpDays} 日漲跌`, d => state.cmpRange ? state.cmpRange[d.c] : null, v => `<span class="${cls(v)}">${sgn(v, 2)}%</span>`, 1],
       ["我的報酬率", d => d.k && d.k.pct, v => `<span class="${cls(v)}">${sgn(v, 2)}%</span>`, 1],
       ["未實現損益", d => d.k && d.k.pnl, v => `<span class="${cls(v)}">${sgn(Math.round(v))}</span>`, 1],
@@ -1863,11 +1872,23 @@ html.embed .to-top{display:none}
 
   const kClose = () => { try { return localStorage.getItem("k_close") !== "0"; } catch(e){ return true; } };
   const kCandle = () => { try { return localStorage.getItem("k_candle") !== "0"; } catch(e){ return true; } };
+  // ── 區間漲跌（1／2／3 個月），和同期 0050 比較 ──
+  function perfStrip(s){
+    const p = s.perf; if (!p || p.m1 == null) return "";
+    const b = s.code !== "0050" && state.data ? ((state.data.stocks.find(x => x.code === "0050") || {}).perf || null) : null;
+    const cell = n => {
+      const v = p["m" + n]; if (v == null) return `<div class="pf"><span class="k">近 ${n} 個月</span><span class="v" style="color:var(--ink-3)">資料不足</span></div>`;
+      const bv = b && b["m" + n], diff = bv == null ? null : v - bv;
+      return `<div class="pf" title="${esc(p["m" + n + "From"])} 收盤 → ${esc(p.date)} 收盤"><span class="k">近 ${n} 個月</span><span class="v ${cls(v)}">${sgn(v, 2)}%</span>
+        ${diff == null ? "" : `<span class="b">0050 ${sgn(bv, 1)}%，${diff >= 0 ? `<b class="up">贏 ${fmt(diff, 1)}</b>` : `<b class="down">輸 ${fmt(-diff, 1)}</b>`}</span>`}</div>`;
+    };
+    return `<div class="perf">${cell(1)}${cell(2)}${cell(3)}<div class="pf-note">區間漲跌＝最新收盤比 N 個月前的收盤，只算股價、不含股利${b ? "；和同期買 0050 比較（百分點）" : ""}</div></div>`;
+  }
   function klinePane(s){
     const rows = state.charts && state.charts.stocks && state.charts.stocks[s.code];
     const hold = state.holdings[s.code];
     const note = state.charts && state.data && state.charts.date !== state.data.date ? `<div class="hint2">K 線為最新資料（${esc(state.charts.date)}），非你目前選擇的日期。</div>` : "";
-    return `<div class="kinfo">${rows && rows.length ? kinfoText(rows, rows.length - 1) : ""}</div>
+    return `${perfStrip(s)}<div class="kinfo">${rows && rows.length ? kinfoText(rows, rows.length - 1) : ""}</div>
       ${klineSVG(s.code, rows, hold)}
       <div class="legend"><button type="button" class="lg-close${kCandle() ? " on" : ""}" data-kcandle title="點一下開／關">${kCandle() ? "☑" : "☐"} <i style="background:linear-gradient(90deg,var(--up) 50%,var(--down) 50%);height:8px"></i>K 棒</button><button type="button" class="lg-close${kClose() ? " on" : ""}" data-kclose title="點一下開／關">${kClose() ? "☑" : "☐"} <i style="background:var(--ink)"></i>每日收盤價連線</button><span><i style="background:var(--warn)"></i>MA5 週線</span><span><i style="background:var(--ma20)"></i>MA20 月線</span><span><i style="background:#9b7bd6"></i>MA60 季線</span><span style="color:var(--up)">▲週／▲月：週線、月線突破季線</span><span style="color:var(--down)">▼：跌破季線</span>${hold ? `<span><i style="background:var(--accent)"></i>你的成本</span>${hold.stop ? `<span><i style="background:var(--down)"></i>你的停損價</span>` : ""}` : ""}</div>
       <div class="hint2">紅 K：收盤比開盤高；綠 K：收盤比開盤低。深色的折線是把每天收盤價連起來；圖例前兩個按鈕可以開關 K 棒和收盤價連線，線太多時可以只留一種；彩色的是均線（過去 N 天收盤的平均，比較平滑）。滑鼠移到圖上（手機用手指滑）可以看每天的數字。下方長條是三大法人買賣超，對照看看法人買的時候股價怎麼走。</div>${kbarHelp()}${note}`;

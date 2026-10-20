@@ -1,7 +1,7 @@
 {
- "generated": "2026-10-20T09:15+08:00",
+ "generated": "2026-10-20T22:10+08:00",
  "start": "2024-09-05",
- "end": "2026-10-19",
+ "end": "2026-10-20",
  "stocks": 29,
  "horizons": [
   5,
@@ -10,15 +10,15 @@
  "cooldown": 5,
  "baseline": {
   "5": {
-   "n": 14572,
-   "mean": 0.81,
-   "median": 0.24,
-   "win": 51.3
+   "n": 14601,
+   "mean": 0.8,
+   "median": 0.22,
+   "win": 51.2
   },
   "20": {
-   "n": 14137,
-   "mean": 4.43,
-   "median": 1.8,
+   "n": 14166,
+   "mean": 4.41,
+   "median": 1.77,
    "win": 57.5
   }
  },
@@ -30,25 +30,25 @@
    "desc": "籌碼在短時間內明顯轉好（網站的「分數大增」標籤）",
    "stats": {
     "5": {
-     "n": 1142,
-     "mean": 0.89,
-     "median": 0.12,
-     "win": 50.4,
-     "excess": 0.08,
+     "n": 1133,
+     "mean": 0.82,
+     "median": 0.19,
+     "win": 50.8,
+     "excess": 0.02,
      "ci": [
-      -0.32,
-      0.5
+      -0.38,
+      0.42
      ]
     },
     "20": {
-     "n": 1108,
-     "mean": 4.67,
-     "median": 1.75,
-     "win": 57.4,
-     "excess": 0.24,
+     "n": 1101,
+     "mean": 4.71,
+     "median": 1.93,
+     "win": 57.9,
+     "excess": 0.3,
      "ci": [
-      -0.69,
-      1.15
+      -0.63,
+      1.21
      ]
     }
    }
@@ -60,25 +60,25 @@
    "desc": "買盤持續聚集（網站的「分數連升」標籤）",
    "stats": {
     "5": {
-     "n": 580,
-     "mean": 0.6,
-     "median": 0.12,
+     "n": 368,
+     "mean": 0.22,
+     "median": 0.13,
      "win": 50.5,
-     "excess": -0.21,
+     "excess": -0.58,
      "ci": [
-      -0.75,
-      0.34
+      -1.24,
+      0.11
      ]
     },
     "20": {
-     "n": 563,
-     "mean": 4.42,
-     "median": 1.48,
-     "win": 58.8,
-     "excess": -0.0,
+     "n": 361,
+     "mean": 4.7,
+     "median": 1.96,
+     "win": 59.0,
+     "excess": 0.29,
      "ci": [
       -1.35,
-      1.3
+      1.96
      ]
     }
    }
@@ -91,23 +91,23 @@
    "stats": {
     "5": {
      "n": 911,
-     "mean": 0.78,
-     "median": 0.1,
-     "win": 50.2,
-     "excess": -0.03,
+     "mean": 0.77,
+     "median": 0.09,
+     "win": 50.1,
+     "excess": -0.02,
      "ci": [
-      -0.45,
-      0.4
+      -0.44,
+      0.41
      ]
     },
     "20": {
-     "n": 884,
-     "mean": 5.35,
-     "median": 2.21,
-     "win": 60.0,
-     "excess": 0.92,
+     "n": 886,
+     "mean": 5.31,
+     "median": 2.19,
+     "win": 59.9,
+     "excess": 0.9,
      "ci": [
-      -0.13,
+      -0.14,
       2.0
      ]
     }
@@ -120,25 +120,25 @@
    "desc": "籌碼在短時間內明顯轉壞（網站的「分數大減」標籤）",
    "stats": {
     "5": {
-     "n": 1169,
-     "mean": 1.07,
-     "median": 0.67,
-     "win": 55.7,
-     "excess": 0.26,
+     "n": 1171,
+     "mean": 1.0,
+     "median": 0.65,
+     "win": 55.4,
+     "excess": 0.2,
      "ci": [
-      -0.12,
-      0.68
+      -0.19,
+      0.61
      ]
     },
     "20": {
-     "n": 1134,
-     "mean": 4.45,
-     "median": 2.16,
-     "win": 58.4,
+     "n": 1131,
+     "mean": 4.43,
+     "median": 2.11,
+     "win": 58.0,
      "excess": 0.02,
      "ci": [
-      -0.83,
-      0.86
+      -0.84,
+      0.91
      ]
     }
    }
@@ -150,25 +150,25 @@
    "desc": "「法人在撤、散戶在接」的組合",
    "stats": {
     "5": {
-     "n": 803,
-     "mean": 1.01,
-     "median": 0.32,
-     "win": 52.8,
-     "excess": 0.21,
+     "n": 806,
+     "mean": 1.0,
+     "median": 0.31,
+     "win": 52.6,
+     "excess": 0.2,
      "ci": [
-      -0.25,
-      0.72
+      -0.27,
+      0.71
      ]
     },
     "20": {
-     "n": 774,
-     "mean": 3.91,
-     "median": 1.36,
+     "n": 775,
+     "mean": 3.92,
+     "median": 1.38,
      "win": 55.7,
-     "excess": -0.52,
+     "excess": -0.49,
      "ci": [
-      -1.57,
-      0.5
+      -1.49,
+      0.58
      ]
     }
    }
@@ -180,25 +180,25 @@
    "desc": "原本有買盤，突然完全消失",
    "stats": {
     "5": {
-     "n": 669,
-     "mean": 1.35,
-     "median": 0.7,
-     "win": 57.4,
-     "excess": 0.54,
+     "n": 741,
+     "mean": 1.18,
+     "median": 0.89,
+     "win": 57.5,
+     "excess": 0.38,
      "ci": [
-      0.02,
-      1.06
+      -0.1,
+      0.91
      ]
     },
     "20": {
-     "n": 645,
-     "mean": 4.35,
-     "median": 2.13,
-     "win": 56.9,
-     "excess": -0.08,
+     "n": 713,
+     "mean": 3.98,
+     "median": 1.98,
+     "win": 57.5,
+     "excess": -0.43,
      "ci": [
-      -1.19,
-      1.07
+      -1.5,
+      0.61
      ]
     }
    }
@@ -208,77 +208,77 @@
   {
    "code": "2330",
    "name": "台積電",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 43,
-     "mean20": 4.35
+     "n": 42,
+     "mean20": 3.99
     },
     "up3": {
-     "n": 25,
-     "mean20": 4.63
+     "n": 10,
+     "mean20": 6.38
     },
     "score50": {
      "n": 31,
      "mean20": 5.35
     },
     "chg5_dn20": {
-     "n": 44,
-     "mean20": 3.04
+     "n": 45,
+     "mean20": 2.85
     },
     "inst_sell3_margin_up": {
      "n": 30,
      "mean20": 4.42
     },
     "score_low": {
-     "n": 23,
-     "mean20": 5.36
+     "n": 27,
+     "mean20": 3.54
     }
    }
   },
   {
    "code": "2317",
    "name": "鴻海",
-   "days": 507,
+   "days": 508,
    "signals": {
     "chg5_up20": {
-     "n": 39,
-     "mean20": 4.41
+     "n": 37,
+     "mean20": 3.94
     },
     "up3": {
-     "n": 18,
-     "mean20": -0.73
+     "n": 10,
+     "mean20": -3.34
     },
     "score50": {
      "n": 33,
      "mean20": 4.76
     },
     "chg5_dn20": {
-     "n": 39,
-     "mean20": 2.36
+     "n": 40,
+     "mean20": 2.03
     },
     "inst_sell3_margin_up": {
      "n": 25,
      "mean20": -3.79
     },
     "score_low": {
-     "n": 16,
-     "mean20": -2.55
+     "n": 18,
+     "mean20": -1.17
     }
    }
   },
   {
    "code": "2454",
    "name": "聯發科",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
      "n": 37,
-     "mean20": 4.25
+     "mean20": 4.42
     },
     "up3": {
-     "n": 14,
-     "mean20": 11.66
+     "n": 11,
+     "mean20": 8.38
     },
     "score50": {
      "n": 29,
@@ -286,38 +286,38 @@
     },
     "chg5_dn20": {
      "n": 39,
-     "mean20": 3.5
+     "mean20": 3.03
     },
     "inst_sell3_margin_up": {
-     "n": 35,
+     "n": 36,
      "mean20": 8.99
     },
     "score_low": {
-     "n": 25,
-     "mean20": 2.7
+     "n": 28,
+     "mean20": 3.2
     }
    }
   },
   {
    "code": "3231",
    "name": "緯創",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 46,
-     "mean20": 3.01
+     "n": 45,
+     "mean20": 2.74
     },
     "up3": {
-     "n": 22,
-     "mean20": -0.12
+     "n": 13,
+     "mean20": 0.66
     },
     "score50": {
      "n": 38,
      "mean20": 3.09
     },
     "chg5_dn20": {
-     "n": 42,
-     "mean20": 3.49
+     "n": 43,
+     "mean20": 3.55
     },
     "inst_sell3_margin_up": {
      "n": 27,
@@ -325,115 +325,115 @@
     },
     "score_low": {
      "n": 23,
-     "mean20": 1.41
+     "mean20": 0.7
     }
    }
   },
   {
    "code": "2357",
    "name": "華碩",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
      "n": 37,
-     "mean20": 4.19
+     "mean20": 4.48
     },
     "up3": {
-     "n": 18,
-     "mean20": 0.23
+     "n": 13,
+     "mean20": 0.2
     },
     "score50": {
      "n": 38,
      "mean20": 2.8
     },
     "chg5_dn20": {
-     "n": 42,
-     "mean20": 3.51
+     "n": 41,
+     "mean20": 3.03
     },
     "inst_sell3_margin_up": {
      "n": 24,
      "mean20": 2.62
     },
     "score_low": {
-     "n": 21,
-     "mean20": 5.59
+     "n": 23,
+     "mean20": 2.61
     }
    }
   },
   {
    "code": "0050",
    "name": "元大台灣50",
-   "days": 503,
+   "days": 504,
    "signals": {
     "chg5_up20": {
-     "n": 38,
-     "mean20": 3.83
+     "n": 37,
+     "mean20": 4.11
     },
     "up3": {
-     "n": 29,
-     "mean20": 4.84
+     "n": 12,
+     "mean20": 4.99
     },
     "score50": {
      "n": 24,
-     "mean20": 4.1
+     "mean20": 4.08
     },
     "chg5_dn20": {
-     "n": 39,
-     "mean20": 3.19
+     "n": 35,
+     "mean20": 3.05
     },
     "inst_sell3_margin_up": {
      "n": 48,
      "mean20": 2.91
     },
     "score_low": {
-     "n": 21,
-     "mean20": 4.03
+     "n": 20,
+     "mean20": 4.41
     }
    }
   },
   {
    "code": "5904",
    "name": "寶雅*",
-   "days": 501,
+   "days": 502,
    "signals": {
     "chg5_up20": {
      "n": 34,
-     "mean20": 1.32
+     "mean20": 1.37
     },
     "up3": {
-     "n": 24,
-     "mean20": 0.83
+     "n": 16,
+     "mean20": 2.05
     },
     "score50": {
      "n": 33,
      "mean20": -0.03
     },
     "chg5_dn20": {
-     "n": 38,
-     "mean20": 1.17
+     "n": 37,
+     "mean20": 1.38
     },
     "inst_sell3_margin_up": {
      "n": 33,
      "mean20": 1.84
     },
     "score_low": {
-     "n": 18,
-     "mean20": 1.85
+     "n": 22,
+     "mean20": 1.56
     }
    }
   },
   {
    "code": "1504",
    "name": "東元",
-   "days": 507,
+   "days": 508,
    "signals": {
     "chg5_up20": {
-     "n": 41,
-     "mean20": 3.11
+     "n": 40,
+     "mean20": 3.42
     },
     "up3": {
-     "n": 20,
-     "mean20": 2.0
+     "n": 14,
+     "mean20": 1.4
     },
     "score50": {
      "n": 32,
@@ -441,123 +441,123 @@
     },
     "chg5_dn20": {
      "n": 42,
-     "mean20": 2.21
+     "mean20": 1.82
     },
     "inst_sell3_margin_up": {
      "n": 23,
      "mean20": 2.01
     },
     "score_low": {
-     "n": 22,
-     "mean20": 3.73
+     "n": 27,
+     "mean20": 3.78
     }
    }
   },
   {
    "code": "2303",
    "name": "聯電",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 39,
-     "mean20": 7.83
+     "n": 41,
+     "mean20": 7.74
     },
     "up3": {
-     "n": 26,
-     "mean20": 3.05
+     "n": 13,
+     "mean20": -1.49
     },
     "score50": {
      "n": 36,
-     "mean20": 9.09
+     "mean20": 8.33
     },
     "chg5_dn20": {
-     "n": 47,
-     "mean20": 6.37
+     "n": 44,
+     "mean20": 7.65
     },
     "inst_sell3_margin_up": {
      "n": 24,
      "mean20": 2.79
     },
     "score_low": {
-     "n": 19,
-     "mean20": 6.57
+     "n": 18,
+     "mean20": 7.65
     }
    }
   },
   {
    "code": "2345",
    "name": "智邦",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
      "n": 38,
-     "mean20": 7.26
+     "mean20": 7.56
     },
     "up3": {
-     "n": 20,
-     "mean20": 5.92
+     "n": 9,
+     "mean20": 9.75
     },
     "score50": {
      "n": 27,
      "mean20": 4.65
     },
     "chg5_dn20": {
-     "n": 35,
-     "mean20": 8.42
+     "n": 36,
+     "mean20": 8.83
     },
     "inst_sell3_margin_up": {
      "n": 29,
-     "mean20": 1.3
+     "mean20": 1.58
     },
     "score_low": {
-     "n": 22,
-     "mean20": 10.36
+     "n": 27,
+     "mean20": 8.98
     }
    }
   },
   {
    "code": "2356",
    "name": "英業達",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 45,
-     "mean20": 0.94
+     "n": 46,
+     "mean20": 0.91
     },
     "up3": {
-     "n": 16,
-     "mean20": 1.14
+     "n": 12,
+     "mean20": -1.48
     },
     "score50": {
-     "n": 38,
+     "n": 39,
      "mean20": 3.01
     },
     "chg5_dn20": {
-     "n": 41,
-     "mean20": 2.72
+     "n": 44,
+     "mean20": 2.75
     },
     "inst_sell3_margin_up": {
      "n": 24,
      "mean20": 3.41
     },
     "score_low": {
-     "n": 22,
-     "mean20": 0.66
+     "n": 31,
+     "mean20": -1.53
     }
    }
   },
   {
    "code": "2449",
    "name": "京元電子",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 43,
-     "mean20": 5.17
+     "n": 39,
+     "mean20": 5.78
     },
     "up3": {
-     "n": 20,
-     "mean20": 1.89
+     "n": 12,
+     "mean20": 5.85
     },
     "score50": {
      "n": 30,
@@ -565,185 +565,185 @@
     },
     "chg5_dn20": {
      "n": 39,
-     "mean20": 4.44
+     "mean20": 5.12
     },
     "inst_sell3_margin_up": {
      "n": 31,
      "mean20": 2.1
     },
     "score_low": {
-     "n": 25,
-     "mean20": 5.82
+     "n": 26,
+     "mean20": 6.11
     }
    }
   },
   {
    "code": "3481",
    "name": "群創",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 43,
-     "mean20": 5.78
+     "n": 42,
+     "mean20": 6.46
     },
     "up3": {
-     "n": 20,
-     "mean20": 9.03
+     "n": 12,
+     "mean20": 9.67
     },
     "score50": {
      "n": 27,
      "mean20": 7.7
     },
     "chg5_dn20": {
-     "n": 41,
-     "mean20": 3.37
+     "n": 40,
+     "mean20": 3.12
     },
     "inst_sell3_margin_up": {
      "n": 27,
      "mean20": 9.93
     },
     "score_low": {
-     "n": 28,
-     "mean20": 11.44
+     "n": 29,
+     "mean20": 9.12
     }
    }
   },
   {
    "code": "3260",
    "name": "威剛",
-   "days": 507,
+   "days": 508,
    "signals": {
     "chg5_up20": {
-     "n": 36,
-     "mean20": 6.06
+     "n": 38,
+     "mean20": 6.29
     },
     "up3": {
-     "n": 16,
-     "mean20": 8.03
+     "n": 12,
+     "mean20": 2.81
     },
     "score50": {
      "n": 29,
      "mean20": 9.16
     },
     "chg5_dn20": {
-     "n": 37,
-     "mean20": 2.31
+     "n": 39,
+     "mean20": 2.1
     },
     "inst_sell3_margin_up": {
      "n": 28,
      "mean20": 5.63
     },
     "score_low": {
-     "n": 22,
-     "mean20": -0.54
+     "n": 23,
+     "mean20": 2.61
     }
    }
   },
   {
    "code": "0056",
    "name": "元大高股息",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 31,
-     "mean20": 3.85
+     "n": 29,
+     "mean20": 3.81
     },
     "up3": {
-     "n": 20,
-     "mean20": 2.95
+     "n": 11,
+     "mean20": 2.62
     },
     "score50": {
      "n": 30,
      "mean20": 3.41
     },
     "chg5_dn20": {
-     "n": 33,
-     "mean20": 2.87
+     "n": 32,
+     "mean20": 2.97
     },
     "inst_sell3_margin_up": {
      "n": 40,
      "mean20": 0.42
     },
     "score_low": {
-     "n": 18,
-     "mean20": 2.53
+     "n": 19,
+     "mean20": 2.67
     }
    }
   },
   {
    "code": "2618",
    "name": "長榮航",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 39,
-     "mean20": 0.67
+     "n": 38,
+     "mean20": 0.76
     },
     "up3": {
-     "n": 18,
-     "mean20": 0.84
+     "n": 15,
+     "mean20": 0.25
     },
     "score50": {
-     "n": 40,
-     "mean20": 0.15
+     "n": 41,
+     "mean20": 0.16
     },
     "chg5_dn20": {
-     "n": 41,
-     "mean20": 1.33
+     "n": 40,
+     "mean20": 1.47
     },
     "inst_sell3_margin_up": {
      "n": 22,
      "mean20": 1.24
     },
     "score_low": {
-     "n": 20,
-     "mean20": 0.19
+     "n": 26,
+     "mean20": 1.93
     }
    }
   },
   {
    "code": "3711",
    "name": "日月光投控",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 38,
-     "mean20": 5.24
+     "n": 36,
+     "mean20": 6.2
     },
     "up3": {
-     "n": 24,
-     "mean20": 4.38
+     "n": 12,
+     "mean20": 6.49
     },
     "score50": {
      "n": 34,
      "mean20": 7.21
     },
     "chg5_dn20": {
-     "n": 38,
-     "mean20": 7.64
+     "n": 37,
+     "mean20": 7.22
     },
     "inst_sell3_margin_up": {
      "n": 25,
      "mean20": 7.53
     },
     "score_low": {
-     "n": 20,
-     "mean20": 6.89
+     "n": 23,
+     "mean20": 7.81
     }
    }
   },
   {
    "code": "6770",
    "name": "力積電",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 48,
-     "mean20": 6.54
+     "n": 49,
+     "mean20": 6.26
     },
     "up3": {
-     "n": 19,
-     "mean20": 1.15
+     "n": 15,
+     "mean20": 3.59
     },
     "score50": {
      "n": 33,
@@ -751,154 +751,154 @@
     },
     "chg5_dn20": {
      "n": 48,
-     "mean20": 5.42
+     "mean20": 5.63
     },
     "inst_sell3_margin_up": {
      "n": 19,
      "mean20": -0.43
     },
     "score_low": {
-     "n": 35,
-     "mean20": 2.02
+     "n": 37,
+     "mean20": 3.09
     }
    }
   },
   {
    "code": "2408",
    "name": "南亞科",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 40,
-     "mean20": 14.47
+     "n": 42,
+     "mean20": 16.79
     },
     "up3": {
-     "n": 22,
-     "mean20": 12.35
+     "n": 13,
+     "mean20": 13.8
     },
     "score50": {
      "n": 19,
      "mean20": 27.93
     },
     "chg5_dn20": {
-     "n": 43,
-     "mean20": 11.45
+     "n": 42,
+     "mean20": 10.36
     },
     "inst_sell3_margin_up": {
      "n": 27,
      "mean20": 9.96
     },
     "score_low": {
-     "n": 26,
-     "mean20": 12.57
+     "n": 28,
+     "mean20": 7.67
     }
    }
   },
   {
    "code": "2382",
    "name": "廣達",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 41,
-     "mean20": 2.16
+     "n": 40,
+     "mean20": 1.64
     },
     "up3": {
-     "n": 21,
-     "mean20": -0.89
+     "n": 16,
+     "mean20": -3.25
     },
     "score50": {
      "n": 41,
-     "mean20": 0.46
+     "mean20": 0.38
     },
     "chg5_dn20": {
      "n": 40,
-     "mean20": 2.73
+     "mean20": 3.1
     },
     "inst_sell3_margin_up": {
      "n": 27,
      "mean20": 2.55
     },
     "score_low": {
-     "n": 21,
-     "mean20": 3.8
+     "n": 25,
+     "mean20": 3.12
     }
    }
   },
   {
    "code": "3008",
    "name": "大立光",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 41,
-     "mean20": 2.34
+     "n": 40,
+     "mean20": 2.21
     },
     "up3": {
-     "n": 16,
-     "mean20": 1.56
+     "n": 9,
+     "mean20": -0.42
     },
     "score50": {
      "n": 25,
      "mean20": 5.25
     },
     "chg5_dn20": {
-     "n": 38,
-     "mean20": 3.64
+     "n": 40,
+     "mean20": 5.25
     },
     "inst_sell3_margin_up": {
      "n": 30,
      "mean20": 5.48
     },
     "score_low": {
-     "n": 27,
-     "mean20": 3.46
+     "n": 31,
+     "mean20": 4.37
     }
    }
   },
   {
    "code": "2344",
    "name": "華邦電",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 42,
-     "mean20": 12.5
+     "n": 39,
+     "mean20": 11.53
     },
     "up3": {
-     "n": 16,
-     "mean20": 23.89
+     "n": 13,
+     "mean20": 25.0
     },
     "score50": {
      "n": 28,
      "mean20": 14.88
     },
     "chg5_dn20": {
-     "n": 43,
-     "mean20": 11.4
+     "n": 40,
+     "mean20": 10.78
     },
     "inst_sell3_margin_up": {
      "n": 20,
      "mean20": 1.51
     },
     "score_low": {
-     "n": 25,
-     "mean20": 9.98
+     "n": 27,
+     "mean20": 7.34
     }
    }
   },
   {
    "code": "3017",
    "name": "奇鋐",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 39,
-     "mean20": 8.0
+     "n": 40,
+     "mean20": 8.2
     },
     "up3": {
-     "n": 26,
-     "mean20": 9.37
+     "n": 15,
+     "mean20": 11.01
     },
     "score50": {
      "n": 35,
@@ -913,61 +913,61 @@
      "mean20": 10.97
     },
     "score_low": {
-     "n": 21,
-     "mean20": 6.67
+     "n": 25,
+     "mean20": 8.14
     }
    }
   },
   {
    "code": "2887",
    "name": "台新新光金",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 42,
-     "mean20": 4.05
+     "n": 43,
+     "mean20": 4.4
     },
     "up3": {
-     "n": 20,
-     "mean20": 5.95
+     "n": 15,
+     "mean20": 8.57
     },
     "score50": {
      "n": 39,
      "mean20": 5.63
     },
     "chg5_dn20": {
-     "n": 38,
-     "mean20": 5.65
+     "n": 39,
+     "mean20": 6.01
     },
     "inst_sell3_margin_up": {
      "n": 26,
      "mean20": 5.2
     },
     "score_low": {
-     "n": 16,
-     "mean20": 5.07
+     "n": 26,
+     "mean20": 3.71
     }
    }
   },
   {
    "code": "2409",
    "name": "友達",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
      "n": 36,
-     "mean20": 2.79
+     "mean20": 1.46
     },
     "up3": {
-     "n": 20,
-     "mean20": 3.9
+     "n": 12,
+     "mean20": 2.31
     },
     "score50": {
      "n": 23,
      "mean20": 2.57
     },
     "chg5_dn20": {
-     "n": 40,
+     "n": 43,
      "mean20": 3.14
     },
     "inst_sell3_margin_up": {
@@ -975,31 +975,31 @@
      "mean20": 5.01
     },
     "score_low": {
-     "n": 27,
-     "mean20": 1.13
+     "n": 29,
+     "mean20": 1.53
     }
    }
   },
   {
    "code": "2881",
    "name": "富邦金",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 44,
-     "mean20": 1.96
+     "n": 45,
+     "mean20": 1.62
     },
     "up3": {
-     "n": 23,
-     "mean20": 0.38
+     "n": 13,
+     "mean20": 3.98
     },
     "score50": {
      "n": 41,
      "mean20": 3.77
     },
     "chg5_dn20": {
-     "n": 44,
-     "mean20": 2.92
+     "n": 47,
+     "mean20": 2.67
     },
     "inst_sell3_margin_up": {
      "n": 26,
@@ -1007,22 +1007,22 @@
     },
     "score_low": {
      "n": 27,
-     "mean20": 3.13
+     "mean20": 3.83
     }
    }
   },
   {
    "code": "4967",
    "name": "十銓",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 45,
-     "mean20": 3.87
+     "n": 44,
+     "mean20": 3.6
     },
     "up3": {
-     "n": 17,
-     "mean20": 5.73
+     "n": 18,
+     "mean20": 8.52
     },
     "score50": {
      "n": 19,
@@ -1038,22 +1038,22 @@
     },
     "score_low": {
      "n": 35,
-     "mean20": 4.24
+     "mean20": 3.64
     }
    }
   },
   {
    "code": "1301",
    "name": "台塑",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 40,
-     "mean20": 1.59
+     "n": 41,
+     "mean20": 0.85
     },
     "up3": {
-     "n": 21,
-     "mean20": 4.22
+     "n": 14,
+     "mean20": 2.37
     },
     "score50": {
      "n": 31,
@@ -1061,66 +1061,147 @@
     },
     "chg5_dn20": {
      "n": 44,
-     "mean20": 2.3
+     "mean20": 2.0
     },
     "inst_sell3_margin_up": {
      "n": 29,
      "mean20": 6.57
     },
     "score_low": {
-     "n": 33,
-     "mean20": 2.96
+     "n": 32,
+     "mean20": 2.09
     }
    }
   },
   {
    "code": "00878",
    "name": "國泰永續高股息",
-   "days": 508,
+   "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 29,
-     "mean20": 2.84
+     "n": 28,
+     "mean20": 2.93
     },
     "up3": {
-     "n": 20,
-     "mean20": 4.03
+     "n": 12,
+     "mean20": 5.41
     },
     "score50": {
      "n": 31,
      "mean20": 4.37
     },
     "chg5_dn20": {
-     "n": 33,
-     "mean20": 2.39
+     "n": 32,
+     "mean20": 2.45
     },
     "inst_sell3_margin_up": {
-     "n": 33,
+     "n": 34,
      "mean20": 0.99
     },
     "score_low": {
-     "n": 18,
-     "mean20": 1.69
+     "n": 15,
+     "mean20": 2.14
     }
    }
   }
  ],
  "recent": [
   {
-   "code": "2330",
-   "name": "台積電",
+   "code": "2454",
+   "name": "聯發科",
    "signal": "inst_sell3_margin_up",
-   "date": "2026-10-19",
-   "score": 10.0,
+   "date": "2026-10-20",
+   "score": 0,
    "r5": null,
    "r20": null
   },
   {
-   "code": "3231",
-   "name": "緯創",
+   "code": "2356",
+   "name": "英業達",
+   "signal": "score50",
+   "date": "2026-10-20",
+   "score": 56.8,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "2449",
+   "name": "京元電子",
+   "signal": "chg5_dn20",
+   "date": "2026-10-20",
+   "score": 0,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "2618",
+   "name": "長榮航",
+   "signal": "score50",
+   "date": "2026-10-20",
+   "score": 50.0,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "2887",
+   "name": "台新新光金",
+   "signal": "chg5_dn20",
+   "date": "2026-10-20",
+   "score": 0,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "2887",
+   "name": "台新新光金",
    "signal": "score_low",
+   "date": "2026-10-20",
+   "score": 0,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "2409",
+   "name": "友達",
+   "signal": "up3",
+   "date": "2026-10-20",
+   "score": 15.1,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "2881",
+   "name": "富邦金",
+   "signal": "score_low",
+   "date": "2026-10-20",
+   "score": 0,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "1301",
+   "name": "台塑",
+   "signal": "chg5_dn20",
+   "date": "2026-10-20",
+   "score": 0,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "00878",
+   "name": "國泰永續高股息",
+   "signal": "inst_sell3_margin_up",
+   "date": "2026-10-20",
+   "score": 0,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "2330",
+   "name": "台積電",
+   "signal": "inst_sell3_margin_up",
    "date": "2026-10-19",
-   "score": 0.0,
+   "score": 0,
    "r5": null,
    "r20": null
   },
@@ -1129,7 +1210,7 @@
    "name": "元大台灣50",
    "signal": "inst_sell3_margin_up",
    "date": "2026-10-19",
-   "score": 8.0,
+   "score": 0,
    "r5": null,
    "r20": null
   },
@@ -1152,20 +1233,11 @@
    "r20": null
   },
   {
-   "code": "4967",
-   "name": "十銓",
-   "signal": "score_low",
-   "date": "2026-10-19",
-   "score": 2.0,
-   "r5": null,
-   "r20": null
-  },
-  {
    "code": "1301",
    "name": "台塑",
    "signal": "inst_sell3_margin_up",
    "date": "2026-10-19",
-   "score": 0.0,
+   "score": 0,
    "r5": null,
    "r20": null
   },
@@ -1174,16 +1246,7 @@
    "name": "鴻海",
    "signal": "chg5_up20",
    "date": "2026-10-16",
-   "score": 27.0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "3231",
-   "name": "緯創",
-   "signal": "chg5_dn20",
-   "date": "2026-10-16",
-   "score": 27.0,
+   "score": 25.0,
    "r5": null,
    "r20": null
   },
@@ -1193,15 +1256,6 @@
    "signal": "up3",
    "date": "2026-10-16",
    "score": 67.0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "0050",
-   "name": "元大台灣50",
-   "signal": "up3",
-   "date": "2026-10-16",
-   "score": 6.0,
    "r5": null,
    "r20": null
   },
@@ -1237,7 +1291,7 @@
    "name": "英業達",
    "signal": "chg5_up20",
    "date": "2026-10-16",
-   "score": 27.0,
+   "score": 25.0,
    "r5": null,
    "r20": null
   },
@@ -1256,15 +1310,6 @@
    "signal": "score50",
    "date": "2026-10-16",
    "score": 66.0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "3711",
-   "name": "日月光投控",
-   "signal": "score_low",
-   "date": "2026-10-16",
-   "score": 0.0,
    "r5": null,
    "r20": null
   },
@@ -1273,16 +1318,7 @@
    "name": "南亞科",
    "signal": "chg5_dn20",
    "date": "2026-10-16",
-   "score": 0.0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "2382",
-   "name": "廣達",
-   "signal": "chg5_up20",
-   "date": "2026-10-16",
-   "score": 56.2,
+   "score": 0,
    "r5": null,
    "r20": null
   },
@@ -1292,15 +1328,6 @@
    "signal": "score50",
    "date": "2026-10-16",
    "score": 56.2,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "3017",
-   "name": "奇鋐",
-   "signal": "up3",
-   "date": "2026-10-16",
-   "score": 8.0,
    "r5": null,
    "r20": null
   },
@@ -1318,7 +1345,25 @@
    "name": "台塑",
    "signal": "score_low",
    "date": "2026-10-16",
-   "score": 0.0,
+   "score": 0,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "3231",
+   "name": "緯創",
+   "signal": "chg5_dn20",
+   "date": "2026-10-15",
+   "score": 0,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "3231",
+   "name": "緯創",
+   "signal": "score_low",
+   "date": "2026-10-15",
+   "score": 0,
    "r5": null,
    "r20": null
   },
@@ -1341,29 +1386,20 @@
    "r20": null
   },
   {
-   "code": "1504",
-   "name": "東元",
+   "code": "3481",
+   "name": "群創",
    "signal": "score_low",
    "date": "2026-10-15",
-   "score": 2.0,
+   "score": 0,
    "r5": null,
    "r20": null
   },
   {
-   "code": "2345",
-   "name": "智邦",
-   "signal": "up3",
+   "code": "3711",
+   "name": "日月光投控",
+   "signal": "score_low",
    "date": "2026-10-15",
-   "score": 10.0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "0056",
-   "name": "元大高股息",
-   "signal": "up3",
-   "date": "2026-10-15",
-   "score": 6.0,
+   "score": 0,
    "r5": null,
    "r20": null
   },
@@ -1377,20 +1413,11 @@
    "r20": null
   },
   {
-   "code": "2454",
-   "name": "聯發科",
-   "signal": "up3",
-   "date": "2026-10-14",
-   "score": 6.0,
-   "r5": null,
-   "r20": null
-  },
-  {
    "code": "2345",
    "name": "智邦",
    "signal": "inst_sell3_margin_up",
    "date": "2026-10-14",
-   "score": 8.0,
+   "score": 0,
    "r5": null,
    "r20": null
   },
@@ -1417,7 +1444,7 @@
    "name": "南亞科",
    "signal": "inst_sell3_margin_up",
    "date": "2026-10-14",
-   "score": 0.0,
+   "score": 0,
    "r5": null,
    "r20": null
   },
@@ -1426,7 +1453,7 @@
    "name": "廣達",
    "signal": "chg5_dn20",
    "date": "2026-10-14",
-   "score": 2.0,
+   "score": 0,
    "r5": null,
    "r20": null
   },
@@ -1435,34 +1462,7 @@
    "name": "十銓",
    "signal": "chg5_up20",
    "date": "2026-10-14",
-   "score": 25.0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "2317",
-   "name": "鴻海",
-   "signal": "up3",
-   "date": "2026-10-13",
-   "score": 6.0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "2454",
-   "name": "聯發科",
-   "signal": "chg5_dn20",
-   "date": "2026-10-13",
-   "score": 4.0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "2357",
-   "name": "華碩",
-   "signal": "chg5_dn20",
-   "date": "2026-10-13",
-   "score": 26.6,
+   "score": 23.0,
    "r5": null,
    "r20": null
   }

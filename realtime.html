@@ -362,7 +362,7 @@ html.embed .to-top{display:none}
     iv: +ls.get("rt_iv", "10") || 10,
     showWatch: ls.get("rt_watch", "0") === "1",
     sort: ls.get("rt_sort", "pct"),
-    paused: false,
+    paused: false, old: {},
     holdings: {}, latest: null, all: {},
     q: {},          // 代號 → 即時報價
     series: {},     // 代號 → [[分鐘, 價]]
@@ -439,22 +439,33 @@ html.embed .to-top{display:none}
     }
     return out;
   }
-  // 當日分時（Yahoo 1 分線），讓中途打開頁面也看得到完整走勢
+  // Yahoo 1 分線 → 分時點。
+  //   有今天的資料 → 用今天的（和逐筆報價合併）
+  //   今天還沒資料：開盤時段（8:30 後）不採用，避免開盤初期把「昨天整天的走勢」畫成今天；
+  //                 非交易時間（週末、假日、清晨）就顯示最近一個交易日的走勢當參考（S.old 標記，不存檔）
+  function applyYahoo(key, r){
+    const c = r.indicators.quote[0].close, today = tpe().iso, byDay = {};
+    r.timestamp.forEach((ts, i) => {
+      if (c[i] == null) return;
+      const d = new Date((ts + 8 * 3600) * 1000), day = d.toISOString().slice(0, 10);
+      (byDay[day] || (byDay[day] = [])).push([d.getUTCHours() * 60 + d.getUTCMinutes() - 540, c[i]]);
+    });
+    if (byDay[today] && byDay[today].length){
+      if (S.old[key]){ delete S.old[key]; S.series[key] = []; }
+      S.series[key] = mergeSeries(byDay[today], S.series[key] || []);
+      return;
+    }
+    if (phase().poll) return;
+    const last = Object.keys(byDay).sort().pop();
+    if (last && last < today && !(S.series[key] && S.series[key].length && !S.old[key])){ S.series[key] = byDay[last]; S.old[key] = true; }
+  }
   async function fetchSeries(list){
     for (const x of list){
       try {
         const j = await getJSON(pxUrl({ src: "yh", s: x.code + (mkt(x.code) === "otc" ? ".TWO" : ".TW") }), 8000);
         const r = j.chart && j.chart.result && j.chart.result[0];
         if (!r || !r.timestamp) continue;
-        const c = r.indicators.quote[0].close, pts = [];
-        const day = new Date((r.timestamp[r.timestamp.length - 1] + 8 * 3600) * 1000).toISOString().slice(0, 10);
-        r.timestamp.forEach((ts, i) => {
-          if (c[i] == null) return;
-          const d = new Date((ts + 8 * 3600) * 1000);
-          if (d.toISOString().slice(0, 10) !== day) return;
-          pts.push([d.getUTCHours() * 60 + d.getUTCMinutes() - 540, c[i]]);
-        });
-        if (pts.length) S.series[x.code] = mergeSeries(pts, S.series[x.code] || []);
+        applyYahoo(x.code, r);
       } catch(e){ /* 分時線失敗不影響報價 */ }
     }
     saveSeries();
@@ -464,21 +475,23 @@ html.embed .to-top{display:none}
     return base.concat(live.filter(p => p[0] > lastM));
   }
   function pushPoint(code, q){
-    if (q.price == null || !q.time) return;
+    if (q.price == null || !q.time || q.date !== tpe().date) return;   // 只畫今天成交的價格
+    if (S.old[code]){ delete S.old[code]; S.series[code] = []; }
     const [hh, mm] = q.time.split(":").map(Number), m = hh * 60 + mm - 540;
     if (!(m >= 0 && m <= 270)) return;
     const s = S.series[code] || (S.series[code] = []);
     if (s.length && s[s.length - 1][0] === m) s[s.length - 1][1] = q.price;
     else if (!s.length || s[s.length - 1][0] < m) s.push([m, q.price]);
   }
-  const SKEY = () => "rt_series_" + tpe().date;
+  const SKEY = () => "rt_series2_" + tpe().date;
   function loadSeries(){
     try {
-      for (let i = 0; i < localStorage.length; i++){ const k = localStorage.key(i); if (k && k.startsWith("rt_series_") && k !== SKEY()) localStorage.removeItem(k); }
+      const del = []; for (let i = 0; i < localStorage.length; i++){ const k = localStorage.key(i); if (k && k.startsWith("rt_series") && k !== SKEY()) del.push(k); }
+      del.forEach(k => localStorage.removeItem(k));
       S.series = JSON.parse(ls.get(SKEY(), "{}")) || {};
     } catch(e){ S.series = {}; }
   }
-  function saveSeries(){ ls.set(SKEY(), JSON.stringify(S.series)); }
+  function saveSeries(){ const o = {}; for (const k in S.series) if (!S.old[k]) o[k] = S.series[k]; ls.set(SKEY(), JSON.stringify(o)); }
 
   async function fetchIdx(){
     try {
@@ -501,14 +514,7 @@ html.embed .to-top{display:none}
       const j = await getJSON(pxUrl({ src: "yh", s: "^TWII" }), 8000);
       const r = j.chart && j.chart.result && j.chart.result[0];
       if (!r || !r.timestamp) return;
-      const c = r.indicators.quote[0].close, pts = [];
-      const day = new Date((r.timestamp[r.timestamp.length - 1] + 8 * 3600) * 1000).toISOString().slice(0, 10);
-      r.timestamp.forEach((ts, i) => {
-        if (c[i] == null) return;
-        const d = new Date((ts + 8 * 3600) * 1000);
-        if (d.toISOString().slice(0, 10) === day) pts.push([d.getUTCHours() * 60 + d.getUTCMinutes() - 540, c[i]]);
-      });
-      if (pts.length) S.series["IDX:t00"] = mergeSeries(pts, S.series["IDX:t00"] || []);
+      applyYahoo("IDX:t00", r);
     } catch(e){}
   }
 

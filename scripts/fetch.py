@@ -703,11 +703,14 @@ def mis_indices():
         log(f"    ! 即時指數讀取失敗：{e}")
         return {}
     back = {v: k for k, v in MIS_IDX.items()}
+    now = dt.datetime.now(dt.timezone(dt.timedelta(hours=8)))
     out = {}
     for r in j.get("msgArray") or []:
         sid = back.get(f'{r.get("ex")}_{str(r.get("ch") or "").replace(".tw", "")}')
         c, y, d = num(r.get("z")), num(r.get("y")), str(r.get("d") or "")
         if sid and c and y and len(d) == 8:
+            if d == now.strftime("%Y%m%d") and now.hour * 60 + now.minute < 13 * 60 + 33:
+                continue   # 盤中：這是即時指數，不是收盤價，不能存成今天的收盤（首頁會自己顯示盤中即時）
             out[sid] = {"date": f"{d[:4]}-{d[4:6]}-{d[6:]}", "close": c, "y": y, "time": r.get("t")}
     return out
 

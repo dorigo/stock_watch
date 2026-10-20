@@ -1488,7 +1488,7 @@ html.embed .to-top{display:none}
       ["今日漲跌", d => d.s.chgPct, v => `<span class="${cls(v)}">${sgn(v, 2)}%</span>`, 0],
       ["近 1 個月漲跌", d => d.s.perf && d.s.perf.m1, v => `<span class="${cls(v)}">${sgn(v, 2)}%</span>`, 1],
       ["近 3 個月漲跌", d => d.s.perf && d.s.perf.m3, v => `<span class="${cls(v)}">${sgn(v, 2)}%</span>`, 1],
-      [`近 ${state.cmpDays} 日漲跌`, d => state.cmpRange ? state.cmpRange[d.c] : null, v => `<span class="${cls(v)}">${sgn(v, 2)}%</span>`, 1],
+      [`近 ${state.cmpDays} 個交易日漲跌`, d => state.cmpRange ? state.cmpRange[d.c] : null, v => `<span class="${cls(v)}">${sgn(v, 2)}%</span>`, 1],
       ["我的報酬率", d => d.k && d.k.pct, v => `<span class="${cls(v)}">${sgn(v, 2)}%</span>`, 1],
       ["未實現損益", d => d.k && d.k.pnl, v => `<span class="${cls(v)}">${sgn(Math.round(v))}</span>`, 1],
       ["占全部持股市值", d => d.k && allVal ? d.k.val / allVal * 100 : null, v => fmt(v, 1) + "%", 0],
@@ -1526,7 +1526,7 @@ html.embed .to-top{display:none}
     const chart = cmpChart(codes, state.cmpDays);
     $("#cmpBody").innerHTML = `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <b style="font-size:15px">漲跌走勢比較</b>
-        <span class="cmp-seg" id="cmpSeg">${[20, 60].map(n => `<button data-d="${n}" class="${n === state.cmpDays ? "on" : ""}">近 ${n} 日</button>`).join("")}</span></div>
+        <span class="cmp-seg" id="cmpSeg">${[20, 60].map(n => `<button data-d="${n}" class="${n === state.cmpDays ? "on" : ""}">近 ${n} 個交易日（約 ${n / 20} 個月）</button>`).join("")}</span></div>
       ${chart}${cmpTable(codes)}`;
   }
   const cmpCodes = () => (state.cmpSrc === "list" ? state.lcmp : state.cmp).filter(c => stockOf(c));

@@ -28,6 +28,7 @@ from email.utils import formataddr, formatdate, make_msgid
 TZ = dt.timezone(dt.timedelta(hours=8))
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36"
 STATE = "data/alert_state.json"
+STATUS = "data/alert_status.json"   # 公開的執行狀態（只有數量與時間，沒有代號與價格），網頁顯示用
 OPEN, CLOSE = 9 * 60, 13 * 60 + 31          # 只在 9:00～13:31 檢查（8:30～9:00 試撮價格不算）
 INTERVAL = 60
 
@@ -123,14 +124,17 @@ def load_state(day):
     return set(st.get("sent") or []) if st.get("date") == day else set()
 
 
-def save_state(day, sent):
+def save_state(day, sent, status=None):
     os.makedirs("data", exist_ok=True)
     with open(STATE, "w", encoding="utf-8") as f:
         json.dump({"date": day, "sent": sorted(sent)}, f)
+    if status is not None:
+        with open(STATUS, "w", encoding="utf-8") as f:
+            json.dump(status, f, ensure_ascii=False)
     if os.environ.get("GITHUB_ACTIONS") != "true":
         return
     for _ in range(3):
-        cmds = [["git", "add", STATE], ["git", "commit", "-q", "-m", "到價通知狀態"], ["git", "pull", "-q", "--rebase"], ["git", "push", "-q"]]
+        cmds = [["git", "add", STATE, STATUS] if os.path.exists(STATUS) else ["git", "add", STATE], ["git", "commit", "-q", "-m", "到價通知狀態"], ["git", "pull", "-q", "--rebase"], ["git", "push", "-q"]]
         ok = True
         for c in cmds:
             r = subprocess.run(c, capture_output=True, text=True)
@@ -222,6 +226,11 @@ def main():
     sent = load_state(day)
     log(f"• 監看 {len(codes)} 檔目標價，今天已通知 {len(sent)} 次")
     errors, n_mail, seen_today = 0, 0, False
+    last_px = {}                            # 冷門股常常這一分鐘沒有成交（z 是 "-"），沿用上一筆成交價
+    status = {"date": day, "started": t.strftime("%H:%M"), "watching": len(codes), "sent_today": len(sent), "mails": 0,
+              "last_check": None, "priced": 0, "state": "waiting"}
+    save_state(day, sent, status)
+    reported = False
     while True:
         t = now()
         if mins(t) >= CLOSE:
@@ -247,17 +256,23 @@ def main():
         hits = []
         for c in codes:
             x, h = q.get(c), H[c]
-            if not x or x["d"] != today or x["z"] is None:
+            if not x or x["d"] != today:
                 continue
-            p = x["z"]
-            for kind, th, hit in (("target", h["target"], h["target"] and p >= h["target"]),
+            p = x["z"] or last_px.get(c)
+            if x["z"]:
+                last_px[c] = x["z"]
+            # 今天最高價碰到目標價也算（每分鐘才查一次，中間短暫漲上去又回落時不會漏掉）
+            touched = h["target"] and x["h"] and x["h"] >= h["target"]
+            if p is None and not touched:
+                continue
+            for kind, th, hit in (("target", h["target"], h["target"] and ((p and p >= h["target"]) or touched)),
                                   ("stop", h["stop"], h["stop"] and p <= h["stop"])):
                 if not hit:
                     continue
                 k = key(day, c, kind, th)
                 if k in sent:
                     continue
-                hits.append({"kind": kind, "code": c, "name": h["name"] or x["n"] or (mk.get(c) or (c,))[0] or c, "th": th, "p": p,
+                hits.append({"kind": kind, "code": c, "name": h["name"] or x["n"] or (mk.get(c) or (c,))[0] or c, "th": th, "p": p or x["h"],
                              "y": x["y"], "h": x["h"], "l": x["l"], "t": x["t"], "cost": h["cost"], "shares": h["shares"], "k": k})
         if hits:
             hits.sort(key=lambda z: z["kind"] != "stop")     # 停損排前面
@@ -265,13 +280,19 @@ def main():
                 send(hits, url)
                 n_mail += 1
                 sent.update(z["k"] for z in hits)
-                save_state(day, sent)
+                status.update(sent_today=len(sent), mails=n_mail, last_check=t.strftime("%H:%M"), last_mail=t.strftime("%H:%M"))
+                save_state(day, sent, status)
                 log(f"✓ 寄出 1 封通知（{len(hits)} 筆）")
             except smtplib.SMTPAuthenticationError:
                 log("✗ 寄信登入失敗：請確認 MAIL_USER 與 MAIL_PASS（Gmail 需使用應用程式密碼）")
                 return
             except Exception as e:  # noqa: BLE001
                 log(f"! 寄信失敗：{type(e).__name__}，下一分鐘再試")
+        status.update(last_check=t.strftime("%H:%M"), priced=sum(1 for c in codes if (q.get(c) or {}).get("d") == today and ((q.get(c) or {}).get("z") or last_px.get(c))),
+                      state="running", errors=errors)
+        if not reported and q:
+            reported = True
+            save_state(day, sent, status)      # 第一次成功查價後回報一次，網頁就看得到「正在監看」
         if once:
             break
         if errors >= 30:
@@ -279,6 +300,8 @@ def main():
             break
         time.sleep(max(5, INTERVAL - (time.time() - start)))
     log(f"• 今天共寄出 {n_mail} 封")
+    status.update(state="done", mails=n_mail, sent_today=len(sent))
+    save_state(day, sent, status)
 
 
 if __name__ == "__main__":

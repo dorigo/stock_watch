@@ -1240,6 +1240,20 @@ html.embed .to-top{display:none}
       if (manual) alert(perm ? SYNC_PERM_HELP : "同步失敗：" + e.message);
     } finally { syncBusy = false; renderSyncChip(); }
   }
+  // ── 到價通知的執行狀態（data/alert_status.json，只有數量與時間） ──
+  let alertSt = null;
+  function alertStatusHTML(){
+    const a = alertSt, t = tpeNow();
+    if (!a || a.date !== t.iso || !t.wk) return "";
+    if (a.state === "done") return `<br>今天的到價通知已結束，共寄出 <b>${a.mails || 0}</b> 封。`;
+    if (a.state === "running") return `<br>✅ 到價通知執行中：監看 <b>${a.watching}</b> 檔，${a.started} 啟動，今天已通知 <b>${a.sent_today}</b> 次${a.last_mail ? `（最近一次 ${a.last_mail}）` : ""}。`;
+    return `<br>⏳ 到價通知已啟動（${a.started}），等待開盤或第一次查價…`;
+  }
+  async function loadAlertStatus(){
+    try { alertSt = await (await fetch("data/alert_status.json?t=" + Date.now(), { cache: "no-store" })).json(); } catch(e){ alertSt = null; }
+    const el = document.getElementById("alertSt"); if (el) el.innerHTML = alertStatusHTML();
+  }
+  loadAlertStatus(); setInterval(() => { if (!document.hidden) loadAlertStatus(); }, 120000);
   // 交易日盤中改了目標價／停損價：寫入 alert.txt，讓「盤中到價通知」用新設定重新啟動（當天就生效）
   async function pingAlert(){
     const sig = JSON.stringify(Object.entries(state.holdings).filter(([, h]) => h && h.target).map(([c, h]) => [c, h.target]).sort());
@@ -1358,7 +1372,7 @@ html.embed .to-top{display:none}
       <button class="btn" data-hact="export" title="下載持股資料，可在其他裝置匯入">匯出</button>
       <button class="btn" data-hact="import" title="匯入先前匯出的持股資料">匯入</button>
       <input type="file" id="hImport" accept="application/json" hidden>
-      <div class="mail-note">📧 Email 日報：交易日晚上約 <b>22:10～22:30</b> 寄出（當天資料提早齊全時約 17:20～17:40）；週末與國定假日不寄。<br>🎯 到價通知：在個股的「我的持股」分頁設定<b>目標價</b>，開盤時間漲到目標價會立刻寄信（約 1～2 分鐘內）。</div></div>`;
+      <div class="mail-note">📧 Email 日報：交易日晚上約 <b>22:10～22:30</b> 寄出（當天資料提早齊全時約 17:20～17:40）；週末與國定假日不寄。<br>🎯 到價通知：在個股的「我的持股」分頁設定<b>目標價</b>，開盤時間漲到目標價會立刻寄信（約 1～2 分鐘內）。<span id="alertSt">${alertStatusHTML()}</span></div></div>`;
     if (!codes.length){
       el.innerHTML = `<div class="card">${head}<div class="hold-empty">還沒有記錄持股。點開表格中任一檔股票 →「我的持股」分頁，輸入買進價格、股數與停損價，就會在這裡顯示損益與停損提醒。資料存在這台瀏覽器；開啟「☁ 雲端同步」後會加密存到 GitHub，多台電腦自動同步。</div></div>`;
       return;

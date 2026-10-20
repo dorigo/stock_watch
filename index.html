@@ -154,6 +154,12 @@ tbody tr.row{cursor:pointer}
 tbody tr.row:hover td{background:var(--line-2)}
 tbody tr.row.open td{background:var(--accent-soft)}
 .stock{display:flex;align-items:center;gap:10px}
+.lchk{display:inline-grid;place-items:center;margin:-6px -4px -6px -2px;padding:6px 2px;cursor:pointer}
+.lchk input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;margin:0}
+.lcmp-bar{position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translate(-50%,24px);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:35;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;max-width:calc(100vw - 90px);padding:10px 12px 10px 16px;border-radius:14px;background:var(--panel);border:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.18);font-size:13.5px}
+.lcmp-bar.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.lcmp-bar span{color:var(--ink-2)}
 .rank{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:12px;background:var(--line-2);color:var(--ink-2);font-family:var(--mono)}
 .rank.top{background:var(--accent);color:var(--panel)}
 .stock .nm{font-weight:700}
@@ -726,7 +732,7 @@ html.embed .to-top{display:none}
   "use strict";
   const $ = s => document.querySelector(s);
   const EMBED = (new URLSearchParams(location.search).get("embed") || "").toUpperCase();
-  const state = { data:null, market:"all", sort:"score", dir:"desc", hsort:{key:"pnl",dir:"desc"}, dsort:{key:"ex",dir:"asc"}, q:"", open:null, tab:"kline", charts:null, fund:null, holdings:{}, cmp:[], cmpDays:60 };
+  const state = { data:null, market:"all", sort:"score", dir:"desc", hsort:{key:"pnl",dir:"desc"}, dsort:{key:"ex",dir:"asc"}, q:"", open:null, tab:"kline", charts:null, fund:null, holdings:{}, cmp:[], lcmp:[], cmpSrc:"hold", cmpDays:60 };
   if (EMBED){ state.open = EMBED; state.tab = new URLSearchParams(location.search).get("tab") || "kline"; }
 
   // ── 深淺色 ──
@@ -1042,6 +1048,26 @@ html.embed .to-top{display:none}
       th.classList.toggle("desc", th.dataset.sort === key && dir === "desc");
     });
   }
+  // ── 追蹤清單勾選比較（浮動列） ──
+  function renderLcmpBar(){
+    let bar = document.getElementById("lcmpBar");
+    if (!bar){ bar = document.createElement("div"); bar.id = "lcmpBar"; bar.className = "lcmp-bar"; document.body.appendChild(bar);
+      bar.addEventListener("click", e => {
+        const b = e.target.closest("[data-lc]"); if (!b) return;
+        if (b.dataset.lc === "go") openCompare("list");
+        else { state.lcmp = []; render(); }
+      }); }
+    const n = state.lcmp.length;
+    bar.classList.toggle("show", n > 0 && !EMBED);
+    bar.innerHTML = `<span>已勾選 <b>${n}</b> 檔${n < 2 ? "，再選 " + (2 - n) + " 檔就能比較" : n >= 4 ? "（最多 4 檔）" : ""}：${state.lcmp.map(c => esc((stockOf(c) || {}).name || c)).join("、")}</span>
+      <button class="btn primary" data-lc="go" ${n < 2 ? "disabled" : ""}>📊 比較${n >= 2 ? " " + n + " 檔" : ""}</button><button class="btn ghost" data-lc="clear">清除</button>`;
+  }
+  $("#tbody").addEventListener("change", e => {
+    const cb = e.target.closest(".lcmpchk"); if (!cb) return;
+    const c = cb.dataset.code;
+    state.lcmp = cb.checked ? [...new Set([...state.lcmp, c])].slice(0, 4) : state.lcmp.filter(x => x !== c);
+    render();
+  });
   function nextDir(curKey, curDir, key, firstDir){ return curKey === key ? (curDir === "asc" ? "desc" : "asc") : firstDir; }
 
   function render(){
@@ -1052,6 +1078,7 @@ html.embed .to-top{display:none}
       return;
     }
     renderMeta();
+    state.lcmp = state.lcmp.filter(c => stockOf(c)); renderLcmpBar();
     const all = state.data.stocks.filter(s => state.market === "all" || s.market === state.market);
     renderStats(all);
     renderXAlert();
@@ -1064,7 +1091,7 @@ html.embed .to-top{display:none}
     $("#tbody").innerHTML = list.map(s => {
       const tg = s.tags || [], xr = tg.includes("月線突破季線") || tg.includes("週線突破季線") ? " xrow" : tg.includes("月線跌破季線") ? " xrowdn" : "";
       const row = `<tr class="row${state.open===s.code?" open":""}${xr}" data-code="${esc(s.code)}">
-        <td><div class="stock"><span class="rank ${s.rank<=3?"top":""}">${s.rank}</span><div>
+        <td><div class="stock"><label class="lchk" title="${state.lcmp.length >= 4 && !state.lcmp.includes(s.code) ? "最多比較 4 檔" : "勾選 2～4 檔後可比較"}"><input type="checkbox" class="lcmpchk" data-code="${esc(s.code)}" ${state.lcmp.includes(s.code) ? "checked" : ""} ${state.lcmp.length >= 4 && !state.lcmp.includes(s.code) ? "disabled" : ""} aria-label="比較 ${esc(s.name)}"></label><span class="rank ${s.rank<=3?"top":""}">${s.rank}</span><div>
           <div><span class="nm">${esc(s.name)}</span> <span class="cd">${esc(s.code)}</span><span class="mk">${esc(s.market)}</span></div>
           <div class="tags">${holdTags(s)}${(s.tags||[]).map(tagHTML).join("")}</div></div></div></td>
         <td class="num">${fmt(s.close, 2)}</td>
@@ -1485,6 +1512,7 @@ html.embed .to-top{display:none}
     const body = R.map(r => {
       if (r[0] === "grp") return `<tr class="grp"><td colspan="${D.length + 1}">${r[1]}</td></tr>`;
       const [label, get, show, dir] = r, vals = D.map(d => { const v = get(d); return v == null || isNaN(v) ? null : v; });
+      if (vals.every(v => v == null) && /我的報酬率|未實現損益|占全部持股|距停損/.test(label)) return "";
       const ok = vals.filter(v => v != null), best = dir && ok.length > 1 ? (dir > 0 ? Math.max(...ok) : Math.min(...ok)) : null;
       const allSame = ok.length > 1 && ok.every(v => v === ok[0]);
       return `<tr><td>${label}</td>${vals.map((v, i) => `<td class="num${best != null && !allSame && v === best ? " best" : ""}">${v == null ? "—" : show(v, D[i])}</td>`).join("")}</tr>`;
@@ -1493,16 +1521,18 @@ html.embed .to-top{display:none}
       <div class="hint2">藍底是該項目表現較好的一檔（例如分數較高、融資減少較多、本益比位置較低）。只是逐項比較，不代表哪一檔比較值得買。</div>`;
   }
   function renderCompare(){
-    const codes = state.cmp.filter(c => stockOf(c));
-    $("#cmpTitle").textContent = `📊 持股比較（${codes.length} 檔）`;
+    const codes = cmpCodes();
+    $("#cmpTitle").textContent = `📊 ${state.cmpSrc === "list" ? "自選股" : "持股"}比較（${codes.length} 檔）`;
     const chart = cmpChart(codes, state.cmpDays);
     $("#cmpBody").innerHTML = `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <b style="font-size:15px">漲跌走勢比較</b>
         <span class="cmp-seg" id="cmpSeg">${[20, 60].map(n => `<button data-d="${n}" class="${n === state.cmpDays ? "on" : ""}">近 ${n} 日</button>`).join("")}</span></div>
       ${chart}${cmpTable(codes)}`;
   }
-  function openCompare(){
-    if (state.cmp.length < 2) return;
+  const cmpCodes = () => (state.cmpSrc === "list" ? state.lcmp : state.cmp).filter(c => stockOf(c));
+  function openCompare(src = "hold"){
+    state.cmpSrc = src;
+    if (cmpCodes().length < 2) return;
     renderCompare(); $("#cmpBg").classList.add("show"); $("#cmpBg").setAttribute("aria-hidden", "false");
   }
   const closeCompare = () => { $("#cmpBg").classList.remove("show"); $("#cmpBg").setAttribute("aria-hidden", "true"); };
@@ -2047,6 +2077,7 @@ html.embed .to-top{display:none}
     if (tr) scrollToRow(b.dataset.code);
   });
   $("#tbody").addEventListener("click", e => {
+    if (e.target.closest(".lchk")) return;
     const tr = e.target.closest("tr.row"); if (!tr) return;
     if (state.open !== tr.dataset.code) state.tab = state.tab || "kline";
     state.open = state.open === tr.dataset.code ? null : tr.dataset.code; render();

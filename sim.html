@@ -227,6 +227,9 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
 .bm.win{background:var(--warn-soft)} .bm b{font-family:var(--num)}
 .why{margin-top:8px;font-size:13px;color:var(--ink-2);background:var(--bg);border-radius:12px;padding:6px 10px;border:1px dashed var(--line)}
 .acts{display:flex;gap:6px;margin-top:10px}
+.c-chart.empty-c{display:flex;align-items:center;justify-content:center;min-height:70px;margin:8px 0 4px;border-radius:14px;background:var(--line-2);font-size:12.5px;font-weight:700;color:var(--ink-3);text-align:center;padding:8px}
+.c-note{font-size:11px;color:var(--ink-3);font-weight:700;text-align:right;margin:-2px 2px 0}
+.quick.sq .btn{height:26px;padding:0 9px;font-size:12px}
 .btn.ghost{color:var(--ink-3)}
 .bar .btn.primary{height:36px}
 .hist{margin-bottom:24px}
@@ -318,6 +321,9 @@ html.embed .to-top{display:none}
   <div class="tools">
     <h2>模擬持股 <small id="openCnt"></small></h2>
     <span class="sp"></span>
+    <select class="sel" id="chartSel" title="卡片上的走勢圖">
+      <option value="since">走勢：買進以來</option><option value="today">走勢：今日分時</option>
+    </select>
     <select class="sel" id="sortSel" title="排序">
       <option value="pct">依報酬率</option><option value="pnl">依損益</option><option value="date">依買進日（新→舊）</option><option value="code">依代號</option>
     </select>
@@ -363,7 +369,8 @@ html.embed .to-top{display:none}
         <label class="fl">股數
           <input type="number" id="fShares" step="1" min="1" inputmode="numeric" value="1000">
         </label>
-        <label class="fl">停損價（選填）<input type="number" id="fStop" step="0.01" min="0" inputmode="decimal" placeholder="跌破就賣"></label>
+        <label class="fl">停損價（選填）<input type="number" id="fStop" step="0.01" min="0" inputmode="decimal" placeholder="跌破就賣">
+          <span class="quick sq" id="fStopQ"><button type="button" class="btn sm" data-sq="5">買價 -5%</button><button type="button" class="btn sm" data-sq="8">-8%</button><button type="button" class="btn sm" data-sq="10">-10%</button><button type="button" class="btn sm" data-sq="15">-15%</button></span></label>
       </div>
       <div class="quick" id="fQuick">
         <button class="btn sm" data-sh="1000">1 張</button><button class="btn sm" data-sh="2000">2 張</button><button class="btn sm" data-sh="5000">5 張</button>
@@ -447,8 +454,9 @@ html.embed .to-top{display:none}
   if (!Array.isArray(D.trades)) D.trades = [];
   const save = () => { if (!ls.set(KEY, JSON.stringify(D))) showErr("瀏覽器無法儲存資料（可能是無痕模式或空間不足）。"); if (window.SimSync) SimSync.markChanged(); };
   const reloadD = () => { try { D = Object.assign({}, DEF, JSON.parse(ls.get(KEY, "null")) || {}); } catch(e){ D = { ...DEF }; } if (!Array.isArray(D.trades)) D.trades = []; };
-  const S = { latest: null, all: {}, charts: {}, px: {}, pxAt: null, pxSrc: "", proxy: ls.get("rt_proxy", ""), sort: ls.get("sim_sort", "pct") };
-  $("#sortSel").value = S.sort;
+  const S = { latest: null, all: {}, charts: {}, px: {}, pxAt: null, pxSrc: "", proxy: ls.get("rt_proxy", ""), sort: ls.get("sim_sort", "pct"),
+              chart: ls.get("sim_chart", "since"), series: {}, old: {}, serAt: 0 };
+  $("#sortSel").value = S.sort; $("#chartSel").value = S.chart;
 
   // ── 費用 ──
   const isETF = c => /^00/.test(c);
@@ -579,6 +587,69 @@ html.embed .to-top{display:none}
     }
   }
 
+  // ── 卡片走勢圖 ──
+  //   買進以來：每日收盤（追蹤清單的 K 線資料，最多近 60 個交易日），起點是買進價，最後一點是現在價格
+  //   今日分時：Yahoo 1 分線（需要盤中即時看板的轉送站）
+  const tpeYmd = () => today().replace(/-/g, "");
+  function sinceSeries(t, r){
+    const rows = S.charts[t.code];
+    if (!rows || !rows.length) return null;
+    const pts = [[t.date, t.price]];
+    for (const x of rows) if (x[0] > t.date) pts.push([x[0], x[4]]);
+    const live = S.px[t.code];
+    if (r.p != null && live && live.date === tpeYmd() && today() > pts[pts.length - 1][0]) pts.push([today(), r.p]);
+    return { pts, cut: rows[0][0] > t.date };
+  }
+  function svgLine(vals, xs, labels, t, r, note){
+    const W = 320, H = 96, L = 2, R = 2, T = 10, B = 16;
+    const all = vals.concat([t.price]).concat(t.stop && t.stop >= Math.min(...vals) * 0.95 ? [t.stop] : []);
+    let mn = Math.min(...all), mx = Math.max(...all); const pad = (mx - mn) * 0.12 || mx * 0.01 || 1; mn -= pad; mx += pad;
+    const X = i => L + xs(i) * (W - L - R), Y = v => T + (mx - v) / (mx - mn) * (H - T - B);
+    const dir = r.p == null ? "flat" : r.p > t.price ? "up" : r.p < t.price ? "down" : "flat", col = `var(--${dir})`, id = "g" + t.id;
+    const path = vals.map((v, i) => `${i ? "L" : "M"}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join("");
+    const area = vals.length > 1 ? `${path}L${X(vals.length - 1).toFixed(1)},${H - B}L${X(0).toFixed(1)},${H - B}Z` : "";
+    const hl = (v, c, lab) => v && v >= mn && v <= mx ? `<line x1="${L}" x2="${W - R}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="${c}" stroke-width="1" stroke-dasharray="4 4" opacity=".75"/><text x="${W - R - 2}" y="${(Y(v) - 3).toFixed(1)}" font-size="9.5" fill="${c}" font-weight="700" text-anchor="end">${lab} ${pd(v)}</text>` : "";
+    const last = vals.length - 1;
+    return `<div class="c-chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="走勢圖">
+      <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".26"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+      ${hl(t.price, "var(--ink-3)", "買進")}${t.stop ? hl(t.stop, "var(--down)", "停損") : ""}
+      ${area ? `<path d="${area}" fill="url(#${id})"/>` : ""}<path d="${path}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="${X(last).toFixed(1)}" cy="${Y(vals[last]).toFixed(1)}" r="3.6" fill="var(--panel)" stroke="${col}" stroke-width="2.4"/>
+      ${labels.map(([x, txt, anc]) => `<text x="${(L + x * (W - L - R)).toFixed(1)}" y="${H - 3}" font-size="9.5" fill="var(--ink-3)" font-weight="700" text-anchor="${anc}">${txt}</text>`).join("")}
+    </svg>${note ? `<div class="c-note">${note}</div>` : ""}</div>`;
+  }
+  function chartHTML(t, r){
+    if (S.chart === "today"){
+      const s = (S.series[t.code] || []).filter(p => p[0] >= 0 && p[0] <= 270);
+      if (!S.proxy) return `<div class="c-chart empty-c">今日分時需要先在 <a href="realtime.html">盤中即時看板</a> 設定轉送站</div>`;
+      if (!s.length) return `<div class="c-chart empty-c">${S.serAt ? "開盤後會畫出今日走勢" : "讀取中…"}</div>`;
+      return svgLine(s.map(p => p[1]), i => s[i][0] / 270, [[0, "9:00", "start"], [120 / 270, "11:00", "middle"], [1, "13:30", "end"]], t, r, S.old[t.code] ? "上一個交易日的走勢" : "");
+    }
+    const d = sinceSeries(t, r);
+    if (!d) return `<div class="c-chart empty-c">不在追蹤清單，沒有每日走勢資料（可切換成「今日分時」）</div>`;
+    const n = d.pts.length;
+    if (n < 2) return `<div class="c-chart empty-c">今天剛買進，明天起會畫出走勢</div>`;
+    return svgLine(d.pts.map(p => p[1]), i => i / (n - 1), [[0, md(d.pts[0][0]), "start"], [1, md(d.pts[n - 1][0]), "end"]], t, r,
+      d.cut ? `買進日早於 K 線資料，中間只畫近 60 個交易日` : "");
+  }
+  async function fetchSeries(){
+    if (S.chart !== "today" || !S.proxy) return;
+    const codes = [...new Set(D.trades.filter(t => !t.sellDate).map(t => t.code))], day = today();
+    for (const c of codes){
+      try {
+        const j = await getJSON(S.proxy + (S.proxy.includes("?") ? "&" : "?") + new URLSearchParams({ src: "yh", s: c + (mktOf(c) === "otc" ? ".TWO" : ".TW") }), 8000);
+        const res = j.chart && j.chart.result && j.chart.result[0]; if (!res || !res.timestamp) continue;
+        const cl = res.indicators.quote[0].close, by = {};
+        res.timestamp.forEach((ts, i) => { if (cl[i] == null) return; const d = new Date((ts + 8 * 3600) * 1000), k = d.toISOString().slice(0, 10);
+          (by[k] || (by[k] = [])).push([d.getUTCHours() * 60 + d.getUTCMinutes() - 540, cl[i]]); });
+        if (by[day]){ S.series[c] = by[day]; delete S.old[c]; }
+        else if (!marketOpen()){ const last = Object.keys(by).sort().pop(); if (last){ S.series[c] = by[last]; S.old[c] = true; } }
+        else { S.series[c] = []; delete S.old[c]; }   // 開盤初期 Yahoo 還沒有今天的資料，不畫昨天的
+      } catch(e){}
+    }
+    S.serAt = Date.now();
+  }
+
   function card(t){
     const r = calcOpen(t), d = cls(r.pnl), held = days(t.date, today());
     const b = bench(t.date), beat = r.pct != null && b != null ? r.pct - b : null;
@@ -593,6 +664,7 @@ html.embed .to-top{display:none}
         <span class="p num ${d}">${r.pct == null ? "—" : sgn(r.pct, 2) + "%"}</span>
         <span class="chg ${d}">${r.pnl == null ? "無報價" : sgn(Math.round(r.pnl)) + " 元"}</span>
       </div>
+      ${chartHTML(t, r)}
       <div class="path">
         <div><span class="k">買進 ${md(t.date)}</span><span class="v">${pd(t.price)}</span></div>
         <div class="arr">→</div>
@@ -689,6 +761,12 @@ html.embed .to-top{display:none}
   $("#fCode").addEventListener("input", e => { fillList(e.target.value); clearTimeout(pickTimer); pickTimer = setTimeout(() => onPick(true), 350); });
   $("#fDate").addEventListener("change", () => onPick(true));
   ["#fPrice", "#fShares", "#fStop"].forEach(s => $(s).addEventListener("input", calcBuy));
+  $("#fStopQ").addEventListener("click", e => {
+    const b = e.target.closest("[data-sq]"); if (!b) return;
+    const p = parseFloat($("#fPrice").value);
+    if (!(p > 0)){ $("#fPrice").focus(); return; }
+    $("#fStop").value = (p * (1 - b.dataset.sq / 100)).toFixed(2); calcBuy();
+  });
   $$("#fQuick [data-sh]").forEach(b => b.addEventListener("click", () => { $("#fShares").value = b.dataset.sh; calcBuy(); }));
   $$("#fQuick [data-amt]").forEach(b => b.addEventListener("click", () => {
     const p = parseFloat($("#fPrice").value); if (!(p > 0)){ $("#fMsg").className = "msg bad"; $("#fMsg").textContent = "請先填買進價格"; return; }
@@ -801,13 +879,14 @@ html.embed .to-top{display:none}
 
   // ── 更新 ──
   $("#sortSel").addEventListener("change", e => { S.sort = e.target.value; ls.set("sim_sort", S.sort); render(); });
+  $("#chartSel").addEventListener("change", async e => { S.chart = e.target.value; ls.set("sim_chart", S.chart); render(); if (S.chart === "today"){ await fetchSeries(); render(); } });
   $("#refBtn").addEventListener("click", async () => { $("#refBtn").disabled = true; await fetchPrices(); render(); $("#refBtn").disabled = false; });
   function marketOpen(){
     const p = Object.fromEntries(new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Taipei", weekday: "short", hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(new Date()).map(x => [x.type, x.value]));
     const m = (+p.hour % 24) * 60 + +p.minute;
     return !["Sat", "Sun"].includes(p.weekday) && m >= 540 && m <= 815;
   }
-  setInterval(async () => { if (S.proxy && marketOpen() && !document.hidden){ await fetchPrices(); render(); } }, 60000);
+  setInterval(async () => { if (S.proxy && marketOpen() && !document.hidden){ await fetchPrices(); await fetchSeries(); render(); } }, 60000);
   addEventListener("storage", e => { if (e.key === KEY){ try { D = Object.assign({}, DEF, JSON.parse(e.newValue) || {}); } catch(_){} render(); } });
 
   // ── 雲端同步（與首頁「我的持股」共用同一組同步密碼） ──
@@ -852,6 +931,7 @@ html.embed .to-top{display:none}
     render();
     cloudLast = Date.now(); await cloudSync(false);
     await fetchPrices(); render();
+    await fetchSeries(); render();
   })();
 })();
 </script>

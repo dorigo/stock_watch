@@ -456,6 +456,10 @@ html.embed tr.detail > td{background:transparent}
 .to-top:hover{color:var(--ink);border-color:var(--ink-3)}
 html.embed .to-top{display:none}
 @media print{.to-top{display:none}}
+
+.foot-links{text-align:center;margin-top:10px;font-size:13px}
+.foot-links a{color:var(--ink-2);text-decoration:none}
+.foot-links a:hover{color:var(--ink);text-decoration:underline}
 </style>
 </head>
 <body>
@@ -463,7 +467,7 @@ html.embed .to-top{display:none}
   <div class="wrap">
     <div class="brand"><i>籌</i>自選股籌碼追蹤</div>
     <nav class="links">
-      <a href="#list">追蹤清單</a><a href="realtime.html">盤中即時</a><a href="sim.html">模擬投資</a><a href="backtest.html">回測報告</a><a href="guide.html">新手指南</a><a href="#method">評分方式</a><a href="#glossary">名詞小辭典</a><a href="#sources">資料來源</a><a href="#disclaimer">免責聲明</a>
+      <a href="#list">追蹤清單</a><a href="realtime.html">盤中即時</a><a href="sim.html">模擬投資</a><a href="backtest.html">回測報告</a><a href="guide.html">新手指南</a>
     </nav>
     <button class="menu-btn" id="menuBtn" aria-label="開啟選單" aria-expanded="false">☰</button>
     <button class="btn" id="openMgr" style="margin-left:4px">＋ 管理自選股</button>
@@ -690,7 +694,7 @@ html.embed .to-top{display:none}
 </div>
 
 <div id="tip" role="tooltip"></div>
-<footer><div class="wrap">資料每個交易日盤後自動更新 · <span id="footUpd"></span> · 本站非證券投資顧問事業，內容不構成投資建議（<a href="#disclaimer">免責聲明</a>）<div class="credit"><span>作者 <b>@DORIGO</b></span><a class="thanks" href="https://p.ecpay.com.tw/9EE4BD6" target="_blank" rel="noopener">☕ 感謝作者</a></div></div></footer>
+<footer><div class="wrap">資料每個交易日盤後自動更新 · <span id="footUpd"></span> · 本站非證券投資顧問事業，內容不構成投資建議（<a href="#disclaimer">免責聲明</a>）<div class="foot-links"><a href="#method">評分方式</a> · <a href="#glossary">名詞小辭典</a> · <a href="#sources">資料來源</a> · <a href="#disclaimer">免責聲明</a></div><div class="credit"><span>作者 <b>@DORIGO</b></span><a class="thanks" href="https://p.ecpay.com.tw/9EE4BD6" target="_blank" rel="noopener">☕ 感謝作者</a></div></div></footer>
 
 <script src="vendor/holdsync.js"></script>
 <script>

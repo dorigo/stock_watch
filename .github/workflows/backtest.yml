@@ -43,8 +43,12 @@ jobs:
             echo "結果沒有變更"
           else
             git commit -m "更新回測結果 $(TZ=Asia/Taipei date '+%Y-%m-%d %H:%M')"
-            git pull --rebase
-            git push
+            # 網頁同時在推送（同步持股、自選股…）時 push 可能被拒，重試幾次
+            for i in 1 2 3 4 5; do
+              git pull --rebase && git push && break
+              echo "推送失敗，第 $i 次重試"; git rebase --abort 2>/dev/null; sleep $((i * 5))
+              [ "$i" = 5 ] && exit 1
+            done
           fi
 
       - name: 回報結果

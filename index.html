@@ -382,7 +382,8 @@ tr.row.xrowdn td:first-child{box-shadow:inset 4px 0 0 var(--down)}
 .hold .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
 .hold-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line)}
 .hold-head h2{font-size:18px;margin:0 auto 0 0}
-.hold th.cmp-th,.hold td.cmp-td{width:44px;text-align:center!important;padding-left:12px;padding-right:4px}
+.hold th.no-th,.hold td.no-td{width:34px;text-align:center!important;padding-left:10px;padding-right:2px;color:var(--ink-3);font-family:var(--mono);font-size:12.5px}
+.hold th.cmp-th,.hold td.cmp-td{width:44px;text-align:center!important;padding-left:6px;padding-right:4px}
 .hold td.cmp-td input{width:17px;height:17px;accent-color:var(--accent);cursor:pointer;vertical-align:middle}
 .hold th.nm-th,.hold td.nm-td{text-align:left}
 .cmp-bar{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--ink-3)}
@@ -1392,11 +1393,11 @@ html.embed .to-top{display:none}
     const HG = { name: x => x.s ? x.s.name : (x.h.name || x.c), shares: x => x.h.shares, cost: x => x.h.cost, close: x => x.s && x.s.close,
       val: x => x.k && x.k.val, pnl: x => x.k && x.k.pnl, pct: x => x.k && x.k.pct, stop: x => x.h.stop, toStop: x => x.k && x.k.toStop, target: x => x.h.target };
     items.sort(cmpBy(HG[state.hsort.key] || HG.pnl, state.hsort.dir));
-    const rows = items.map(({ c, h, s, k }) => {
+    const rows = items.map(({ c, h, s, k }, idx) => {
       if (k){ tc += k.cost; tv += k.val; if (k.stopHit) hits++; }
       const on = state.cmp.includes(c), full = state.cmp.length >= 4 && !on;
       return `<tr data-code="${esc(c)}" class="hrow" style="cursor:pointer">
-        <td class="cmp-td"><input type="checkbox" class="cmpchk" data-code="${esc(c)}" ${on ? "checked" : ""} ${full || !s ? "disabled" : ""} title="${!s ? "不在自選股清單，沒有資料可比較" : full ? "最多比較 4 檔" : "勾選後可比較"}" aria-label="比較 ${esc(s ? s.name : c)}"></td>
+        <td class="no-td">${idx + 1}</td><td class="cmp-td"><input type="checkbox" class="cmpchk" data-code="${esc(c)}" ${on ? "checked" : ""} ${full || !s ? "disabled" : ""} title="${!s ? "不在自選股清單，沒有資料可比較" : full ? "最多比較 4 檔" : "勾選後可比較"}" aria-label="比較 ${esc(s ? s.name : c)}"></td>
         <td class="nm-td"><b>${esc(s ? s.name : (h.name || c))}</b> <span class="num" style="color:var(--ink-3);font-size:12px">${esc(c)}</span>${k && k.stopHit ? ` <span class="tag stop" data-tip="t_stop">跌破停損</span>` : ""}${k && k.targetHit ? ` <span class="tag tgt">🎯 達目標價</span>` : ""}</td>
         <td class="num" style="white-space:nowrap">${fmt(h.shares)} <small class="unit">股</small>${h.shares % 1000 === 0 ? `<span class="sub">${fmt(h.shares/1000)} 張</span>` : ""}</td>
         <td class="num">${fmt(h.cost, 2)}</td>
@@ -1422,7 +1423,7 @@ html.embed .to-top{display:none}
           ${state.cmp.length ? `<button class="btn ghost" data-hact="cmpclear">清除</button>` : ""}</div>
       </div>
       <div class="table-wrap"><table>
-        <thead><tr><th class="cmp-th" title="勾選 2～4 檔後按「比較」">比較</th><th class="nm-th" data-sort="name">股票</th><th data-sort="shares">股數</th><th data-sort="cost">買進均價</th><th data-sort="close">最新收盤</th><th data-sort="val">市值</th><th data-tip="pnl" data-sort="pnl">損益</th><th data-tip="pnl" data-sort="pct">報酬率</th><th data-tip="stop" data-sort="stop">停損價</th><th data-sort="toStop">距停損</th><th data-tip="target" data-sort="target">目標價</th><th class="sell-th">賣出</th></tr></thead>
+        <thead><tr><th class="no-th">#</th><th class="cmp-th" title="勾選 2～4 檔後按「比較」">比較</th><th class="nm-th" data-sort="name">股票</th><th data-sort="shares">股數</th><th data-sort="cost">買進均價</th><th data-sort="close">最新收盤</th><th data-sort="val">市值</th><th data-tip="pnl" data-sort="pnl">損益</th><th data-tip="pnl" data-sort="pct">報酬率</th><th data-tip="stop" data-sort="stop">停損價</th><th data-sort="toStop">距停損</th><th data-tip="target" data-sort="target">目標價</th><th class="sell-th">賣出</th></tr></thead>
         <tbody>${rows}</tbody></table></div>
       <div class="hint2" style="padding:0 16px 14px">以最新收盤價計算，未扣手續費與證交稅。點標題可排序，點任一列可修改；賣出時按「賣出」，損益會記到<a href="ledger.html">股票帳本</a>，股數自動扣掉。資料存在這台瀏覽器；按「☁ 雲端同步」可讓多台電腦自動同步（加密後存到 GitHub），也可用「匯出／匯入」。</div></div>`;
   }

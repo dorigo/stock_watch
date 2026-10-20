@@ -104,6 +104,8 @@ nav.links a:hover{color:var(--ink)}
   --m-up:#ff8b7e;--m-up-soft:#4a2a26;--m-down:#71d9ab;--m-down-soft:#21402f;--m-flat:#bba08c;--m-flat-soft:#43352b;
   --m-pill:#5a3a26;--m-pill-ink:#ffc79c;--m-pill2:#54451f;--m-pill2-ink:#ffd978;--m-shadow:0 2px 0 #241a14,0 8px 18px rgba(0,0,0,.25)}
 .mkt-row{display:flex;align-items:center;gap:12px;padding:6px 0}
+.mkt-msg{margin:4px 2px 2px;padding:7px 12px;border-radius:12px;font-size:12.5px;font-weight:700;color:var(--m-pill2-ink);background:var(--m-pill2)}
+.mkt-msg a{color:inherit;text-decoration:underline}
 .mkt-lbl{flex:0 0 104px;white-space:nowrap;display:flex;flex-direction:column;align-items:flex-start;gap:5px}
 .mkt-lbl b{font-size:15px;font-weight:900;letter-spacing:.08em;padding:5px 13px 5px 11px;border-radius:999px;background:var(--m-pill);color:var(--m-pill-ink);display:inline-flex;align-items:center;gap:6px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.06)}
 .mkt-row.us .mkt-lbl b{background:var(--m-pill2);color:var(--m-pill2-ink)}
@@ -791,7 +793,7 @@ html.embed .to-top{display:none}
   // 有設定盤中即時看板的轉送站時，台股那一排直接用證交所即時系統的數字（收盤後就是當天收盤）
   const MIS_IDX = { TAIEX: "tse_t00", TPEx: "otc_o00", Semiconductor: "tse_t24", Electronic: "tse_t13",
     ComputerPeripheralEquipment: "tse_t25", ShippingTransportation: "tse_t15", Plastics: "tse_t03", FinancialInsurance: "tse_t17" };
-  let mktBase = null, mktTimer = null;
+  let mktBase = null, mktTimer = null, mktMsg = "", mktLast = null;
   function tpeNow(){
     const p = Object.fromEntries(new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Taipei", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", weekday: "short", hour12: false }).formatToParts(new Date()).map(x => [x.type, x.value]));
     return { iso: `${p.year}-${p.month}-${p.day}`, min: (+p.hour % 24) * 60 + +p.minute, wk: !["Sat", "Sun"].includes(p.weekday) };
@@ -799,12 +801,17 @@ html.embed .to-top{display:none}
   async function liveMarket(){
     let px = ""; try { px = localStorage.getItem("rt_proxy") || ""; } catch(e){}
     const t = tpeNow();
-    if (!px || !mktBase || !mktBase.tw || !t.wk || t.min < 9 * 60) return;
+    if (!mktBase || !mktBase.tw || !t.wk || t.min < 9 * 60) return;
+    const fail = msg => { if (mktMsg !== msg){ mktMsg = msg; renderMarket(mktLast || mktBase, true); } };
+    if (!px){
+      if (t.min <= 13 * 60 + 40) fail(`盤中即時沒有開啟：這個瀏覽器還沒設定轉送站，目前顯示的是上一個交易日收盤。<a href="realtime.html">到「盤中即時」設定 →</a>`);
+      return;
+    }
     try {
       const q = Object.values(MIS_IDX).map(v => v + ".tw").join("|");
       const ctl = new AbortController(); setTimeout(() => ctl.abort(), 9000);
       const r = await fetch(px + (px.includes("?") ? "&" : "?") + new URLSearchParams({ src: "mis", q }), { cache: "no-store", signal: ctl.signal });
-      if (!r.ok) return;
+      if (!r.ok){ fail(`盤中即時讀取失敗（轉送站回應 HTTP ${r.status}${r.status === 400 ? "，請更新轉送站程式" : ""}），目前顯示的是上一個交易日收盤。`); return; }
       const j = await r.json(), back = Object.fromEntries(Object.entries(MIS_IDX).map(([k, v]) => [v, k])), live = {};
       let tm = "";
       for (const x of (j.msgArray || [])){
@@ -819,15 +826,18 @@ html.embed .to-top{display:none}
         if (m.date > (mktBase.tw.date || "")) delete it.money;
         tw.date = m.date; changed = true;
       }
-      if (!changed) return;
+      if (!changed){ fail(t.min <= 13 * 60 + 40 ? "證交所還沒有今天的指數（可能是休市日），目前顯示的是上一個交易日收盤。" : ""); return; }
       const open = tw.date === t.iso && t.min < 13 * 60 + 33;
       tw.live = open ? `盤中 ${tm.slice(0, 5)}` : "收盤";
-      renderMarket({ ...mktBase, tw }, true);
-    } catch(e){}
+      mktMsg = ""; mktLast = { ...mktBase, tw };
+      renderMarket(mktLast, true);
+    } catch(e){
+      fail(`盤中即時讀取失敗（${e.name === "AbortError" ? "連線逾時" : "無法連到轉送站"}），會每 30 秒再試；目前顯示的是上一個交易日收盤。`);
+    }
   }
   function renderMarket(m, isLive){
     if (!isLive){
-      mktBase = m;
+      mktBase = m; mktLast = null;
       clearInterval(mktTimer);
       liveMarket();
       mktTimer = setInterval(() => { const t = tpeNow(); if (t.wk && t.min >= 9 * 60 && t.min <= 13 * 60 + 40 && !document.hidden) liveMarket(); }, 30000);
@@ -851,6 +861,7 @@ html.embed .to-top{display:none}
         <div class="mkt-tiles">${g.items.map(x => tile(x, mainIds.includes(x.id))).join("")}</div>
       </div>`;
     box.innerHTML = row(m.tw, "台股", "🍊", "tw", ["TAIEX", "TPEx"]) + row(m.us, "美股", "🍩", "us", []) +
+      (mktMsg ? `<div class="mkt-msg">⚠ ${mktMsg}</div>` : "") +
       `<div class="mkt-foot"><span>☕ 今日收盤小看板 · 小線圖是近 30 個交易日</span><span>紅漲綠跌（台股習慣）· 美股日期為美國當地交易日</span></div>`;
     box.hidden = false;
   }

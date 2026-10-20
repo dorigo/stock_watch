@@ -123,6 +123,8 @@ nav.links a:hover{color:var(--ink)}
 .mkt-t .c{display:inline-block;font-family:"Nunito",var(--mono);font-variant-numeric:tabular-nums;font-weight:800;font-size:11px;white-space:nowrap;padding:1px 7px;border-radius:999px;margin-top:2px}
 .mkt-t .c.up{color:var(--m-up);background:var(--m-up-soft)} .mkt-t .c.down{color:var(--m-down);background:var(--m-down-soft)} .mkt-t .c.flat{color:var(--m-flat);background:var(--m-flat-soft)}
 .mkt-t svg{display:block;width:100%;height:24px;margin-top:6px;overflow:visible}
+.mkt-note{display:inline-block;padding:3px 10px;border-radius:12px;background:var(--m-tile);color:var(--m-ink);font-weight:700}
+.mkt-note b{font-weight:900}
 .mkt-foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:4px 4px 0;font-size:12px;color:var(--m-dim)}
 @media (max-width:720px){
   .mkt{padding:12px 12px 8px}
@@ -862,7 +864,7 @@ html.embed .to-top{display:none}
       </div>`;
     box.innerHTML = row(m.tw, "台股", "🍊", "tw", ["TAIEX", "TPEx"]) + row(m.us, "美股", "🍩", "us", []) +
       (mktMsg ? `<div class="mkt-msg">⚠ ${mktMsg}</div>` : "") +
-      `<div class="mkt-foot"><span>☕ 今日收盤小看板 · 小線圖是近 30 個交易日</span><span>紅漲綠跌（台股習慣）· 美股日期為美國當地交易日</span></div>`;
+      `<div class="mkt-foot"><span class="mkt-note">📈 <b>小線圖＝近 30 個交易日的每日收盤</b>（不是今天盤中走勢；最後一點是今天）· 線的顏色看<b>今天</b>漲跌</span><span>紅漲綠跌（台股習慣）· 美股日期為美國當地交易日</span></div>`;
     box.hidden = false;
   }
 

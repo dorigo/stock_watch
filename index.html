@@ -1880,9 +1880,9 @@ html.embed .to-top{display:none}
       const v = p["m" + n]; if (v == null) return `<div class="pf"><span class="k">近 ${n} 個月</span><span class="v" style="color:var(--ink-3)">資料不足</span></div>`;
       const bv = b && b["m" + n], diff = bv == null ? null : v - bv;
       return `<div class="pf" title="${esc(p["m" + n + "From"])} 收盤 → ${esc(p.date)} 收盤"><span class="k">近 ${n} 個月</span><span class="v ${cls(v)}">${sgn(v, 2)}%</span>
-        ${diff == null ? "" : `<span class="b">0050 ${sgn(bv, 1)}%，${diff >= 0 ? `<b class="up">贏 ${fmt(diff, 1)}</b>` : `<b class="down">輸 ${fmt(-diff, 1)}</b>`}</span>`}</div>`;
+        ${diff == null ? "" : `<span class="b">同期 0050 ${sgn(bv, 1)}%</span><span class="b">${diff >= 0 ? `<b class="up">贏 ${fmt(diff, 1)} 個百分點</b>` : `<b class="down">輸 ${fmt(-diff, 1)} 個百分點</b>`}</span>`}</div>`;
     };
-    return `<div class="perf">${cell(1)}${cell(2)}${cell(3)}<div class="pf-note">區間漲跌＝最新收盤比 N 個月前的收盤，只算股價、不含股利${b ? "；和同期買 0050 比較（百分點）" : ""}</div></div>`;
+    return `<div class="perf">${cell(1)}${cell(2)}${cell(3)}<div class="pf-note">區間漲跌＝最新收盤比 N 個月前的收盤，只算股價、不含股利${b ? "；贏／輸＝和同期買 0050 相比" : ""}</div></div>`;
   }
   function klinePane(s){
     const rows = state.charts && state.charts.stocks && state.charts.stocks[s.code];

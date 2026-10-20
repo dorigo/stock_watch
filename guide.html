@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>新手指南</title>
-<meta name="description" content="給股市新手的網站使用說明：四個頁面、每天怎麼用、怎麼看個股明細與三個重要原則。">
+<meta name="description" content="給股市新手的網站使用說明：五個頁面、每天怎麼用、怎麼看個股明細與三個重要原則。">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#c4683a">
@@ -232,7 +232,7 @@ footer.site{border-top:2px solid var(--line);padding:18px 0 30px;font-size:12.5p
 .gsec p{margin:6px 0;color:var(--ink-2);font-size:14.5px}
 .gsec .lead{margin-top:0}
 .tip{font-size:13.5px!important;background:var(--line-2);border-radius:14px;padding:8px 12px;margin-top:12px!important}
-.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.pgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
 .pcard{display:block;text-decoration:none;color:var(--ink);background:var(--bg);border:2px solid var(--line-2);border-radius:20px;padding:14px;transition:transform .2s cubic-bezier(.3,1.6,.5,1)}
 .pcard:hover{transform:translateY(-3px) rotate(-.5deg);border-color:var(--line)}
 .pcard .ico{font-size:26px}
@@ -298,7 +298,7 @@ html.embed .to-top{display:none}
   <div class="wrap">
     <a class="brand" href="./"><img src="favicon.svg" alt="">自選股籌碼追蹤</a>
     <nav class="links">
-      <a href="./">追蹤清單</a><a href="realtime.html">盤中即時</a><a href="sim.html">模擬投資</a><a href="backtest.html">回測報告</a><a href="guide.html" class="on">新手指南</a>
+      <a href="./">追蹤清單</a><a href="realtime.html">盤中即時</a><a href="ledger.html">股票帳本</a><a href="sim.html">模擬投資</a><a href="backtest.html">回測報告</a><a href="guide.html" class="on">新手指南</a>
     </nav>
     <button class="menu-btn" id="menuBtn" aria-label="開啟選單" aria-expanded="false">☰</button>
     <button class="theme-btn" id="themeBtn" title="切換深淺色" aria-label="切換深淺色"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
@@ -315,14 +315,15 @@ html.embed .to-top{display:none}
   </section>
 
   <nav class="toc" aria-label="目錄">
-    <a href="#pages">四個頁面</a><a href="#start">第一次使用</a><a href="#daily">每天怎麼用</a><a href="#detail">點開一檔股票</a><a href="#rules">三個原則</a><a href="#remember">要記得的事</a>
+    <a href="#pages">五個頁面</a><a href="#start">第一次使用</a><a href="#daily">每天怎麼用</a><a href="#detail">點開一檔股票</a><a href="#rules">三個原則</a><a href="#remember">要記得的事</a>
   </nav>
 
   <section class="gsec" id="pages">
-    <h2><span>1</span>四個頁面，各管一件事</h2>
+    <h2><span>1</span>五個頁面，各管一件事</h2>
     <div class="pgrid">
       <a class="pcard" href="./"><div class="ico">📋</div><b>追蹤清單</b><p>看你關注的股票，最近「誰在買、誰在賣」。也是首頁。</p></a>
       <a class="pcard" href="realtime.html"><div class="ico">🍊</div><b>盤中即時</b><p>開盤時間看持股現在漲多少、今天賺多少。</p></a>
+      <a class="pcard" href="ledger.html"><div class="ico">📒</div><b>股票帳本</b><p>真的賣出股票時記一筆：賣了幾股、實際賺賠多少，自動統計。</p></a>
       <a class="pcard" href="sim.html"><div class="ico">🌱</div><b>模擬投資</b><p>用假錢練習買賣，看看自己的判斷準不準，不會真的虧錢。</p></a>
       <a class="pcard" href="backtest.html"><div class="ico">🔍</div><b>回測報告</b><p>看網站的「籌碼分數」在過去兩年到底準不準。</p></a>
     </div>
@@ -336,7 +337,8 @@ html.embed .to-top{display:none}
         <p>在首頁按右上角「＋ 管理自選股」，輸入代號或名稱（例如「台積電」）加進清單。第一次需要貼一組 GitHub 金鑰，照畫面上的說明做就好。</p></li>
       <li><b>記錄你真的買了的股票</b>
         <p>在首頁的股票清單點一下那檔股票，選「我的持股」分頁，填入<b>買進價格、股數和停損價</b>。</p>
-        <p class="note">停損價＝「跌到這個價格我就賣」。<b>一定要填</b>，網站才能幫你盯著。</p></li>
+        <p class="note">停損價＝「跌到這個價格我就賣」。<b>一定要填</b>，網站才能幫你盯著。</p>
+        <p class="note">之後真的賣掉時，按那檔的「<b>賣出</b>」：填日期、股數和實際損益，會記到「股票帳本」，持有股數也會自動扣掉。</p></li>
       <li><b>開啟 Email 日報</b>
         <p>設定好之後，每個交易日晚上約 22:10～22:30 會收到一封整理好的信，持股快跌破停損時會提醒你。在「我的持股」按「📧 同步到 Email 日報」，持股就會自動同步到信裡。</p></li>
     </ol>

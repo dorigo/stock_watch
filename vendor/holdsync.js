@@ -1,4 +1,4 @@
-/* holdsync.js — 「我的持股」與「模擬投資」跨裝置同步
+/* holdsync.js — 「我的持股」「模擬投資」「股票帳本」跨裝置同步
    持股以「同步密碼」加密（PBKDF2-SHA256 25 萬次 + AES-GCM 256）後，存成 repo 裡的 data/holdings.enc。
    repo 是公開的，所以只上傳加密後的內容；沒有同步密碼的人無法解開。
    需要：這台瀏覽器已存 GitHub 金鑰（管理自選股用的那組，Contents 可寫入），並設定同步密碼。 */
@@ -135,4 +135,6 @@
     field: "holdings", label: "持股", msg: "同步持股（加密）", empty: () => ({}), count: o => Object.keys(o || {}).length });
   window.SimSync = makeSync({ url: fileUrl("data/sim.enc"), data: "sim_v1", upd: "sim_updated", st: "cloud_sync_sim_v1",
     field: "sim", label: "模擬交易", msg: "同步模擬投資（加密）", empty: () => null, count: o => (o && o.trades ? o.trades.length : 0) });
+  window.LedgerSync = makeSync({ url: fileUrl("data/ledger.enc"), data: "ledger_v1", upd: "ledger_updated", st: "cloud_sync_ledger_v1",
+    field: "ledger", label: "帳本紀錄", msg: "同步股票帳本（加密）", empty: () => null, count: o => (o && o.sales ? o.sales.length : 0) });
 })();

@@ -410,6 +410,11 @@ small.unit{font-size:12px;color:var(--ink-3);font-family:"Noto Sans TC",sans-ser
 .quick button{font:inherit;font-size:12px;border:1px solid var(--line);background:var(--panel);color:var(--ink-2);border-radius:7px;padding:2px 8px;cursor:pointer}
 .hcalc{font-size:13.5px;color:var(--ink-2);margin:12px 0;line-height:1.9}
 .hbtns{display:flex;gap:8px;flex-wrap:wrap}
+.sell-th{text-align:center!important}
+.sell-td{text-align:center;padding-top:6px!important;padding-bottom:6px!important}
+.btn.sell-btn{height:28px;padding:0 12px;font-size:12.5px;color:var(--down);border-color:color-mix(in srgb,var(--down) 45%,var(--line))}
+.btn.sell-btn:hover{background:var(--down-soft)}
+.hbtns .btn.sell-btn{height:34px;font-size:13.5px;padding:0 14px}
 
 /* 手機選單 */
 .menu-btn{display:none;border:1px solid var(--line);background:var(--panel);color:var(--ink-2);border-radius:8px;width:36px;height:34px;cursor:pointer;font-size:17px;line-height:1;padding:0}
@@ -467,7 +472,7 @@ html.embed .to-top{display:none}
   <div class="wrap">
     <div class="brand"><i>籌</i>自選股籌碼追蹤</div>
     <nav class="links">
-      <a href="#list">追蹤清單</a><a href="realtime.html">盤中即時</a><a href="sim.html">模擬投資</a><a href="backtest.html">回測報告</a><a href="guide.html">新手指南</a>
+      <a href="#list">追蹤清單</a><a href="realtime.html">盤中即時</a><a href="ledger.html">股票帳本</a><a href="sim.html">模擬投資</a><a href="backtest.html">回測報告</a><a href="guide.html">新手指南</a>
     </nav>
     <button class="menu-btn" id="menuBtn" aria-label="開啟選單" aria-expanded="false">☰</button>
     <button class="btn" id="openMgr" style="margin-left:4px">＋ 管理自選股</button>
@@ -697,6 +702,7 @@ html.embed .to-top{display:none}
 <footer><div class="wrap">資料每個交易日盤後自動更新 · <span id="footUpd"></span> · 本站非證券投資顧問事業，內容不構成投資建議（<a href="#disclaimer">免責聲明</a>）<div class="foot-links"><a href="#method">評分方式</a> · <a href="#glossary">名詞小辭典</a> · <a href="#sources">資料來源</a> · <a href="#disclaimer">免責聲明</a></div><div class="credit"><span>作者 <b>@DORIGO</b></span><a class="thanks" href="https://p.ecpay.com.tw/9EE4BD6" target="_blank" rel="noopener">☕ 感謝作者</a></div></div></footer>
 
 <script src="vendor/holdsync.js"></script>
+<script src="vendor/ledger.js"></script>
 <script>
 (function(){
   "use strict";
@@ -745,7 +751,7 @@ html.embed .to-top{display:none}
   async function load(url){
     try {
       state.data = await getJSON(url);
-      state.open = null;
+      state.open = EMBED || null;
       const sel = $("#dateSel");
       if ([...sel.options].some(o => o.value === state.data.date)) sel.value = state.data.date;
       render();
@@ -1207,7 +1213,7 @@ html.embed .to-top{display:none}
       await loadSealbox();
       const k = await gh("/actions/secrets/public-key");
       await gh("/actions/secrets/HOLDINGS", { method: "PUT", body: JSON.stringify({ encrypted_value: window.sealBox(k.key, JSON.stringify(state.holdings)), key_id: k.key_id }) });
-      setSyncInfo({ ok: true, at: new Date().toISOString(), n: Object.keys(state.holdings).length });
+      setSyncInfo({ ok: true, at: new Date().toISOString(), n: Object.keys(state.holdings).length, sig: JSON.stringify(state.holdings) });
       if (manual) alert(`已同步 ${Object.keys(state.holdings).length} 檔持股到 Email 日報。之後在這裡修改持股，會自動同步。`);
     } catch(e){
       const perm = e.status === 403 || e.status === 404;
@@ -1245,6 +1251,7 @@ html.embed .to-top{display:none}
     const r = await HoldSync.sync({ silent });
     if (r && r.changed){ state.holdings = loadH(); render(); queueSync(); }
     if (window.SimSync && SimSync.enabled()) SimSync.sync({ silent: true }).catch(() => {});
+    if (window.LedgerSync && LedgerSync.enabled()) LedgerSync.sync({ silent: true }).catch(() => {});
     renderCloudChip();
     return r;
   }
@@ -1285,8 +1292,19 @@ html.embed .to-top{display:none}
     if (!confirm("停用這台瀏覽器的雲端同步？（雲端資料和這台的持股都不會被刪除）")) return;
     HoldSync.setPass(null); renderCloudChip(); closeCloud();
   });
-  setTimeout(() => { if (hasTok() && !syncInfo() && Object.keys(state.holdings).length) queueSync(); }, 0);
+  // 第一次使用，或持股在其他頁（盤中即時看板賣出等）改過、Email 日報還沒更新 → 自動同步
+  setTimeout(() => { const i = syncInfo(); if (hasTok() && ((!i && Object.keys(state.holdings).length) || (i && i.ok && i.sig != null && i.sig !== JSON.stringify(state.holdings)))) queueSync(); }, 0);
   state.holdings = loadH();
+  // ── 賣出：記到股票帳本，並扣掉持有股數 ──
+  function openSell(code){
+    if (!window.Ledger) return;
+    const s = stockOf(code), h = state.holdings[code];
+    Ledger.sell(code, { name: s ? s.name : (h && h.name) || "", price: s ? s.close : null, onDone: r => {
+      state.holdings = loadH(); queueSync(); render();
+      Ledger.toast(r.soldAll ? `已全部賣出並記到股票帳本。「${esc(r.rec.name || code)}」仍在追蹤清單，可以繼續觀察。` : `已記到股票帳本，持股剩 ${fmt(r.left)} 股。`);
+    } });
+  }
+  addEventListener("storage", e => { if (e.key === HKEY){ state.holdings = loadH(); render(); } });
   const stockOf = code => state.data && state.data.stocks.find(s => s.code === code);
   function holdCalc(close, h){
     if (close == null || !h || !h.cost || !h.shares) return null;
@@ -1299,6 +1317,7 @@ html.embed .to-top{display:none}
     const H = state.holdings, codes = Object.keys(H), el = $("#holdings");
     const head = `<div class="hold-head"><h2>我的持股</h2>
       <a class="btn" href="realtime.html" style="text-decoration:none" title="開盤時間即時看持股的股價與損益">🍊 盤中即時看板</a>
+      <a class="btn" href="ledger.html" style="text-decoration:none" title="已賣出股票的損益紀錄">📒 股票帳本</a>
       <span id="cloudChip">${cloudChipHTML()}</span>
       <button class="btn" data-hact="cloud" title="讓多台電腦的持股自動同步">☁ 雲端同步</button>
       <span id="syncChip">${syncChipHTML()}</span>
@@ -1331,6 +1350,7 @@ html.embed .to-top{display:none}
         <td class="num ${k ? cls(k.pct) : ""}">${k ? sgn(k.pct, 2) + "%" : (s ? "—" : "不在自選股")}</td>
         <td class="num">${h.stop ? fmt(h.stop, 2) : "未設定"}</td>
         <td class="num ${k && k.toStop != null && k.toStop < 3 ? "down" : ""}">${k && k.toStop != null ? (k.stopHit ? "已跌破" : fmt(k.toStop, 1) + "%") : "—"}</td>
+        <td class="sell-td"><button class="btn sell-btn" data-sell="${esc(c)}" title="賣出這檔，記到股票帳本">賣出</button></td>
       </tr>`;
     }).join("");
     const pnl = tv - tc;
@@ -1345,9 +1365,9 @@ html.embed .to-top{display:none}
           ${state.cmp.length ? `<button class="btn ghost" data-hact="cmpclear">清除</button>` : ""}</div>
       </div>
       <div class="table-wrap"><table>
-        <thead><tr><th class="cmp-th" title="勾選 2～4 檔後按「比較」">比較</th><th class="nm-th" data-sort="name">股票</th><th data-sort="shares">股數</th><th data-sort="cost">買進均價</th><th data-sort="close">最新收盤</th><th data-sort="val">市值</th><th data-tip="pnl" data-sort="pnl">損益</th><th data-tip="pnl" data-sort="pct">報酬率</th><th data-tip="stop" data-sort="stop">停損價</th><th data-sort="toStop">距停損</th></tr></thead>
+        <thead><tr><th class="cmp-th" title="勾選 2～4 檔後按「比較」">比較</th><th class="nm-th" data-sort="name">股票</th><th data-sort="shares">股數</th><th data-sort="cost">買進均價</th><th data-sort="close">最新收盤</th><th data-sort="val">市值</th><th data-tip="pnl" data-sort="pnl">損益</th><th data-tip="pnl" data-sort="pct">報酬率</th><th data-tip="stop" data-sort="stop">停損價</th><th data-sort="toStop">距停損</th><th class="sell-th">賣出</th></tr></thead>
         <tbody>${rows}</tbody></table></div>
-      <div class="hint2" style="padding:0 16px 14px">以最新收盤價計算，未扣手續費與證交稅。點標題可排序，點任一列可修改。資料存在這台瀏覽器；按「☁ 雲端同步」可讓多台電腦自動同步（加密後存到 GitHub），也可用「匯出／匯入」。</div></div>`;
+      <div class="hint2" style="padding:0 16px 14px">以最新收盤價計算，未扣手續費與證交稅。點標題可排序，點任一列可修改；賣出時按「賣出」，損益會記到<a href="ledger.html">股票帳本</a>，股數自動扣掉。資料存在這台瀏覽器；按「☁ 雲端同步」可讓多台電腦自動同步（加密後存到 GitHub），也可用「匯出／匯入」。</div></div>`;
   }
   // ════════ 持股比較（2～4 檔） ════════
   const CMP_COLORS = ["#2f7ed8", "#e8902a", "#8e5bd6", "#14a39a"];
@@ -1435,6 +1455,8 @@ html.embed .to-top{display:none}
 
   $("#holdings").addEventListener("click", e => {
     if (e.target.closest(".cmp-td")) return;
+    const sb = e.target.closest("[data-sell]");
+    if (sb){ openSell(sb.dataset.sell); return; }
     const th = e.target.closest("th[data-sort]");
     if (th){ const k = th.dataset.sort; state.hsort = { key: k, dir: nextDir(state.hsort.key, state.hsort.dir, k, k === "name" ? "asc" : "desc") }; renderHoldings(); return; }
     const act = e.target.closest("[data-hact]");
@@ -1862,7 +1884,7 @@ html.embed .to-top{display:none}
           <span class="quick">${[5, 8, 10].map(p => `<button type="button" data-hq="${p}">買價 -${p}%</button>`).join("")}</span></label>
       </div>
       ${calc}
-      <div class="hbtns"><button class="btn primary" data-hs="save">儲存</button>${state.holdings[s.code] ? `<button class="btn ghost" data-hs="del">刪除這筆持股</button>` : ""}</div>
+      <div class="hbtns"><button class="btn primary" data-hs="save">儲存</button>${state.holdings[s.code] ? `<button class="btn sell-btn" data-hs="sell" title="賣出後損益記到股票帳本，持有股數自動扣掉">賣出</button><button class="btn ghost" data-hs="del">刪除這筆持股</button>` : ""}</div>
       <div class="hint2">資料存在這台瀏覽器；開啟「☁ 雲端同步」時會用你的同步密碼加密後存到 GitHub，沒有密碼的人看不到內容。損益以最新收盤價計算，未扣手續費與證交稅。</div>`;
   }
   $("#tbody").addEventListener("click", e => {
@@ -1873,7 +1895,8 @@ html.embed .to-top{display:none}
     const hs = e.target.closest("[data-hs]");
     if (hs && state.open){
       const code = state.open;
-      if (hs.dataset.hs === "del"){ if (confirm("刪除這筆持股？")){ delete state.holdings[code]; saveH(); render(); } return; }
+      if (hs.dataset.hs === "sell"){ openSell(code); return; }
+      if (hs.dataset.hs === "del"){ if (confirm("刪除這筆持股？\n\n（如果是賣掉了，建議改按「賣出」，損益會記到股票帳本。）")){ delete state.holdings[code]; saveH(); render(); } return; }
       const cost = parseFloat($("#hCost").value), shares = parseInt($("#hShares").value, 10), stop = parseFloat($("#hStop").value);
       if (!(cost > 0) || !(shares > 0)){ alert("請輸入買進均價與持有股數"); return; }
       const s = stockOf(code);

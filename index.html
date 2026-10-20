@@ -1929,9 +1929,9 @@ html.embed .to-top{display:none}
         <label>買進均價（元）<input type="number" step="0.01" min="0" id="hCost" value="${h.cost || ""}" placeholder="例如 ${fmt(s.close,2)}"></label>
         <label>持有股數 <span style="color:var(--ink-3)">（1 張 = 1,000 股）</span><input type="number" step="1" min="0" id="hShares" value="${h.shares || ""}" placeholder="例如 1000"></label>
         <label><span data-tip="stop" style="text-decoration:underline dotted">停損價（元）</span><input type="number" step="0.01" min="0" id="hStop" value="${h.stop || ""}" placeholder="跌破就賣的價格">
-          <span class="quick">${[5, 8, 10].map(p => `<button type="button" data-hq="${p}">買價 -${p}%</button>`).join("")}</span></label>
+          <span class="quick">${[5, 10, 15].map(p => `<button type="button" data-hq="${p}">買價 -${p}%</button>`).join("")}</span></label>
         <label><span data-tip="target" style="text-decoration:underline dotted">目標價（元）</span><input type="number" step="0.01" min="0" id="hTarget" value="${h.target || ""}" placeholder="漲到就通知我">
-          <span class="quick">${[10, 20, 30].map(p => `<button type="button" data-ht="${p}">買價 +${p}%</button>`).join("")}</span></label>
+          <span class="quick">${[5, 10, 15].map(p => `<button type="button" data-ht="${p}">買價 +${p}%</button>`).join("")}</span></label>
       </div>
       <div class="hint2 alert-note">📧 <b>盤中到價寄信</b>：開盤時間每分鐘檢查一次，股價<b class="up">漲到目標價</b>時寄 Email 給你（每天每檔一次，改了目標價會重新通知）。需要先開啟「📧 同步到 Email 日報」。</div>
       ${calc}

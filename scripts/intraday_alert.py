@@ -1,11 +1,12 @@
 """盤中到價通知
 
 開盤時間（台北 9:00～13:30）每分鐘查一次證交所即時報價，
-持股的股價「漲到目標價」或「跌破停損價」時寄 Email 通知。每天每檔每種通知只寄一次（改了價格會重新通知）。
+持股的股價「漲到目標價」時寄 Email 通知。每天每檔只寄一次（改了目標價會重新通知）。
+（跌破停損價不寄信：停損會在晚上的 Email 日報和盤中即時看板提醒。）
 
 需要的 GitHub Secrets（和 Email 日報共用）：
   MAIL_USER / MAIL_PASS / MAIL_TO（選填）/ MAIL_SERVER（選填）/ MAIL_PORT（選填）
-  HOLDINGS   網站「我的持股」自動同步的持股（含目標價 target、停損價 stop）
+  HOLDINGS   網站「我的持股」自動同步的持股（含目標價 target）
 
 這個 repo 是公開的，執行紀錄任何人都看得到：所以紀錄裡只寫「幾檔、寄了幾封」，不寫股票代號與價格；
 避免重複通知的狀態檔 data/alert_state.json 也只存雜湊值。
@@ -79,8 +80,8 @@ def load_holdings():
     for c, h in obj.items():
         if not isinstance(h, dict):
             continue
-        target, stop = num(h.get("target")), num(h.get("stop"))
-        if target or stop:
+        target, stop = num(h.get("target")), None   # 只通知目標價
+        if target:
             out[str(c)] = {"name": h.get("name") or "", "cost": num(h.get("cost")), "shares": num(h.get("shares")) or 0,
                            "target": target, "stop": stop}
     return out
@@ -182,7 +183,7 @@ def send(hits, url):
 <tr><td style="padding:0 0 12px;font-size:13px;color:#8b90a0">盤中到價通知 · {now():%m/%d %H:%M}</td></tr>
 {"".join(cards)}
 <tr><td style="padding:4px 0;font-size:14px"><a href="{url}realtime.html" style="color:#1f3a5f;font-weight:700">打開盤中即時看板 →</a></td></tr>
-<tr><td style="padding:14px 0 0;font-size:12px;color:#8b90a0;line-height:1.7">這是你在「我的持股」設定的目標價／停損價提醒，每天每檔各通知一次；修改價格後會重新提醒。<br>
+<tr><td style="padding:14px 0 0;font-size:12px;color:#8b90a0;line-height:1.7">這是你在「我的持股」設定的目標價提醒，每天每檔通知一次；修改目標價後會重新提醒。<br>
 價格來自證交所即時報價，每分鐘檢查一次，可能和你看到的有幾十秒差距。本通知不構成投資建議。</td></tr>
 </table></td></tr></table></body></html>'''
     msg = EmailMessage()
@@ -209,7 +210,7 @@ def main():
         return
     H = load_holdings()
     if not H:
-        log("• 沒有持股設定目標價或停損價，結束")
+        log("• 沒有持股設定目標價，結束")
         return
     t = now()
     if t.weekday() >= 5:
@@ -219,7 +220,7 @@ def main():
     mk, url = market_of(), site_url()
     codes = sorted(H)
     sent = load_state(day)
-    log(f"• 監看 {len(codes)} 檔（{sum(1 for h in H.values() if h['target'])} 個目標價、{sum(1 for h in H.values() if h['stop'])} 個停損價），已通知 {len(sent)} 次")
+    log(f"• 監看 {len(codes)} 檔目標價，今天已通知 {len(sent)} 次")
     errors, n_mail, seen_today = 0, 0, False
     while True:
         t = now()

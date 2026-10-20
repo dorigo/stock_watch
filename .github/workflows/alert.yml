@@ -1,8 +1,8 @@
 name: 盤中到價通知
 
 # 開盤日 8:43（台北）啟動，等到 9:00 開盤後每分鐘檢查一次持股價格，13:31 結束。
-# 漲到「目標價」或跌破「停損價」時寄 Email（和 Email 日報共用同一組 MAIL_* Secrets）。
-# 網頁上修改目標價／停損價後，會寫入 alert.txt 重新啟動，讓新設定當天就生效。
+# 漲到「目標價」時寄 Email（和 Email 日報共用同一組 MAIL_* Secrets）。
+# 網頁上修改目標價後，會寫入 alert.txt 重新啟動，讓新設定當天就生效。
 on:
   schedule:
     - cron: "43 0 * * 1-5"   # 台北 08:43（週一～週五）
@@ -30,7 +30,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: 盤中每分鐘檢查目標價與停損價
+      - name: 盤中每分鐘檢查目標價
         env:
           MAIL_USER: ${{ secrets.MAIL_USER }}
           MAIL_PASS: ${{ secrets.MAIL_PASS }}

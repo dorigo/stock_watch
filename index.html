@@ -1242,7 +1242,7 @@ html.embed .to-top{display:none}
   }
   // 交易日盤中改了目標價／停損價：寫入 alert.txt，讓「盤中到價通知」用新設定重新啟動（當天就生效）
   async function pingAlert(){
-    const sig = JSON.stringify(Object.entries(state.holdings).filter(([, h]) => h && (h.target || h.stop)).map(([c, h]) => [c, h.target || 0, h.stop || 0]).sort());
+    const sig = JSON.stringify(Object.entries(state.holdings).filter(([, h]) => h && h.target).map(([c, h]) => [c, h.target]).sort());
     let last = ""; try { last = localStorage.getItem("alert_sig") || ""; } catch(e){}
     if (sig === last) return;
     const t = tpeNow();
@@ -1358,7 +1358,7 @@ html.embed .to-top{display:none}
       <button class="btn" data-hact="export" title="下載持股資料，可在其他裝置匯入">匯出</button>
       <button class="btn" data-hact="import" title="匯入先前匯出的持股資料">匯入</button>
       <input type="file" id="hImport" accept="application/json" hidden>
-      <div class="mail-note">📧 Email 日報：交易日晚上約 <b>22:10～22:30</b> 寄出（當天資料提早齊全時約 17:20～17:40）；週末與國定假日不寄。<br>🎯 到價通知：在個股的「我的持股」分頁設定<b>目標價</b>，開盤時間漲到目標價或跌破停損價會立刻寄信（約 1～2 分鐘內）。</div></div>`;
+      <div class="mail-note">📧 Email 日報：交易日晚上約 <b>22:10～22:30</b> 寄出（當天資料提早齊全時約 17:20～17:40）；週末與國定假日不寄。<br>🎯 到價通知：在個股的「我的持股」分頁設定<b>目標價</b>，開盤時間漲到目標價會立刻寄信（約 1～2 分鐘內）。</div></div>`;
     if (!codes.length){
       el.innerHTML = `<div class="card">${head}<div class="hold-empty">還沒有記錄持股。點開表格中任一檔股票 →「我的持股」分頁，輸入買進價格、股數與停損價，就會在這裡顯示損益與停損提醒。資料存在這台瀏覽器；開啟「☁ 雲端同步」後會加密存到 GitHub，多台電腦自動同步。</div></div>`;
       return;
@@ -1919,7 +1919,7 @@ html.embed .to-top{display:none}
         <label><span data-tip="target" style="text-decoration:underline dotted">目標價（元）</span><input type="number" step="0.01" min="0" id="hTarget" value="${h.target || ""}" placeholder="漲到就通知我">
           <span class="quick">${[10, 20, 30].map(p => `<button type="button" data-ht="${p}">買價 +${p}%</button>`).join("")}</span></label>
       </div>
-      <div class="hint2 alert-note">📧 <b>盤中到價寄信</b>：開盤時間每分鐘檢查一次，股價<b class="up">漲到目標價</b>或<b class="down">跌破停損價</b>時寄 Email 給你（每天每檔各一次，改了價格會重新通知）。需要先開啟「📧 同步到 Email 日報」。</div>
+      <div class="hint2 alert-note">📧 <b>盤中到價寄信</b>：開盤時間每分鐘檢查一次，股價<b class="up">漲到目標價</b>時寄 Email 給你（每天每檔一次，改了目標價會重新通知）。需要先開啟「📧 同步到 Email 日報」。</div>
       ${calc}
       <div class="hbtns"><button class="btn primary" data-hs="save">儲存</button>${state.holdings[s.code] ? `<button class="btn sell-btn" data-hs="sell" title="賣出後損益記到股票帳本，持有股數自動扣掉">賣出</button><button class="btn ghost" data-hs="del">刪除這筆持股</button>` : ""}</div>
       <div class="hint2">資料存在這台瀏覽器；開啟「☁ 雲端同步」時會用你的同步密碼加密後存到 GitHub，沒有密碼的人看不到內容。損益以最新收盤價計算，未扣手續費與證交稅。</div>`;

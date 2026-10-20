@@ -109,7 +109,8 @@ def fetch(codes, mk):
             j = json.loads(r.read().decode("utf-8", "replace"))
         for x in j.get("msgArray") or []:
             out[x.get("c")] = {"d": str(x.get("d") or ""), "t": x.get("t") or "", "z": num(x.get("z")), "y": num(x.get("y")),
-                               "h": num(x.get("h")), "l": num(x.get("l")), "n": x.get("n") or ""}
+                               "h": num(x.get("h")), "l": num(x.get("l")), "n": x.get("n") or "",
+                               "b": num(str(x.get("b") or "").split("_")[0]), "a": num(str(x.get("a") or "").split("_")[0])}
     return out
 
 
@@ -171,7 +172,7 @@ def send(hits, url):
         sg = lambda v, d=2: "—" if v is None else ("+" if v > 0 else "−" if v < 0 else "") + f"{abs(v):,.{d}f}"
         cards.append(f'''<tr><td style="padding:0 0 12px"><table width="100%" cellpadding="0" cellspacing="0" style="border:2px solid {color};border-radius:12px">
 <tr><td style="padding:14px 16px">
-<div style="font-size:13px;font-weight:700;color:{color}">{"🎯 漲到目標價" if is_t else "⚠ 跌破停損價"}　{html.escape(h["t"][:5])}</div>
+<div style="font-size:13px;font-weight:700;color:{color}">{("🎯 今天曾漲到目標價（最高 " + fnum(h["h"]) + "，現在已回落）") if h.get("touched") else "🎯 漲到目標價" if is_t else "⚠ 跌破停損價"}　{html.escape(h["t"][:5])}</div>
 <div style="font-size:20px;font-weight:900;margin:4px 0 2px">{html.escape(h["name"])} <span style="font-size:13px;color:#8b90a0">{h["code"]}</span></div>
 <div style="font-size:26px;font-weight:900;color:{cc(chg)}">{fnum(h["p"])} <span style="font-size:14px">{sg(chg)}（{sg(pct)}%）</span></div>
 <table cellpadding="0" cellspacing="0" style="font-size:13px;color:#5b6070;margin-top:8px;line-height:1.8">
@@ -258,7 +259,7 @@ def main():
             x, h = q.get(c), H[c]
             if not x or x["d"] != today:
                 continue
-            p = x["z"] or last_px.get(c)
+            p = x["z"] or last_px.get(c) or x.get("b") or x.get("a")    # 沒有成交價時用上一筆成交價，再沒有就用委買價
             if x["z"]:
                 last_px[c] = x["z"]
             # 今天最高價碰到目標價也算（每分鐘才查一次，中間短暫漲上去又回落時不會漏掉）
@@ -272,7 +273,7 @@ def main():
                 k = key(day, c, kind, th)
                 if k in sent:
                     continue
-                hits.append({"kind": kind, "code": c, "name": h["name"] or x["n"] or (mk.get(c) or (c,))[0] or c, "th": th, "p": p or x["h"],
+                hits.append({"kind": kind, "code": c, "name": h["name"] or x["n"] or (mk.get(c) or (c,))[0] or c, "th": th, "p": p or x["h"], "touched": bool(kind == "target" and not (p and p >= th)),
                              "y": x["y"], "h": x["h"], "l": x["l"], "t": x["t"], "cost": h["cost"], "shares": h["shares"], "k": k})
         if hits:
             hits.sort(key=lambda z: z["kind"] != "stop")     # 停損排前面

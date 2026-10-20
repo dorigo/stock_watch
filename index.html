@@ -563,7 +563,7 @@ html.embed .to-top{display:none}
         <table>
           <tr><td>法人當日買超 ÷ 5 日均量（達 20% 滿分）</td><td>25</td></tr>
           <tr><td>法人 5 日累計買超 ÷ 5 日均量（達 50% 滿分）</td><td>25</td></tr>
-          <tr><td>外資、投信連續買超天數（取較大者，5 天滿分）</td><td>10</td></tr>
+          <tr><td>外資、投信連續買超天數（取較大者，5 天滿分；法人 5 日合計賣超時不計分）</td><td>10</td></tr>
           <tr><td>千張大戶持股比例週增減（+0.5 個百分點滿分）</td><td>25</td></tr>
           <tr><td>融資餘額 5 日減少（減少 8% 滿分；法人 5 日明顯賣超時不計分）</td><td>15</td></tr>
         </table>
@@ -1973,7 +1973,7 @@ html.embed .to-top{display:none}
     const parts = [
       ["法人當日買超 ÷ 5 日均量", P.instToday, 25],
       ["法人 5 日累計買超", P.inst5d, 25],
-      ["外資、投信連續買超", P.streak, 10],
+      ["外資、投信連續買超" + (s.streakBlocked && (s.fStreak || s.tStreak) ? "（法人 5 日賣超中，不計分）" : ""), P.streak, 10],
       ["千張大戶週增減", P.big, 25],
       ["融資 5 日減少" + (s.instSelling ? "（法人賣超中，不計分）" : ""), P.margin, 15],
     ].map(([l,v,m]) => `<div class="part"><span class="lbl">${l}</span><span class="pt num">${fmt(v,1)} / ${m}</span><span class="track"><i style="width:${(v||0)/m*100}%"></i></span></div>`).join("");

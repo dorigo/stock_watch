@@ -552,7 +552,9 @@ def score_stock(code, days, tdcc):
 
     p1 = clamp01((inst / avg5) / FULL_INST_TODAY) * W_INST_TODAY if inst and avg5 and inst > 0 else 0
     p2 = clamp01((sum5 / avg5) / FULL_INST_5D) * W_INST_5D if avg5 and sum5 > 0 else 0
-    p3 = min(max(f_streak, t_streak), FULL_STREAK) / FULL_STREAK * W_STREAK
+    # 連買：只看天數不看量，法人 5 日合計賣超時（例如投信小買、外資大賣）不算籌碼轉好
+    streak_blocked = sum5 < 0
+    p3 = 0 if streak_blocked else min(max(f_streak, t_streak), FULL_STREAK) / FULL_STREAK * W_STREAK
     p4 = clamp01(big_delta / FULL_BIG) * W_BIG if big_delta and big_delta > 0 else 0
     # 融資：看 5 個交易日的累計變化（單日太容易跳動）；法人同時明顯賣超時，散戶退場不算籌碼轉好
     m_old = next((s.get("margin") for s in series[5:6] if s and s.get("margin") is not None), None)
@@ -599,7 +601,7 @@ def score_stock(code, days, tdcc):
         "vol": lots(t.get("vol")), "amt": round((t.get("amt") or 0) / 1e8, 2),
         "foreign": lots(t.get("foreign")), "trust": lots(t.get("trust")), "dealer": lots(t.get("dealer")),
         "inst": lots(inst), "sum5": lots(sum5), "avg5": lots(avg5), "volRatio": round(vol_ratio, 2) if vol_ratio else None,
-        "fStreak": f_streak, "tStreak": t_streak,
+        "fStreak": f_streak, "tStreak": t_streak, "streakBlocked": streak_blocked,
         "bigPct": big_pct, "bigDelta": big_delta, "bigPeople": big_people,
         "margin": m, "marginChg": m_chg,
         "margin5Pct": round(-m_ratio5 * 100, 2) if m_ratio5 is not None else None, "instSelling": inst_selling,

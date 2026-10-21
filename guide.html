@@ -341,7 +341,8 @@ html.embed .to-top{display:none}
         <p class="note">也可以填<b>目標價</b>＝「漲到這個價格要考慮賣」。開盤時間漲到目標價，會<b>寄 Email 通知你</b>。</p>
         <p class="note">之後真的賣掉時，按那檔的「<b>賣出</b>」：填日期、股數和實際損益，會記到「股票帳本」，持有股數也會自動扣掉。</p></li>
       <li><b>開啟 Email 日報</b>
-        <p>設定好之後，每個交易日晚上約 22:10～22:30 會收到一封整理好的信，持股快跌破停損時會提醒你。在「我的持股」按「📧 同步到 Email 日報」，持股就會自動同步到信裡。</p></li>
+        <p>設定好之後，每個交易日晚上會收到一封整理好的信（資料齊全就寄，通常 17:30 之後，最晚約 22:30），持股快跌破停損時會提醒你。在「我的持股」按「📧 同步到 Email 日報」，之後新增、修改持股都會自動同步到信裡和到價通知。</p>
+          <p class="note">有兩台以上的電腦或手機？在「我的持股」按「<b>☁ 雲端同步</b>」設定一組同步密碼，每台都輸入同一組，持股、模擬投資、股票帳本就會自動同步。</p></li>
     </ol>
   </section>
 
@@ -359,7 +360,8 @@ html.embed .to-top{display:none}
         <div class="when">📈 盤中<small>9:00～13:30</small></div>
         <ul>
           <li>打開<b>盤中即時</b>，看持股現在的價格和今天的損益。</li>
-          <li>卡片<b class="red">框紅</b>＝跌破你設的停損價，要照當初的計畫處理。</li>
+          <li>卡片<b class="down">框綠</b>、出現「⚠ 跌破停損」＝跌破你設的停損價，要照當初的計畫處理；「接近停損」＝離停損價不到 2%。</li>
+          <li>出現「<b class="up">🎯 達目標價</b>」＝漲到你設的目標價，網站也會<b>寄 Email 通知</b>你，可以照計畫考慮要不要賣。</li>
           <li>點卡片可以看那檔股票的 K 線和籌碼。</li>
           <li>看一兩次就好，一直盯盤反而容易衝動買賣。</li>
         </ul>
@@ -368,6 +370,8 @@ html.embed .to-top{display:none}
         <div class="when">🌙 晚上<small>收到 Email 日報後</small></div>
         <ul>
           <li>先看信裡的「⚠ 需要注意」：有沒有持股快跌到停損、法人在賣。</li>
+          <li>今天有賣股票？到「我的持股」按「賣出」記一筆，損益會記到<a href="ledger.html">股票帳本</a>。</li>
+          <li>晚上打開網站還是前一天的資料？按首頁上方的「↻ 立即更新資料」，1～2 分鐘後就會更新。</li>
           <li>有興趣的股票，再打開網站點進去看細節。</li>
         </ul>
       </div>
@@ -376,17 +380,17 @@ html.embed .to-top{display:none}
 
   <section class="gsec" id="detail">
     <h2><span>4</span>點開一檔股票，要看什麼？</h2>
-    <p class="lead">在首頁（或盤中即時看板）點任一檔股票，會出現四個分頁：</p>
+    <p class="lead">在首頁（或盤中即時看板、模擬投資、股票帳本）點任一檔股票，會出現四個分頁：</p>
     <div class="dlist">
       <div class="ditem"><div class="dt">K 線與法人</div>
-        <div class="dd">上面是股價走勢（每一根「K 棒」代表一天，怎麼看見下方圖解）；下面的長條是三大法人（外資、投信、自營商）每天買賣多少。
+        <div class="dd">最上面是<b>近 1、2、3 個月漲跌</b>，以及和同期買 0050 比是贏還是輸。<br>中間是股價走勢：每一根「K 棒」代表一天（怎麼看見下方圖解），深色的線是每天收盤價連起來，彩色的線是均線。線太多時，點圖下方的「K 棒」「每日收盤價連線」可以開關。<br>下面的長條是三大法人（外資、投信、自營商）每天買賣多少。
           <div class="chips"><span class="chip up">紅色長條越來越多 → 大戶在買</span><span class="chip down">綠色長條越來越多 → 大戶在賣</span></div></div></div>
       <div class="ditem"><div class="dt">籌碼分數</div>
         <div class="dd">0～100 分，綜合法人、大戶、散戶的動向。<b>看分數的「變化」，不要只看高低</b>：從 10 分連續升到 50 分，比一直停在 50 分更值得注意。</div></div>
       <div class="ditem"><div class="dt">基本面</div>
         <div class="dd"><b>本益比</b>標「昂貴區」＝比這家公司過去 5 年都貴。<br><b>營收年增率</b>紅色＝比去年同月成長，代表生意變好。</div></div>
       <div class="ditem"><div class="dt">我的持股</div>
-        <div class="dd">記錄或修改你的買進成本和停損價。</div></div>
+        <div class="dd">記錄或修改你的<b>買進成本、股數、停損價、目標價</b>（都有 ±5%、10%、15% 的快速按鈕）。賣掉時按「<b>賣出</b>」，損益會記到股票帳本、股數自動扣掉。</div></div>
     </div>
     <div class="kbox">
       <h3>📖 K 棒怎麼看？</h3>
@@ -413,13 +417,14 @@ html.embed .to-top{display:none}
         </ul>
       </div>
     </div>
+    <p class="tip">📊 想比較幾檔股票？在追蹤清單或「我的持股」最左邊勾選 2～4 檔，按「比較」，會把走勢、籌碼、本益比放在一起比。</p>
     <p class="tip">💡 看不懂的欄位名稱，把滑鼠移上去（手機用手指點一下）會跳出白話說明；首頁最下面也有「名詞小辭典」。</p>
   </section>
 
   <section class="gsec" id="rules">
     <h2><span>5</span>新手最重要的三個原則</h2>
     <div class="rgrid">
-      <div class="rcard"><div class="num">01</div><b>買之前先想好停損價</b><p>跌到就賣，不要「等它漲回來」。網站會幫你盯，跌破時卡片會框紅，Email 也會提醒。</p></div>
+      <div class="rcard"><div class="num">01</div><b>買之前先想好停損價</b><p>跌到就賣，不要「等它漲回來」。網站會幫你盯，跌破時卡片會框綠、閃一下提醒，晚上的 Email 日報也會列出來。</p></div>
       <div class="rcard"><div class="num">02</div><b>一檔不要押太多</b><p>單一股票最好不要超過總資金的兩成。新手大虧，多半是一檔押太重，不是選錯股。</p></div>
       <div class="rcard"><div class="num">03</div><b>先用假錢練習</b><p>想買新股票，先到「<a href="sim.html">模擬投資</a>」買看看，寫下為什麼買。過一兩個月回來看結果，也看有沒有贏過直接買 0050。連假錢都賺不到的方法，就先不要用真錢。</p></div>
     </div>
@@ -428,7 +433,7 @@ html.embed .to-top{display:none}
   <section class="gsec warn" id="remember">
     <h2><span>!</span>要記得的事</h2>
     <ul class="rem">
-      <li>網站的資料是<b>盤後</b>才更新的。法人今天買，不代表明天會漲。</li>
+      <li>籌碼資料是<b>盤後</b>才更新的（只有盤中即時看板、到價通知是即時的）。法人今天買，不代表明天會漲。</li>
       <li><a href="backtest.html">回測報告</a>顯示：<b>單看籌碼分數買賣，效果沒有比隨便亂買好</b>。分數只能當參考，不能當買賣訊號。</li>
       <li>網站只是整理公開資料，不是投資建議。買不買、賣不賣，還是要你自己判斷。</li>
     </ul>

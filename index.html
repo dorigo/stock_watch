@@ -1421,7 +1421,7 @@ html.embed .to-top{display:none}
       <button class="btn" data-hact="export" title="下載持股資料，可在其他裝置匯入">匯出</button>
       <button class="btn" data-hact="import" title="匯入先前匯出的持股資料">匯入</button>
       <input type="file" id="hImport" accept="application/json" hidden>
-      <div class="mail-note">📧 Email 日報：交易日晚上約 <b>22:10～22:30</b> 寄出（當天資料提早齊全時約 17:20～17:40）；週末與國定假日不寄。<br>🎯 到價通知：在個股的「我的持股」分頁設定<b>目標價</b>，開盤時間漲到目標價會立刻寄信（約 1～2 分鐘內）。<span id="alertSt">${alertStatusHTML()}</span></div></div>`;
+      <div class="mail-note">📧 Email 日報：交易日資料齊全後寄出，通常約 <b>17:20～17:40</b>，資料較晚時約 19:40 或 22:10～22:30；週末與國定假日不寄。<br>🎯 到價通知：在個股的「我的持股」分頁設定<b>目標價</b>，開盤時間漲到目標價會立刻寄信（約 1～2 分鐘內）。<span id="alertSt">${alertStatusHTML()}</span></div></div>`;
     if (!codes.length){
       el.innerHTML = `<div class="card">${head}<div class="hold-empty">還沒有記錄持股。點開表格中任一檔股票 →「我的持股」分頁，輸入買進價格、股數與停損價，就會在這裡顯示損益與停損提醒。資料存在這台瀏覽器；開啟「☁ 雲端同步」後會加密存到 GitHub，多台電腦自動同步。</div></div>`;
       return;

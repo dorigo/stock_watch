@@ -675,8 +675,8 @@ html.embed .to-top{display:none}
     if (q.up && r.p != null && r.p >= q.up) pills.push(`<span class="pill lim-up">漲停</span>`);
     if (q.dn && r.p != null && r.p <= q.dn) pills.push(`<span class="pill lim-dn">跌停</span>`);
     if (r.stopHit) pills.push(`<span class="pill red">⚠ 跌破停損</span>`);
+    else if (r.toStop != null && r.toStop < 2) pills.push(`<span class="pill warn">接近停損</span>`);   // 離停損價不到 2%
     if (h && h.target && r.p != null && r.p >= h.target) pills.push(`<span class="pill tgt">🎯 達目標價</span>`);
-    else if (r.toStop != null && r.toStop < 2) pills.push(`<span class="pill warn">接近停損</span>`);
     if (q.date && !q.traded) pills.push(`<span class="pill watch">尚未成交</span>`);
     // 今日區間條
     let range = "";

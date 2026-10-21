@@ -338,6 +338,7 @@ html.embed .to-top{display:none}
 
 <script src="vendor/holdsync.js"></script>
 <script src="vendor/ledger.js"></script>
+<script src="vendor/motion.js"></script>
 <script>
 (() => {
   const $ = s => document.querySelector(s);
@@ -363,7 +364,7 @@ html.embed .to-top{display:none}
     iv: +ls.get("rt_iv", "10") || 10,
     showWatch: ls.get("rt_watch", "0") === "1",
     sort: ls.get("rt_sort", "pct"),
-    paused: false, old: {},
+    paused: false, old: {}, pulsed: {},
     holdings: {}, latest: null, all: {},
     q: {},          // 代號 → 即時報價
     series: {},     // 代號 → [[分鐘, 價]]
@@ -656,12 +657,12 @@ html.embed .to-top{display:none}
     const showStop = r.h && r.h.stop && r.h.stop >= mn && r.h.stop <= mx;
     const last = s.length ? s[s.length - 1] : null;
     const ticks = [[0, "9:00"], [120, "11:00"], [270, "13:30"]].map(([m, t], i) => `<text x="${X(m).toFixed(1)}" y="${H - 3}" font-size="9.5" fill="var(--ink-3)" font-weight="700" text-anchor="${i === 0 ? "start" : i === 2 ? "end" : "middle"}">${t}</text>`).join("");
-    return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(nameOf(code))} 今日分時走勢">
+    return `<svg viewBox="0 0 ${W} ${H}" role="img" data-draw="rt:${esc(code)}" aria-label="${esc(nameOf(code))} 今日分時走勢">
       <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".28"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
       ${r.y ? `<line x1="${L}" x2="${W - R}" y1="${Y(r.y).toFixed(1)}" y2="${Y(r.y).toFixed(1)}" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="4 4" opacity=".7"/><text x="${L + 2}" y="${(Y(r.y) - 3).toFixed(1)}" font-size="9.5" fill="var(--ink-3)" font-weight="700">平盤 ${pd(r.y)}</text>` : ""}
       ${showCost ? hl(r.h.cost, "var(--cost)", "成本") : ""}${showStop ? hl(r.h.stop, "var(--down)", "停損") : ""}
-      ${area ? `<path d="${area}" fill="url(#${id})"/>` : ""}
-      ${path ? `<path d="${path}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>` : `<text x="${W / 2}" y="${H / 2}" font-size="11" text-anchor="middle" fill="var(--ink-3)">開盤後會畫出今日走勢</text>`}
+      ${area ? `<path class="draw-fade" d="${area}" fill="url(#${id})"/>` : ""}
+      ${path ? `<path class="draw" d="${path}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>` : `<text x="${W / 2}" y="${H / 2}" font-size="11" text-anchor="middle" fill="var(--ink-3)">開盤後會畫出今日走勢</text>`}
       ${last ? `<circle cx="${X(last[0]).toFixed(1)}" cy="${Y(last[1]).toFixed(1)}" r="4" fill="var(--panel)" stroke="${col}" stroke-width="2.5"/>` : ""}
       ${ticks}</svg>`;
   }
@@ -686,7 +687,7 @@ html.embed .to-top{display:none}
         <div class="rl"><span>最低 <b>${pd(q.l)}</b></span><span>開盤 <b>${pd(q.o)}</b></span><span>最高 <b>${pd(q.h)}</b></span></div></div>`;
     }
     const kv = x.held ? `
-      <div><span class="k">今日損益</span><span class="v ${cls(r.day)}">${sgn(r.day == null ? null : Math.round(r.day))}</span></div>
+      <div><span class="k">今日損益</span><span class="v ${cls(r.day)}" data-tw="d:${esc(c)}">${sgn(r.day == null ? null : Math.round(r.day))}</span></div>
       <div><span class="k">總損益</span><span class="v wrap ${cls(r.tot)}">${sgn(r.tot == null ? null : Math.round(r.tot))}<small class="ln">${r.totPct == null ? "" : sgn(r.totPct, 1) + "%"}</small></span></div>
       <div title="${h.stop ? "停損價 " + pd(h.stop) : ""}"><span class="k">${h.stop ? "距停損" : "停損價"}</span><span class="v ${r.stopHit ? "down" : ""}">${!h.stop ? "未設定" : r.stopHit ? "已跌破" : r.toStop == null ? "—" : fmt(r.toStop, 1) + "%"}</span></div>`
       : `<div><span class="k">昨收</span><span class="v">${pd(r.y)}</span></div>`;
@@ -694,9 +695,19 @@ html.embed .to-top{display:none}
       <div><span class="k">成交量</span><span class="v">${fmt(q.vol)} <small>張</small></span></div>
       <div><span class="k">買一／賣一</span><span class="v wrap">${pd(q.bid)}<small class="ln">賣 ${pd(q.ask)}</small></span></div>
       ${x.held ? `<div><span class="k">市值</span><span class="v">${r.val == null ? "—" : fmt(Math.round(r.val))}</span></div>` : `<div><span class="k">漲停／跌停</span><span class="v"><small class="up">${pd(q.up)}</small> <small>/</small> <small class="down">${pd(q.dn)}</small></span></div>`}`;
-    return `<article class="card${r.stopHit ? " stop" : ""}${q.flash ? " flash-" + q.flash : ""}" data-code="${esc(c)}" tabindex="0" title="點一下看 K 線、籌碼分數、基本面">
+    // 第一次跌破停損／達到目標價時，外框閃 3 下（之後的更新不再閃）
+    const tHit = !!(h && h.target && r.p != null && r.p >= h.target);
+    let pulse = "";
+    const pk = r.stopHit ? c + "s" : tHit ? c + "t" : null;
+    if (pk){
+      const t0 = S.pulsed[pk] || (S.pulsed[pk] = Date.now()), el = Date.now() - t0;
+      if (el < 2400) pulse = ` pulse-once" style="--pulse:var(--${r.stopHit ? "down" : "up"});animation-delay:-${el}ms`;
+    }
+    if (!r.stopHit) delete S.pulsed[c + "s"];
+    if (!tHit) delete S.pulsed[c + "t"];
+    return `<article class="card${r.stopHit ? " stop" : ""}${q.flash ? " flash-" + q.flash : ""}${pulse}" data-code="${esc(c)}" tabindex="0" title="點一下看 K 線、籌碼分數、基本面">
       <div class="c-head"><span class="nm">${esc(nameOf(c))}</span><span class="cd">${esc(c)}</span>${pills.join("")}<span class="t">${esc(q.time || "")}</span></div>
-      <div class="c-price"><span class="p num ${dir}">${r.p == null ? "—" : pd(r.p)}</span><span class="chg ${dir}">${arrow}${r.chg == null ? "—" : fmt(Math.abs(r.chg), 2)}　${r.pct == null ? "" : sgn(r.pct, 2) + "%"}</span></div>
+      <div class="c-price"><span class="p num ${dir}" data-tw="p:${esc(c)}">${r.p == null ? "—" : pd(r.p)}</span><span class="chg ${dir}">${arrow}${r.chg == null ? "—" : fmt(Math.abs(r.chg), 2)}　${r.pct == null ? "" : sgn(r.pct, 2) + "%"}</span></div>
       <div class="c-chart">${chart(c, r)}</div>
       ${range}
       <div class="kv">${kv}${kv2}</div>
@@ -718,9 +729,9 @@ html.embed .to-top{display:none}
     }
     const dayPct = prevVal ? day / prevVal * 100 : null, totPct = cost ? tot / cost * 100 : null;
     $("#sum").innerHTML = held.length ? `
-      <div class="sc hl"><div class="k">今日損益</div><div class="v ${cls(day)}">${sgn(Math.round(day))}</div><div class="s">相對昨收 <b class="${cls(dayPct)}">${dayPct == null ? "—" : sgn(dayPct, 2) + "%"}</b></div></div>
-      <div class="sc"><div class="k">持股市值</div><div class="v">${fmt(Math.round(val))}</div><div class="s">共 ${held.length} 檔${n < held.length ? `，${held.length - n} 檔尚無報價` : ""}</div></div>
-      <div class="sc"><div class="k">總損益（未實現）</div><div class="v ${cls(tot)}">${sgn(Math.round(tot))}</div><div class="s">報酬率 <b class="${cls(totPct)}">${totPct == null ? "—" : sgn(totPct, 2) + "%"}</b></div></div>
+      <div class="sc hl"><div class="k">今日損益</div><div class="v ${cls(day)}" data-tw="s:day">${sgn(Math.round(day))}</div><div class="s">相對昨收 <b class="${cls(dayPct)}">${dayPct == null ? "—" : sgn(dayPct, 2) + "%"}</b></div></div>
+      <div class="sc"><div class="k">持股市值</div><div class="v" data-tw="s:val">${fmt(Math.round(val))}</div><div class="s">共 ${held.length} 檔${n < held.length ? `，${held.length - n} 檔尚無報價` : ""}</div></div>
+      <div class="sc"><div class="k">總損益（未實現）</div><div class="v ${cls(tot)}" data-tw="s:tot">${sgn(Math.round(tot))}</div><div class="s">報酬率 <b class="${cls(totPct)}">${totPct == null ? "—" : sgn(totPct, 2) + "%"}</b></div></div>
       <div class="sc"><div class="k">上漲／下跌</div><div class="v"><span class="up">${up}</span> / <span class="down">${dn}</span></div><div class="s">平盤或未成交 ${held.length - up - dn} 檔</div></div>
       <div class="sc"><div class="k">跌破停損</div><div class="v ${hits ? "down" : ""}">${hits}</div><div class="s">${hits ? "請依照自己的計畫處理" : "目前都在停損價之上"}</div></div>` : "";
     // 卡片
@@ -748,10 +759,10 @@ html.embed .to-top{display:none}
     const col = `var(--${cls(q.price != null && q.y ? q.price - q.y : 0)})`, id2 = "ix" + id;
     const path = s.map((p, i) => (i ? "L" : "M") + X(p[0]).toFixed(1) + " " + Y(p[1]).toFixed(1)).join("");
     const last = s[s.length - 1];
-    return `<svg viewBox="0 0 ${W} ${H}" aria-hidden="true">
+    return `<svg viewBox="0 0 ${W} ${H}" aria-hidden="true" data-draw="ix:${esc(id)}">
       <defs><linearGradient id="${id2}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".25"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
       ${q.y ? `<line x1="2" x2="${W - 2}" y1="${Y(q.y).toFixed(1)}" y2="${Y(q.y).toFixed(1)}" stroke="var(--ink-3)" stroke-dasharray="3 3" opacity=".6"/>` : ""}
-      ${s.length > 1 ? `<path d="${path}L${X(last[0]).toFixed(1)} ${H}L${X(s[0][0]).toFixed(1)} ${H}Z" fill="url(#${id2})"/><path d="${path}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>` : ""}
+      ${s.length > 1 ? `<path d="${path}L${X(last[0]).toFixed(1)} ${H}L${X(s[0][0]).toFixed(1)} ${H}Z" fill="url(#${id2})" class="draw-fade"/><path class="draw" d="${path}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>` : ""}
       ${last ? `<circle cx="${X(last[0]).toFixed(1)}" cy="${Y(last[1]).toFixed(1)}" r="3" fill="var(--panel)" stroke="${col}" stroke-width="2"/>` : ""}</svg>`;
   }
   function renderIdx(){
@@ -763,7 +774,7 @@ html.embed .to-top{display:none}
       const q = S.idx[x.id], p = q.price ?? q.y, chg = q.price != null && q.y ? q.price - q.y : null, pct = chg != null ? chg / q.y * 100 : null, d = cls(chg);
       return `<div class="ix-t${x.main ? " main" : ""}" title="${esc(x.name)}　最高 ${pd(q.h)}／最低 ${pd(q.l)}">
         <div class="n"><span>${esc(x.name)}</span><em>${esc((q.time || "").slice(0, 5))}</em></div>
-        <div class="v ${d}">${pd(p)}</div>
+        <div class="v ${d}" data-tw="ix:${esc(x.id)}">${pd(p)}</div>
         <span class="chg ${d}">${chg > 0 ? "▲" : chg < 0 ? "▼" : ""}${chg == null ? "—" : fmt(Math.abs(chg), 2)}　${pct == null ? "" : sgn(pct, 2) + "%"}</span>
         ${ixLine(x.id, q)}</div>`;
     }).join("");

@@ -422,6 +422,7 @@ html.embed .to-top{display:none}
 </div>
 
 <script src="vendor/holdsync.js"></script>
+<script src="vendor/motion.js"></script>
 <script>
 (() => {
   const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
@@ -547,8 +548,8 @@ html.embed .to-top{display:none}
   function render(){
     const T = totals();
     $("#sum").innerHTML = `
-      <div class="sc hl"><div class="k">模擬總資產</div><div class="v">${fmt(Math.round(T.eq))}</div><div class="s">初始 ${fmt(D.cash0)}，報酬 <b class="${cls(T.ret)}">${sgn(T.ret, 2)}%</b></div></div>
-      <div class="sc"><div class="k">未實現損益</div><div class="v ${cls(T.upnl)}">${sgn(Math.round(T.upnl))}</div><div class="s">持有 ${T.open} 檔${T.dayChg && S.pxSrc === "live" ? `，今日 <b class="${cls(T.dayChg)}">${sgn(Math.round(T.dayChg))}</b>` : ""}</div></div>
+      <div class="sc hl"><div class="k">模擬總資產</div><div class="v" data-tw="s:eq">${fmt(Math.round(T.eq))}</div><div class="s">初始 ${fmt(D.cash0)}，報酬 <b class="${cls(T.ret)}">${sgn(T.ret, 2)}%</b></div></div>
+      <div class="sc"><div class="k">未實現損益</div><div class="v ${cls(T.upnl)}" data-tw="s:upnl">${sgn(Math.round(T.upnl))}</div><div class="s">持有 ${T.open} 檔${T.dayChg && S.pxSrc === "live" ? `，今日 <b class="${cls(T.dayChg)}">${sgn(Math.round(T.dayChg))}</b>` : ""}</div></div>
       <div class="sc"><div class="k">已實現損益</div><div class="v ${cls(T.rpnl)}">${sgn(Math.round(T.rpnl))}</div><div class="s">已賣出 ${T.closed} 筆${T.avg != null ? `，平均 <b class="${cls(T.avg)}">${sgn(T.avg, 1)}%</b>` : ""}</div></div>
       <div class="sc"><div class="k">勝率</div><div class="v">${T.closed ? fmt(T.wins / T.closed * 100, 0) + "%" : "—"}</div><div class="s">${T.closed ? `${T.wins} 勝 ${T.closed - T.wins} 敗${T.beatN ? `，贏過 0050 ${T.beat}/${T.beatN} 筆` : ""}` : "賣出後才會計算"}</div></div>
       <div class="sc"><div class="k">可用現金</div><div class="v ${T.cash < 0 ? "up" : ""}">${fmt(Math.round(T.cash))}</div><div class="s">${T.cash < 0 ? "已超出模擬資金" : "還可以買的金額"}</div></div>`;
@@ -610,10 +611,10 @@ html.embed .to-top{display:none}
     const area = vals.length > 1 ? `${path}L${X(vals.length - 1).toFixed(1)},${H - B}L${X(0).toFixed(1)},${H - B}Z` : "";
     const hl = (v, c, lab) => v && v >= mn && v <= mx ? `<line x1="${L}" x2="${W - R}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="${c}" stroke-width="1" stroke-dasharray="4 4" opacity=".75"/><text x="${W - R - 2}" y="${(Y(v) - 3).toFixed(1)}" font-size="9.5" fill="${c}" font-weight="700" text-anchor="end">${lab} ${pd(v)}</text>` : "";
     const last = vals.length - 1;
-    return `<div class="c-chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="走勢圖">
+    return `<div class="c-chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="走勢圖" data-draw="sim:${t.id}:${S.chart}">
       <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".26"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
       ${hl(t.price, "var(--ink-3)", "買進")}${t.stop ? hl(t.stop, "var(--down)", "停損") : ""}
-      ${area ? `<path d="${area}" fill="url(#${id})"/>` : ""}<path d="${path}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+      ${area ? `<path class="draw-fade" d="${area}" fill="url(#${id})"/>` : ""}<path class="draw" d="${path}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
       <circle cx="${X(last).toFixed(1)}" cy="${Y(vals[last]).toFixed(1)}" r="3.6" fill="var(--panel)" stroke="${col}" stroke-width="2.4"/>
       ${labels.map(([x, txt, anc]) => `<text x="${(L + x * (W - L - R)).toFixed(1)}" y="${H - 3}" font-size="9.5" fill="var(--ink-3)" font-weight="700" text-anchor="${anc}">${txt}</text>`).join("")}
     </svg>${note ? `<div class="c-note">${note}</div>` : ""}</div>`;
@@ -656,13 +657,17 @@ html.embed .to-top{display:none}
     const pills = [];
     if (r.stopHit) pills.push(`<span class="pill red">⚠ 跌破停損</span>`);
     else if (t.stop && r.p != null && (r.p - t.stop) / r.p * 100 < 3) pills.push(`<span class="pill warn">接近停損</span>`);
-    return `<article class="card${r.stopHit ? " stop" : ""}" data-code="${esc(t.code)}" tabindex="0" title="點一下看 K 線、籌碼分數、基本面">
+    S.pulsed = S.pulsed || {};
+    let pulse = "";
+    if (r.stopHit){ const t0 = S.pulsed[t.id] || (S.pulsed[t.id] = Date.now()), el = Date.now() - t0; if (el < 2400) pulse = ` pulse-once" style="--pulse:var(--down);animation-delay:-${el}ms`; }
+    else delete S.pulsed[t.id];
+    return `<article class="card${r.stopHit ? " stop" : ""}${pulse}" data-code="${esc(t.code)}" tabindex="0" title="點一下看 K 線、籌碼分數、基本面">
       <div class="c-head"><span class="nm">${esc(t.name || nameOf(t.code))}</span><span class="cd">${esc(t.code)}</span>
         <span class="pill">${t.shares % 1000 === 0 ? fmt(t.shares / 1000) + " 張" : fmt(t.shares) + " 股"}</span>${pills.join("")}
         <span class="t">持有 ${held} 天</span></div>
       <div class="c-price">
-        <span class="p num ${d}">${r.pct == null ? "—" : sgn(r.pct, 2) + "%"}</span>
-        <span class="chg ${d}">${r.pnl == null ? "無報價" : sgn(Math.round(r.pnl)) + " 元"}</span>
+        <span class="p num ${d}" data-tw="sp:${t.id}">${r.pct == null ? "—" : sgn(r.pct, 2) + "%"}</span>
+        <span class="chg ${d}" data-tw="sn:${t.id}">${r.pnl == null ? "無報價" : sgn(Math.round(r.pnl)) + " 元"}</span>
       </div>
       ${chartHTML(t, r)}
       <div class="path">

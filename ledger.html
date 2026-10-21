@@ -350,6 +350,7 @@ html.embed .to-top{display:none}
 
 <script src="vendor/holdsync.js"></script>
 <script src="vendor/ledger.js"></script>
+<script src="vendor/motion.js"></script>
 <script>
 (() => {
   const $ = s => document.querySelector(s);
@@ -403,7 +404,7 @@ html.embed .to-top{display:none}
     const best = list.reduce((a, r) => !a || r.pnl > a.pnl ? r : a, null), worst = list.reduce((a, r) => !a || r.pnl < a.pnl ? r : a, null);
     const label = S.year === "all" ? "累計" : S.year + " 年";
     $("#sum").innerHTML = `
-      <div class="sc hl"><div class="k">${label}已實現損益</div><div class="v ${cls(t.pnl)}">${t.n ? sgn(t.pnl) : "—"}</div>
+      <div class="sc hl"><div class="k">${label}已實現損益</div><div class="v ${cls(t.pnl)}" data-tw="l:pnl">${t.n ? sgn(t.pnl) : "—"}</div>
         <div class="s">${t.cost ? `報酬率 <b class="${cls(t.pnl)}">${sgn(t.pnl / t.cost * 100, 2)}%</b>　成本 <b>${fmt(Math.round(t.cost))}</b>` : "還沒有紀錄"}</div></div>
       <div class="sc"><div class="k">本月（${+ym.slice(5)} 月）</div><div class="v ${cls(mon.pnl)}">${mon.n ? sgn(mon.pnl) : "—"}</div><div class="s">${mon.n ? `賣出 <b>${mon.n}</b> 筆` : "本月還沒有賣出"}</div></div>
       <div class="sc"><div class="k">勝率</div><div class="v">${t.n ? fmt(t.win / t.n * 100, 0) + "%" : "—"}</div><div class="s">賺 <b class="up">${t.win}</b> 筆 · 賠 <b class="down">${t.lose}</b> 筆${t.n - t.win - t.lose ? ` · 打平 <b>${t.n - t.win - t.lose}</b>` : ""}</div></div>

@@ -727,6 +727,7 @@ html.embed .to-top{display:none}
 
 <script src="vendor/holdsync.js"></script>
 <script src="vendor/ledger.js"></script>
+<script src="vendor/motion.js"></script>
 <script>
 (function(){
   "use strict";
@@ -872,7 +873,7 @@ html.embed .to-top{display:none}
       const arrow = dir > 0 ? "▲" : dir < 0 ? "▼" : "－";
       return `<div class="mkt-t${main ? " main" : ""}" title="${esc(x.name)}　近 ${(x.spark || []).length} 個交易日走勢">
         <div class="n"><span>${esc(x.name)}</span>${x.money ? `<em>${fmt(x.money, 0)}億</em>` : ""}</div>
-        <div class="v">${fmt(x.close, 2)}</div>
+        <div class="v" data-tw="mk:${esc(x.id)}">${fmt(x.close, 2)}</div>
         <div class="c ${c}">${arrow}${fmt(Math.abs(x.chg), 2)} (${x.pct == null ? "—" : sgn(x.pct, 2) + "%"})</div>
         ${mktSpark(x.spark, dir)}</div>`;
     };
@@ -1110,6 +1111,17 @@ html.embed .to-top{display:none}
       </tr>`;
       return row + (state.open === s.code ? detail(s) : "");
     }).join("");
+    // 展開明細：只在「打開新的一列」時平順展開（切換分頁、資料更新不重播）
+    if (state.open && state.open !== state._animOpen){
+      const w = document.querySelector("#tbody tr.detail .dwrap");
+      if (w && !(window.Motion && Motion.reduce())){
+        const h = w.offsetHeight;
+        w.style.overflow = "hidden";
+        w.animate([{ height: "0px", opacity: 0 }, { height: h + "px", opacity: 1 }], { duration: 280, easing: "cubic-bezier(.2,.8,.3,1)" })
+          .onfinish = () => { w.style.overflow = ""; };
+      }
+    }
+    state._animOpen = state.open;
     fixList.build();
   }
 
@@ -1423,7 +1435,13 @@ html.embed .to-top{display:none}
     const rows = items.map(({ c, h, s, k }, idx) => {
       if (k){ tc += k.cost; tv += k.val; if (k.stopHit) hits++; }
       const on = state.cmp.includes(c), full = state.cmp.length >= 4 && !on;
-      return `<tr data-code="${esc(c)}" class="hrow" style="cursor:pointer">
+      // 第一次看到「跌破停損」或「達到目標價」時，這一列閃 3 下
+      const pk = k && k.stopHit ? c + "s" : k && k.targetHit ? c + "t" : null;
+      state.pulsed = state.pulsed || {};
+      let pulse = "";
+      if (pk){ const t0 = state.pulsed[pk] || (state.pulsed[pk] = Date.now()), el = Date.now() - t0;
+        if (el < 2400) pulse = ` pulse-once" style="cursor:pointer;--pulse-bg:${k.stopHit ? "var(--down-soft)" : "var(--up-soft)"};--pd:-${el}ms`; }
+      return `<tr data-code="${esc(c)}" class="hrow${pulse}" style="cursor:pointer">
         <td class="no-td">${idx + 1}</td><td class="cmp-td"><input type="checkbox" class="cmpchk" data-code="${esc(c)}" ${on ? "checked" : ""} ${full || !s ? "disabled" : ""} title="${!s ? "不在自選股清單，沒有資料可比較" : full ? "最多比較 4 檔" : "勾選後可比較"}" aria-label="比較 ${esc(s ? s.name : c)}"></td>
         <td class="nm-td"><b>${esc(s ? s.name : (h.name || c))}</b> <span class="num" style="color:var(--ink-3);font-size:12px">${esc(c)}</span>${k && k.stopHit ? ` <span class="tag stop" data-tip="t_stop">跌破停損</span>` : ""}${k && k.targetHit ? ` <span class="tag tgt">🎯 達目標價</span>` : ""}</td>
         <td class="num" style="white-space:nowrap">${fmt(h.shares)} <small class="unit">股</small>${h.shares % 1000 === 0 ? `<span class="sub">${fmt(h.shares/1000)} 張</span>` : ""}</td>
@@ -1441,9 +1459,9 @@ html.embed .to-top{display:none}
     const pnl = tv - tc;
     el.innerHTML = `<div class="card">${head}
       <div class="hold-sum">
-        <div>總成本<b>${fmt(tc)}</b></div><div>目前市值<b>${fmt(tv)}</b></div>
-        <div>未實現損益<b class="${cls(pnl)}">${sgn(Math.round(pnl))}</b></div>
-        <div>報酬率<b class="${cls(pnl)}">${tc ? sgn(pnl / tc * 100, 2) + "%" : "—"}</b></div>
+        <div>總成本<b data-tw="h:tc">${fmt(tc)}</b></div><div>目前市值<b data-tw="h:tv">${fmt(tv)}</b></div>
+        <div>未實現損益<b class="${cls(pnl)}" data-tw="h:pnl">${sgn(Math.round(pnl))}</b></div>
+        <div>報酬率<b class="${cls(pnl)}" data-tw="h:pct">${tc ? sgn(pnl / tc * 100, 2) + "%" : "—"}</b></div>
         ${hits ? `<div>停損警示<b class="down">${hits} 檔跌破</b></div>` : ""}
         <div class="cmp-bar">${state.cmp.length < 2 ? "勾選 2～4 檔持股" : `已選 ${state.cmp.length} 檔`}
           <button class="btn primary" data-hact="compare" ${state.cmp.length < 2 ? "disabled" : ""}>📊 比較${state.cmp.length >= 2 ? " " + state.cmp.length + " 檔" : ""}</button>
@@ -1470,11 +1488,11 @@ html.embed .to-top{display:none}
     for (let v = Math.ceil(lo / step) * step; v <= hi; v += step)
       grid += `<line x1="${L}" x2="${W - R}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="var(--line)" ${v === 0 ? 'stroke-width="1.6"' : 'stroke-dasharray="3 4"'}/><text x="${W - R + 6}" y="${(Y(v) + 4).toFixed(1)}" font-size="11" fill="var(--ink-3)" font-family="IBM Plex Mono,monospace">${v > 0 ? "+" : ""}${v}%</text>`;
     const ticks = [0, Math.floor((dates.length - 1) / 2), dates.length - 1].map((i, k) => `<text x="${X(i).toFixed(1)}" y="${H - 6}" font-size="11" fill="var(--ink-3)" text-anchor="${k === 0 ? "start" : k === 2 ? "end" : "middle"}" font-family="IBM Plex Mono,monospace">${esc(dates[i].slice(5))}</text>`).join("");
-    const paths = lines.map((ln, k) => `<path d="${ln.map((v, i) => (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(v).toFixed(1)).join("")}" fill="none" stroke="${CMP_COLORS[k]}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${X(ln.length - 1).toFixed(1)}" cy="${Y(ln[ln.length - 1]).toFixed(1)}" r="3.5" fill="${CMP_COLORS[k]}"/>`).join("");
+    const paths = lines.map((ln, k) => `<path class="draw" d="${ln.map((v, i) => (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(v).toFixed(1)).join("")}" fill="none" stroke="${CMP_COLORS[k]}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${X(ln.length - 1).toFixed(1)}" cy="${Y(ln[ln.length - 1]).toFixed(1)}" r="3.5" fill="${CMP_COLORS[k]}"/>`).join("");
     const legend = codes.map((c, k) => { const v = lines[k][lines[k].length - 1]; return `<span><i style="background:${CMP_COLORS[k]}"></i>${esc(stockOf(c).name)} <b class="num ${cls(v)}">${sgn(v, 2)}%</b></span>`; }).join("");
     state.cmpRange = Object.fromEntries(codes.map((c, k) => [c, lines[k][lines[k].length - 1]]));
     return `<div class="cmp-legend">${legend}</div>
-      <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto" role="img" aria-label="近 ${dates.length} 個交易日漲跌比較">${grid}${paths}${ticks}</svg>
+      <svg viewBox="0 0 ${W} ${H}" data-draw="cmp:${esc(codes.join(","))}:${days}:${Date.now()}" style="width:100%;height:auto" role="img" aria-label="近 ${dates.length} 個交易日漲跌比較">${grid}${paths}${ticks}</svg>
       <div class="hint2">以 ${esc(dates[0])} 的收盤價為起點（0%），比較之後每天的漲跌幅，股價高低不同也能放在一起比。</div>`;
   }
   function cmpTable(codes){
@@ -1854,7 +1872,7 @@ html.embed .to-top{display:none}
       const top = y(Math.max(o, c)), bh = Math.max(1, Math.abs(y(o) - y(c)));
       return `<line x1="${x(i).toFixed(1)}" x2="${x(i).toFixed(1)}" y1="${y(h).toFixed(1)}" y2="${y(l).toFixed(1)}" stroke="${col}"/><rect x="${(x(i)-bwid/2).toFixed(1)}" y="${top.toFixed(1)}" width="${bwid.toFixed(1)}" height="${bh.toFixed(1)}" fill="${col}"/>`;
     }).join("");
-    const maLine = (k, col) => { let d = "", on = false; rows.forEach((r, i) => { if (r[k] == null){ on = false; return; } d += (on ? "L" : "M") + x(i).toFixed(1) + " " + y(r[k]).toFixed(1); on = true; }); return d ? `<path d="${d}" fill="none" stroke="${col}" stroke-width="1.4"/>` : ""; };
+    const maLine = (k, col) => { let d = "", on = false; rows.forEach((r, i) => { if (r[k] == null){ on = false; return; } d += (on ? "L" : "M") + x(i).toFixed(1) + " " + y(r[k]).toFixed(1); on = true; }); return d ? `<path class="draw" d="${d}" fill="none" stroke="${col}" stroke-width="1.4"/>` : ""; };
     const hl = (v, col, t) => v > 0 ? `<line x1="${L}" x2="${W-R}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" stroke="${col}" stroke-dasharray="5 4"/><text x="${L+4}" y="${(y(v)-4).toFixed(1)}" font-size="11" fill="${col}">${t} ${fmt(v,2)}</text>` : "";
     const iy0 = PT + PH + GAP, imid = iy0 + IH / 2, imax = Math.max(1, ...rows.map(r => Math.abs(r[6] || 0)));
     const ibars = rows.map((r, i) => { const v = r[6]; if (!v) return ""; const h = Math.abs(v) / imax * (IH / 2 - 2); return `<rect x="${(x(i)-Math.max(1,bw*0.62)/2).toFixed(1)}" y="${(v > 0 ? imid - h : imid).toFixed(1)}" width="${Math.max(1,bw*0.62).toFixed(1)}" height="${h.toFixed(1)}" fill="var(${v > 0 ? "--up" : "--down"})" opacity=".8"/>`; }).join("");
@@ -1872,7 +1890,7 @@ html.embed .to-top{display:none}
       return out.join("");
     }).join("");
     const step = Math.ceil(n / (small ? 4 : 6)), dates = rows.map((r, i) => i % step === 0 ? `<text x="${x(i).toFixed(1)}" y="${H-4}" font-size="10" text-anchor="middle" fill="var(--ink-3)" font-family="IBM Plex Mono,monospace">${esc(r[0].slice(5))}</text>` : "").join("");
-    return `<svg class="kline" data-code="${esc(code)}" viewBox="0 0 ${W} ${H}" role="img" aria-label="近 ${n} 日 K 線圖">
+    return `<svg class="kline" data-code="${esc(code)}" data-draw="k:${esc(code)}" viewBox="0 0 ${W} ${H}" role="img" aria-label="近 ${n} 日 K 線圖">
       ${grid}${kCandle() ? candles : ""}${kClose() ? maLine(4, "var(--ink)").replace('stroke-width="1.4"', 'stroke-width="1.6" stroke-linejoin="round" opacity=".75"') : ""}${maLine(7, "var(--warn)")}${maLine(8, "var(--ma20)")}${maLine(9, "#9b7bd6")}
       ${hold ? hl(hold.cost, "var(--accent)", "成本") + hl(hold.stop, "var(--down)", "停損") : ""}${xmarks}
       <text x="${L}" y="${iy0 - 6}" font-size="11" fill="var(--ink-3)">三大法人買賣超（張）</text>
@@ -2080,6 +2098,14 @@ html.embed .to-top{display:none}
     if (e.target.closest(".lchk")) return;
     const tr = e.target.closest("tr.row"); if (!tr) return;
     if (state.open !== tr.dataset.code) state.tab = state.tab || "kline";
+    const w = state.open === tr.dataset.code && document.querySelector("#tbody tr.detail .dwrap");
+    if (w && !(window.Motion && Motion.reduce())){      // 收合：先縮起來再移除
+      if (w.dataset.closing) return;
+      w.dataset.closing = 1; w.style.overflow = "hidden";
+      w.animate([{ height: w.offsetHeight + "px", opacity: 1 }, { height: "0px", opacity: 0 }], { duration: 200, easing: "ease-in", fill: "forwards" })
+        .onfinish = () => { state.open = null; render(); };
+      return;
+    }
     state.open = state.open === tr.dataset.code ? null : tr.dataset.code; render();
   });
 

@@ -468,12 +468,15 @@ def fetch_dividends(code):
     return {"upcoming": upcoming[:4], "past": past[:8], "ttmCash": ttm}
 
 
-def update_fundamentals(codes):
-    """一天只抓一次，快取在 data/fundamentals.json"""
+def update_fundamentals(codes, keep_cache=False):
+    """一天只抓一次，快取在 data/fundamentals.json。keep_cache=True（自選股增減時）：沿用快取，只補抓沒有的代號"""
     path = DATA / "fundamentals.json"
     cache = load_json(path, {})
     today = now_tw().date().isoformat()
-    stocks = cache.get("stocks", {}) if cache.get("date") == today and cache.get("v") == FUND_VERSION else {}
+    fresh = cache.get("date") == today and cache.get("v") == FUND_VERSION
+    stocks = cache.get("stocks", {}) if fresh or (keep_cache and cache.get("v") == FUND_VERSION) else {}
+    if keep_cache and not fresh:
+        today = cache.get("date") or today
     todo = [c for c in codes if c not in stocks]
     if todo:
         log(f"• 基本面（估值、月營收）：{len(todo)} 檔")
@@ -834,6 +837,8 @@ def main():
     if "--market" in sys.argv:            # 只更新大盤（收盤後的快速排程）
         update_markets()
         return
+    if "--incremental" in sys.argv and incremental(codes):   # 只改了自選股清單
+        return
 
     days = build_days(codes)
     if not days:
@@ -858,6 +863,20 @@ def main():
         "stocks": stocks,
     }
     fund = update_fundamentals(codes)
+    enrich(stocks, fund)
+    save_json(DATA / "charts.json", {"date": report["date"], "stocks": build_charts()})
+    try:
+        update_markets()
+    except Exception as e:  # 大盤資料失敗不影響自選股
+        log(f"  ! 大盤行情失敗：{e!r}")
+    write_outputs(report)
+    log(f"✓ 完成：{report['date']}，{len(stocks)} 檔" + ("" if report["complete"] else "（部分資料尚未公布，稍後會再更新）"))
+    if report["notFound"]:
+        log(f"  ! 查無代號：{', '.join(report['notFound'])}")
+
+
+def enrich(stocks, fund):
+    """加上基本面、區間漲跌、均線交叉標籤"""
     for s in stocks:
         v = (fund.get(s["code"]) or {}).get("val") or {}
         r = (fund.get(s["code"]) or {}).get("rev") or {}
@@ -877,15 +896,45 @@ def main():
             s["tags"].insert(0, "週線突破季線")
         if mc.get("dn20") and mc["dn20"]["ago"] <= 5:
             s["tags"].insert(0, "月線跌破季線")
-    save_json(DATA / "charts.json", {"date": report["date"], "stocks": build_charts()})
-    try:
-        update_markets()
-    except Exception as e:  # 大盤資料失敗不影響自選股
-        log(f"  ! 大盤行情失敗：{e!r}")
+
+
+# ───────────────────────── 自選股增減（快速） ─────────────────────────
+def incremental(codes):
+    """只改了自選股清單時：移除的直接刪掉（不用抓資料），新增的只抓那幾檔，合併進現有資料。
+    約 20～40 秒，比完整更新（2～8 分鐘）快很多。不適用時回傳 False，改跑完整更新。"""
+    old, charts = load_json(DATA / "latest.json", None), load_json(DATA / "charts.json", None)
+    if not old or not charts or old.get("demo") or old.get("date") != charts.get("date"):
+        return False
+    have = {s["code"] for s in old["stocks"]}
+    add = [c for c in codes if c not in have]
+    if len(add) > 5:
+        return False
+    keep = [s for s in old["stocks"] if s["code"] in codes]
+    log(f"• 快速更新：新增 {len(add)} 檔、移除 {len(have) - len(keep)} 檔")
+    new, not_found = [], []
+    if add:
+        days = build_days(add)
+        if not days:
+            not_found = add
+        elif days[0]["date"] != old["date"]:
+            log(f"  · 新資料日期 {days[0]['date']} 和現有 {old['date']} 不同，改跑完整更新")
+            return False
+        else:
+            weeks = tdcc_all()
+            new = [s for s in (score_full(c, days, weeks) for c in add) if s]
+            not_found = [c for c in add if c not in days[0]["stocks"]]
+            enrich(new, update_fundamentals(codes, keep_cache=True))
+            charts["stocks"].update(build_charts())
+    charts["stocks"] = {c: v for c, v in charts["stocks"].items() if c in codes}
+    stocks = sorted(keep + new, key=lambda s: s["score"], reverse=True)
+    for i, s in enumerate(stocks, 1):
+        s["rank"] = i
+    report = {**old, "updated": now_tw().isoformat(timespec="minutes"), "stocks": stocks,
+              "notFound": [c for c in (old.get("notFound") or []) if c in codes and c not in add] + not_found}
+    save_json(DATA / "charts.json", charts)
     write_outputs(report)
-    log(f"✓ 完成：{report['date']}，{len(stocks)} 檔" + ("" if report["complete"] else "（部分資料尚未公布，稍後會再更新）"))
-    if report["notFound"]:
-        log(f"  ! 查無代號：{', '.join(report['notFound'])}")
+    log(f"✓ 快速更新完成：{report['date']}，{len(stocks)} 檔")
+    return True
 
 
 # ───────────────────────── 示範資料 ─────────────────────────

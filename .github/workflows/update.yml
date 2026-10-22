@@ -29,6 +29,8 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 2            # 用來判斷這次是不是「只改了自選股清單」
 
       - uses: actions/setup-python@v6
         with:
@@ -41,6 +43,9 @@ jobs:
           if [ "${{ github.event.schedule }}" = "47 5 * * 1-5" ] || [ "${{ github.event.schedule }}" = "23 22 * * 1-5" ]; then
             python scripts/fetch.py --market || echo "FETCH_FAILED=1" >> "$GITHUB_ENV"
             echo "MARKET_ONLY=1" >> "$GITHUB_ENV"
+          elif [ "${{ github.event_name }}" = "push" ] && [ "$(git diff --name-only HEAD~1 HEAD 2>/dev/null)" = "watchlist.txt" ]; then
+            # 只改了自選股清單：移除的直接刪、新增的只抓那幾檔（約 20～40 秒）；不適用時程式會自動改跑完整更新
+            python scripts/fetch.py --incremental || echo "FETCH_FAILED=1" >> "$GITHUB_ENV"
           else
             python scripts/fetch.py || echo "FETCH_FAILED=1" >> "$GITHUB_ENV"
           fi

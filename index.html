@@ -2247,15 +2247,24 @@ html.embed .to-top{display:none}
         message: "更新自選股（網頁）", content: b64enc(lines.join("\n") + "\n"), sha: mgr.sha })});
       mgr.sha = res.content.sha; mgr.orig = mgr.list.slice(); renderWL();
       const before = state.data ? state.data.updated : "";
-      progress("已儲存，正在抓取資料（約 1 分鐘）…", true);
-      // 等 Actions 跑完
+      // 移除的股票馬上從畫面拿掉，不用等
+      const want = new Set(mgr.list), added = mgr.list.filter(c => !(state.data && state.data.stocks.some(s => s.code === c)));
+      if (state.data){ state.data = { ...state.data, stocks: state.data.stocks.filter(s => want.has(s.code)) }; render(); }
+      if (!added.length){
+        progress("", false);
+        msg("#editMsg", "完成！已從清單移除。", "ok");
+        return;
+      }
+      progress(`已儲存，正在抓取新增的 ${added.length} 檔（約 30～60 秒）…`, true);
+      // 等 Actions 跑完（找「更新籌碼資料」那個 workflow，不要抓到網站發布）
       let run = null;
       for (let i = 0; i < 60; i++){
-        await sleep(6000);
+        await sleep(i < 3 ? 4000 : 6000);
         try {
-          const r = await gh(`/actions/runs?head_sha=${res.commit.sha}&per_page=1`);
-          run = r.workflow_runs && r.workflow_runs[0];
+          const r = await gh(`/actions/runs?head_sha=${res.commit.sha}&per_page=5`);
+          run = (r.workflow_runs || []).find(x => x.path && x.path.endsWith("update.yml")) || null;
           if (run && run.status === "completed") break;
+          progress(run && run.status === "in_progress" ? `正在抓取新增的 ${added.length} 檔…` : "排隊中，等待 GitHub 開始執行…", true);
         } catch(e){}
       }
       if (!run || run.conclusion !== "success"){
@@ -2263,11 +2272,19 @@ html.embed .to-top{display:none}
         msg("#editMsg", "清單已儲存，但抓資料沒有成功，可稍後重新整理，或查看 repo 中的 data/debug.log。", "err");
         return;
       }
-      progress("資料已更新，等待網站發布…", true);
-      for (let i = 0; i < 30; i++){
-        await sleep(8000);
-        try { const d = await getJSON("data/latest.json"); if (d.updated !== before){ state.data = d; render(); break; } } catch(e){}
+      // 直接從 GitHub 讀剛產生的資料，不必等網站發布（約 1 分鐘）
+      progress("資料已更新，載入中…", true);
+      const raw = async path => { const r = await fetch(API + "/contents/" + path + "?ref=main&t=" + Date.now(), { cache: "no-store", headers: { "Accept": "application/vnd.github.raw+json", "Authorization": "Bearer " + (mgr.token || getToken()) } }); if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); };
+      let ok = false;
+      try { const d = await raw("data/latest.json"); if (d.updated !== before){ state.data = d; ok = true; } } catch(e){}
+      try { const c = await raw("data/charts.json"); if (c && c.stocks) state.charts = c; } catch(e){}
+      if (!ok){
+        for (let i = 0; i < 30; i++){
+          await sleep(8000);
+          try { const d = await getJSON("data/latest.json"); if (d.updated !== before){ state.data = d; ok = true; break; } } catch(e){}
+        }
       }
+      render();
       progress("", false);
       msg("#editMsg", "完成！清單與資料都已更新。", "ok");
     } catch(e){

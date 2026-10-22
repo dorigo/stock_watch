@@ -1,4 +1,4 @@
-回測自選股 29 檔，期間約 2 年
+回測自選股 28 檔，期間約 2 年
   ↳ 2330
     [GET] https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id=2330&start_date=2024-09-07
           len=96663 head='{"msg":"success","status":200,"data":[{"date":"2024-09-09","stock_id":"2330","Trading_Volume":38448946,"Trading_money":34456838126,"open":892.0,"max":900.0,"min":891.0,"close":899.0,"spread":-19.0,"Trading_turnover":102365},{"date":"2024-09-10","stock_id":"2330","Trading_Volume":34312646,"Trading_money":31067424234,"open":907.0,"max":911.0,"min":901.0,"close":904.0,"spread":5.0,"Trading_turnover":45141},{"date":"2024-09-11","stock_id":"2330","Trading_Volume":19513256,"Trading_money":17621000956,"open":906.0,"max":906.0,"min":900.0,"close":901.0,"spread":-3.0,"Trading_turnover":30789},{"date":"'
@@ -197,17 +197,10 @@
           len=230013 head='{"msg":"success","status":200,"data":[{"date":"2024-09-09","stock_id":"1301","buy":7141218,"name":"Foreign_Investor","sell":10804251},{"date":"2024-09-09","stock_id":"1301","buy":0,"name":"Foreign_Dealer_Self","sell":0},{"date":"2024-09-09","stock_id":"1301","buy":74926,"name":"Investment_Trust","sell":127},{"date":"2024-09-09","stock_id":"1301","buy":89000,"name":"Dealer_self","sell":208759},{"date":"2024-09-09","stock_id":"1301","buy":157000,"name":"Dealer_Hedging","sell":79000},{"date":"2024-09-10","stock_id":"1301","buy":5822100,"name":"Foreign_Investor","sell":6718240},{"date":"2024-09-10'
     [GET] https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockMarginPurchaseShortSale&data_id=1301&start_date=2024-09-07
           len=211145 head='{"msg":"success","status":200,"data":[{"date":"2024-09-09","stock_id":"1301","MarginPurchaseBuy":616,"MarginPurchaseCashRepayment":6,"MarginPurchaseLimit":1591435,"MarginPurchaseSell":276,"MarginPurchaseTodayBalance":12029,"MarginPurchaseYesterdayBalance":11695,"Note":" ","OffsetLoanAndShort":5,"ShortSaleBuy":681,"ShortSaleCashRepayment":0,"ShortSaleLimit":1591435,"ShortSaleSell":417,"ShortSaleTodayBalance":1120,"ShortSaleYesterdayBalance":1384},{"date":"2024-09-10","stock_id":"1301","MarginPurchaseBuy":401,"MarginPurchaseCashRepayment":69,"MarginPurchaseLimit":1591435,"MarginPurchaseSell":632'
-  ↳ 00878
-    [GET] https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id=00878&start_date=2024-09-07
-          len=94305 head='{"msg":"success","status":200,"data":[{"date":"2024-09-09","stock_id":"00878","Trading_Volume":88436995,"Trading_money":1948861465,"open":21.94,"max":22.2,"min":21.87,"close":22.13,"spread":-0.23,"Trading_turnover":62206},{"date":"2024-09-10","stock_id":"00878","Trading_Volume":55923375,"Trading_money":1235777458,"open":22.24,"max":22.25,"min":21.99,"close":22.07,"spread":-0.06,"Trading_turnover":40775},{"date":"2024-09-11","stock_id":"00878","Trading_Volume":47251540,"Trading_money":1041384683,"open":22.06,"max":22.11,"min":21.99,"close":22.0,"spread":-0.07,"Trading_turnover":39844},{"date":"'
-    [GET] https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockInstitutionalInvestorsBuySell&data_id=00878&start_date=2024-09-07
-          len=229807 head='{"msg":"success","status":200,"data":[{"date":"2024-09-09","stock_id":"00878","buy":797370,"name":"Foreign_Investor","sell":21496950},{"date":"2024-09-09","stock_id":"00878","buy":0,"name":"Foreign_Dealer_Self","sell":0},{"date":"2024-09-09","stock_id":"00878","buy":0,"name":"Investment_Trust","sell":0},{"date":"2024-09-09","stock_id":"00878","buy":132000,"name":"Dealer_self","sell":1010010},{"date":"2024-09-09","stock_id":"00878","buy":2019000,"name":"Dealer_Hedging","sell":49632224},{"date":"2024-09-10","stock_id":"00878","buy":104929,"name":"Foreign_Investor","sell":12189000},{"date":"2024-'
-    [GET] https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockMarginPurchaseShortSale&data_id=00878&start_date=2024-09-07
-          len=207757 head='{"msg":"success","status":200,"data":[{"date":"2024-09-09","stock_id":"00878","MarginPurchaseBuy":227,"MarginPurchaseCashRepayment":5,"MarginPurchaseLimit":3538447,"MarginPurchaseSell":31,"MarginPurchaseTodayBalance":5944,"MarginPurchaseYesterdayBalance":5753,"Note":" ","OffsetLoanAndShort":4,"ShortSaleBuy":7,"ShortSaleCashRepayment":0,"ShortSaleLimit":3538447,"ShortSaleSell":17,"ShortSaleTodayBalance":65,"ShortSaleYesterdayBalance":55},{"date":"2024-09-10","stock_id":"00878","MarginPurchaseBuy":104,"MarginPurchaseCashRepayment":0,"MarginPurchaseLimit":3542197,"MarginPurchaseSell":70,"MarginPu'
-✓ 回測完成：2024-09-09 ～ 2026-10-22，29 檔
-  分數 5 日上升 20 以上：n=1106 20日平均=4.61% 超額=0.24% 勝率=57.4%
-  分數連升 3 天以上：n=362 20日平均=4.66% 超額=0.29% 勝率=58.8%
-  分數達 50 以上：n=888 20日平均=5.25% 超額=0.88% 勝率=59.8%
-  分數 5 日下降 20 以上：n=1131 20日平均=4.4% 超額=0.03% 勝率=58.0%
-  法人連賣 3 天且融資增加：n=775 20日平均=3.85% 超額=-0.52% 勝率=55.4%
-  分數低於 5（且前 5 日曾達 30）：n=715 20日平均=3.93% 超額=-0.45% 勝率=57.3%
+✓ 回測完成：2024-09-09 ～ 2026-10-22，28 檔
+  分數 5 日上升 20 以上：n=1078 20日平均=4.66% 超額=0.19% 勝率=56.8%
+  分數連升 3 天以上：n=350 20日平均=4.64% 超額=0.17% 勝率=57.7%
+  分數達 50 以上：n=857 20日平均=5.28% 超額=0.82% 勝率=59.2%
+  分數 5 日下降 20 以上：n=1100 20日平均=4.46% 超額=-0.01% 勝率=57.8%
+  法人連賣 3 天且融資增加：n=744 20日平均=3.97% 超額=-0.49% 勝率=55.6%
+  分數低於 5（且前 5 日曾達 30）：n=700 20日平均=3.96% 超額=-0.5% 勝率=57.4%

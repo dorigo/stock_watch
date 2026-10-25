@@ -551,7 +551,7 @@ html.embed .to-top{display:none}
       <h2>追蹤清單</h2>
       <select id="dateSel" aria-label="資料日期"></select>
       <div class="seg" id="mktSeg">
-        <button data-v="all" class="on">全部</button><button data-v="上市">上市</button><button data-v="上櫃">上櫃</button>
+        <button data-v="all" class="on">全部</button><button data-v="上市">上市</button><button data-v="上櫃">上櫃</button><button data-v="held" title="只顯示你有持股的股票">持有</button>
       </div>
       <select id="sortSel" aria-label="排序">
         <option value="" hidden>排序：依點選的欄位</option>
@@ -984,7 +984,7 @@ html.embed .to-top{display:none}
   function filtered(){
     const d = state.data; if (!d) return [];
     const q = state.q.trim().toLowerCase();
-    let list = d.stocks.filter(s => (state.market === "all" || s.market === state.market) &&
+    let list = d.stocks.filter(s => mktOk(s) &&
       (!q || s.code.toLowerCase().includes(q) || (s.name||"").toLowerCase().includes(q)));
     const k = state.sort;
     if (k === "perAsc") list.sort(cmpBy(s => s.per, "asc"));
@@ -1084,6 +1084,7 @@ html.embed .to-top{display:none}
   });
   function nextDir(curKey, curDir, key, firstDir){ return curKey === key ? (curDir === "asc" ? "desc" : "asc") : firstDir; }
 
+  const mktOk = s => state.market === "all" || (state.market === "held" ? !!state.holdings[s.code] : s.market === state.market);
   function render(){
     if (!state.data) return;
     if (EMBED){
@@ -1093,7 +1094,7 @@ html.embed .to-top{display:none}
     }
     renderMeta();
     state.lcmp = state.lcmp.filter(c => stockOf(c)); renderLcmpBar();
-    const all = state.data.stocks.filter(s => state.market === "all" || s.market === state.market);
+    const all = state.data.stocks.filter(mktOk);
     renderStats(all);
     renderXAlert();
     renderHoldings();

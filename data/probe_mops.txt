@@ -1,0 +1,139 @@
+## mopsov ajax_t100sb02_1 sii
+status=200 len=135279
+
+
+
+<html>
+<head>
+	<title>公開資訊觀測站</title>
+	
+	
+	<link href="css/css2.css" rel="stylesheet" type="text/css" Media="Screen"/> 
+	
+	<script type="text/javascript" src="js/mops2.js"></script>
+	
+	<script src='js/outerScript/t100sb02_1_j.js'></script>
+	
+</head>
+
+<body>
+
+
+<div id="div01" >
+<form action='/mops/web/ajax_t100sb02_1' method='post' onsubmit='return false;' name='fm'>
+<input type='hidden' name='firstin' value='true'>
+<input type='hidden' name='step' value='10'>
+<input type='hidden' name='filename' value='t100sb02_1_20261025_202246193.csv'>
+<button style='background-color:transparent;border:0;cursor:pointer;text-decoration:underline;' onclick="action='/server-java/t105sb02';submit();"><img src='images/bu_03.gif' hspace='3' ></button>
+</form>
+<form action = '/server-java/FileDownLoad' method = 'post' id='fm_fileDownload' name='fm_fileDownload'>
+<input type = 'hidden' name = 'step' id = 'step' value = '9'/>
+<input type = 'hidden' name = 'filePath' id = 'filePath' value = '/home/html/nas/STR/'/>
+<input type = 'hidden' name = 'fileName' id = 'fileName' value = ''/>
+<input type = 'hidden' name = 'functionName' id = 'functionName' value = 't100sb02_1'/>
+</form>
+<form name='form_t100sb02_1' action='/mops/web/ajax_t100sb02_1' method='post' onsubmit='return false;'>
+<input type='hidden' name='step' value='0'>
+<input type='hidden' name='firstin' value='true'>
+<input type='hidden' name='TYPEK' value='sii'>
+<input type='hidden' name='colorchg' value=''>
+<input type='hidden' name='co_id'>
+<input type='hidden' id='URL' name='URL'>
+<input type='hidden' id='from' name='from'>
+<input type='hidden' id='COMPANY_ID' name='COMPANY_ID'>
+<input type='hidden' id='SEQ_NO' name='SEQ_NO'>
+<div class='sortBlock'>
+<span>請選擇排列方式：
+<input type='radio' id='sortMyTable1' name='sortMyTable' value='1' onclick='ChangeSortTable(0);' checked />證券代號
+<input type='radio' id='sortMyTable2' name='sortMyTable' value='2' onclick='ChangeSortTable(2);' />召開法人說明會日期
+</span>
+<br>
+<span>請選擇排列順序：
+<input type='hidden' id='changeAsc' value='1' />
+<input type='radio' id='seq1' name='seq' value='1' onclick='sortTable(0,"");' checked />資料由小到大/舊到新
+<input type='radio' id='seq2' name='seq' value='2' onclick='sortTable(0,1);' />資料由大到小/新到舊
+</span>
+</div>
+<table id='myTable' class='hasBorder'>
+<thead style='position:relative;top:0px;'><tr class='tblHead'><th class='tblHead' nowrap rowspan='2'><b>公司代號</b></th><th class='tblHead' nowrap rowspan='2'><b>公司名稱</b></th><th class='tblHead' nowrap rowspan='2' data-type='date'><b>召開法人說明會日期</b></th><th class='tblHead' nowrap rowspan='2'><b>召開法人說明會時間</b></th><th class='tblHead' nowrap rowspan='2'><b>召開法人說明會地點</b></th><th class='tblHead' nowrap rowspan='2'><b>法人說明會擇要訊息</b></th><th class='tblHead' nowrap colspan='2'><b>法人說明會簡報內容</b></th><th class='tblHead' nowrap rowspan='2'><b>公司網站是否提供法人說明會相關資訊</b></th><th class='tblHead' nowrap rowspan='2'><b>影音連結資訊</b></th><th class='tblHead' nowrap rowspan='2'><b>其他應敘明事項</b></th><th class='tblHead' no
+
+## mopsov ajax_t100sb02_1 otc
+status=200 len=76181
+
+
+
+<html>
+<head>
+	<title>公開資訊觀測站</title>
+	
+	
+	<link href="css/css2.css" rel="stylesheet" type="text/css" Media="Screen"/> 
+	
+	<script type="text/javascript" src="js/mops2.js"></script>
+	
+	<script src='js/outerScript/t100sb02_1_j.js'></script>
+	
+</head>
+
+<body>
+
+
+<div id="div01" >
+<form action='/mops/web/ajax_t100sb02_1' method='post' onsubmit='return false;' name='fm'>
+<input type='hidden' name='firstin' value='true'>
+<input type='hidden' name='step' value='10'>
+<input type='hidden' name='filename' value='t100sb02_1_20261025_202247578.csv'>
+<button style='background-color:transparent;border:0;cursor:pointer;text-decoration:underline;' onclick="action='/server-java/t105sb02';submit();"><img src='images/bu_03.gif' hspace='3' ></button>
+</form>
+<form action = '/server-java/FileDownLoad' method = 'post' id='fm_fileDownload' name='fm_fileDownload'>
+<input type = 'hidden' name = 'step' id = 'step' value = '9'/>
+<input type = 'hidden' name = 'filePath' id = 'filePath' value = '/home/html/nas/STR/'/>
+<input type = 'hidden' name = 'fileName' id = 'fileName' value = ''/>
+<input type = 'hidden' name = 'functionName' id = 'functionName' value = 't100sb02_1'/>
+</form>
+<form name='form_t100sb02_1' action='/mops/web/ajax_t100sb02_1' method='post' onsubmit='return false;'>
+<input type='hidden' name='step' value='0'>
+<input type='hidden' name='firstin' value='true'>
+<input type='hidden' name='TYPEK' value='otc'>
+<input type='hidden' name='colorchg' value=''>
+<input type='hidden' name='co_id'>
+<input type='hidden' id='URL' name='URL'>
+<input type='hidden' id='from' name='from'>
+<input type='hidden' id='COMPANY_ID' name='COMPANY_ID'>
+<input type='hidden' id='SEQ_NO' name='SEQ_NO'>
+<div class='sortBlock'>
+<span>請選擇排列方式：
+<input type='radio' id='sortMyTable1' name='sortMyTable' value='1' onclick='ChangeSortTable(0);' checked />證券代號
+<input type='radio' id='sortMyTable2' name='sortMyTable' value='2' onclick='ChangeSortTable(2);' />召開法人說明會日期
+</span>
+<br>
+<span>請選擇排列順序：
+<input type='hidden' id='changeAsc' value='1' />
+<input type='radio' id='seq1' name='seq' value='1' onclick='sortTable(0,"");' checked />資料由小到大/舊到新
+<input type='radio' id='seq2' name='seq' value='2' onclick='sortTable(0,1);' />資料由大到小/新到舊
+</span>
+</div>
+<table id='myTable' class='hasBorder'>
+<thead style='position:relative;top:0px;'><tr class='tblHead'><th class='tblHead' nowrap rowspan='2'><b>公司代號</b></th><th class='tblHead' nowrap rowspan='2'><b>公司名稱</b></th><th class='tblHead' nowrap rowspan='2' data-type='date'><b>召開法人說明會日期</b></th><th class='tblHead' nowrap rowspan='2'><b>召開法人說明會時間</b></th><th class='tblHead' nowrap rowspan='2'><b>召開法人說明會地點</b></th><th class='tblHead' nowrap rowspan='2'><b>法人說明會擇要訊息</b></th><th class='tblHead' nowrap colspan='2'><b>法人說明會簡報內容</b></th><th class='tblHead' nowrap rowspan='2'><b>公司網站是否提供法人說明會相關資訊</b></th><th class='tblHead' nowrap rowspan='2'><b>影音連結資訊</b></th><th class='tblHead' nowrap rowspan='2'><b>其他應敘明事項</b></th><th class='tblHead' no
+
+## mops new api t100sb02_1
+status=200 len=65
+<script>
+  location.href = location.origin + "/mops";
+</script>
+
+## mops new api t100sb02_1 b
+status=200 len=65
+<script>
+  location.href = location.origin + "/mops";
+</script>
+
+## mops new api t100sb02_1 single 2330
+status=200 len=65
+<script>
+  location.href = location.origin + "/mops";
+</script>
+
+## twse openapi list
+status=200 len=309960
+{"swagger":"2.0","info":{"description":"\u672c\u5e73\u81fa\u63d0\u4f9b\u81fa\u7063\u8b49\u5238\u4ea4\u6613\u6240\u670d\u52d9API\uff0c\u6b61\u8fce\u5404\u4f4d\u4ecb\u63a5\u4f7f\u7528\u3002<br><br>[\u4f7f\u7528\u689d\u6b3e](https://www.twse.com.tw/zh/page/terms/use.html)  [\u6388\u6b0a\u8aaa\u660e\u7db2\u5740](https://data.gov.tw/license)","version":"1.0","title":"\u81fa\u7063\u8b49\u5238\u4ea4\u6613\u6240 OpenAPI"},"host":"openapi.twse.com.tw","basePath":"/v1","tags":[{"name":"\u516c\u53f8\u6cbb\u7406"},{"name":"\u8b49\u5238\u4ea4\u6613"},{"name":"\u8ca1\u52d9\u5831\u8868"},{"name":"\u6307\u6578"},{"name":"\u6b0a\u8b49"},{"name":"\u5176\u4ed6"},{"name":"\u5238\u5546\u8cc7\u6599"}],"schemes":["https"],"paths":{"/opendata/t187ap46_L_21":{"get":{"tags":["\u516c\u53f8\u6cbb\u7406"],"summary":"\u4e0a\u5e02\u516c\u53f8\u4f01\u696dESG\u8cc7\u8a0a\u63ed\u9732\u5f59\u7e3d\u8cc7\u6599-\u8077\u696d\u5b89\u5168\u885b\u751f","description":"\u4e0a\u5e02\u516c\u53f8\u4f01\u696dESG\u8cc7\u8a0a\u63ed\u9732\u5f59\u7e3d\u8cc7\u6599-\u8077\u696d\u5b89\u5168\u885b\u751f(\u81fa\u7063\u8b49\u5238\u4ea4\u6613\u6240)","produces":["application/json","text/csv"],"responses":{"200":{"description":"OK","schema":{"type":"object","properties":{"\u51fa\u8868\u65e5\u671f":{"type":"string","description":"\u51fa\u8868\u65e5\u671f"},"\u5831\u544a\u5e74\u5ea6":{"type":"string","description":"\u5831\u544a\u5e74\u5ea6"},"\u516c\u53f8\u4ee3\u865f":{"type":"string","description":"\u516c\u53f8\u4ee3\u865f"},"\u516c\u53f8\u540d\u7a31":{"type":"string","description":"\u516c\u53f8\u540d\u7a31"},"\u8077\u696d\u707d\u5bb3\u4eba\u6578\u53ca\u6bd4\u7387-\u4eba\u6578":{"type":"string","description":"\u8077\u696d\u707d\u5bb3\u4eba\u6578\u53ca\u6bd4\u7387-\u4eba\u6578"},"\u8077\u696d\u707d\u5bb3\u4eba\u6578\u53ca\u6bd4\u7387-\u6bd4\u7387":{"type":"string","description":"\u8077\u696d\u707d\u5bb3\u4eba\u6578\u53ca\u6bd4\u7387-\u6bd4\u7387"},"\u706b\u707d\u4ef6\u6578(\u4ef6)":{"type":"string","description":"\u706b\u707d\u4ef6\u6578(\u4ef6)"},"\u706b\u707d\u6b7b\u50b7\u4eba\u6578(\u4eba)":{"type":"string","description":"\u706b\u707d\u6b7b\u50b7\u4eba\u6578(\u4eba)"},"\u706b\u707d\u6b7b\u50b7\u4eba\u6578\u5360\u54e1\u5de5\u7e3d\u4eba\u6578\u6bd4\u7387":{"type":"string","description":"\u706b\u707d\u6b7b\u50b7\u4eba\u6578\u5360\u54e1\u5de5\u7e3d\u4eba\u6578\u6bd4\u7387"}}}}}}},"/opendata/t187ap45_L":{"get":{"tags":["\u516c\u53f8\u6cbb\u7406"],"summary":"\u4e0a\u5e02\u516c\u53f8\u80a1\u5229\u5206\u6d3e\u60c5\u5f62","description":"\u4e0a\u5e02\u516c\u53f8\u80a1\u5229\u5206\u6d3e\u60c5\u5f62","produces":["application/json","text/csv"],"responses":{"200":{"description":"OK","schema":{"type":"object","properties":{"\u51fa\u8868\u65e5\u671f":{"type":"string","description":"\u51fa\u8868\u65e5\u671f"},"\u516c\u53f8\u4ee3\u865f":{"type":"string","description":"\u516c\u53f8\u4ee3\u865f"},"\u516c\u53f8\u540d\u7a31":{"type":"string","description":"\u516c\u53f8\u540d\u7a31"},"\u6c7a\u8b70\uff08\u64ec\u8b70\uff09\u9032

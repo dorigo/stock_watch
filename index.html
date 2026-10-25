@@ -1803,17 +1803,13 @@ html.embed .to-top{display:none}
     const nm = c => { const s = stockOf(c); return s ? s.name : ((state.holdings[c] || {}).name || c); };
     const row = (e, done) => {
       const n = daysUntil(e.date), h = state.holdings[e.code];
-      const links = [e.video ? `<a href="${esc(e.video)}" target="_blank" rel="noopener">影音</a>` : "", e.site ? `<a href="${esc(e.site)}" target="_blank" rel="noopener">公司網站</a>` : ""].filter(Boolean).join(" · ");
       return `<tr${done ? ' class="ev-done"' : ""}>
         <td><div class="dday"><b>${md(new Date(e.date + "T00:00:00"))}</b><span class="${!done && n <= 7 ? "soon" : ""}">${done ? "已舉行" : n === 0 ? "今天" : n + " 天後"}</span></div></td>
         <td style="text-align:left"><b>${esc(e.name || nm(e.code))}</b> <span class="num" style="color:var(--ink-3);font-size:12px">${esc(e.code)}</span>${h ? ` <span class="tag held">持有</span>` : ""}</td>
-        <td class="num">${esc(e.time || "—")}</td>
-        <td style="text-align:left;white-space:normal;min-width:260px">${esc(e.summary || "")}${e.note ? `<span class="sub">${esc(e.note)}</span>` : ""}</td>
-        <td style="text-align:left;white-space:normal;min-width:120px;color:var(--ink-2)">${esc(e.place || "")}</td>
-        <td style="text-align:left">${links || `<span style="color:var(--ink-3)">—</span>`}</td></tr>`;
+</tr>`;
     };
-    el.innerHTML = `<div class="card">${head}<div class="table-wrap"><table style="min-width:900px">
-      <thead><tr><th>日期</th><th>股票</th><th>時間</th><th>內容</th><th>地點</th><th>連結</th></tr></thead>
+    el.innerHTML = `<div class="card">${head}<div class="table-wrap"><table style="min-width:0;width:auto">
+      <thead><tr><th>日期</th><th>股票</th></tr></thead>
       <tbody>${up.map(e => row(e, false)).join("")}${past.map(e => row(e, true)).join("")}</tbody></table></div>${tips}</div>`;
   }
   function renderDivs(){

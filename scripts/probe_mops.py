@@ -12,15 +12,15 @@ def tryit(name, url, data=None, headers=None, js=False):
         req = urllib.request.Request(url, data=body, headers=h)
         with urllib.request.urlopen(req, timeout=30) as r:
             t = r.read().decode("utf-8", "replace")
-            out.append(f"## {name}\nstatus={r.status} len={len(t)}\n{t[:3000]}\n")
+            out.append(f"## {name}\nstatus={r.status} len={len(t)}\n{t if 'mopsov' in name and 'sii' in name else t[:500]}\n")
     except Exception as e:
         out.append(f"## {name}\nERROR {e!r}\n")
 y = dt.date.today().year - 1911; m = dt.date.today().month
 for typek in ("sii", "otc"):
     tryit(f"mopsov ajax_t100sb02_1 {typek}", "https://mopsov.twse.com.tw/mops/web/ajax_t100sb02_1",
           {"encodeURIComponent": 1, "step": 1, "firstin": 1, "off": 1, "TYPEK": typek, "year": y, "month": f"{m:02d}", "co_id": ""})
-tryit("mops new api t100sb02_1", "https://mops.twse.com.tw/mops/api/t100sb02_1", {"companyId": "", "marketKind": "sii", "year": str(y), "month": f"{m:02d}"}, js=True)
-tryit("mops new api t100sb02_1 b", "https://mops.twse.com.tw/mops/api/t100sb02_1", {"marketKind": "sii", "year": str(y), "month": str(m)}, js=True)
-tryit("mops new api t100sb02_1 single 2330", "https://mops.twse.com.tw/mops/api/t100sb02_1", {"companyId": "2330", "marketKind": "sii", "year": str(y), "month": ""}, js=True)
-tryit("twse openapi list", "https://openapi.twse.com.tw/v1/swagger.json")
+#tryit("mops new api t100sb02_1", "https://mops.twse.com.tw/mops/api/t100sb02_1", {"companyId": "", "marketKind": "sii", "year": str(y), "month": f"{m:02d}"}, js=True)
+#tryit("mops new api t100sb02_1 b", "https://mops.twse.com.tw/mops/api/t100sb02_1", {"marketKind": "sii", "year": str(y), "month": str(m)}, js=True)
+#tryit("mops new api t100sb02_1 single 2330", "https://mops.twse.com.tw/mops/api/t100sb02_1", {"companyId": "2330", "marketKind": "sii", "year": str(y), "month": ""}, js=True)
+#tryit("twse openapi list", "https://openapi.twse.com.tw/v1/swagger.json")
 open("data/probe_mops.txt", "w").write("\n".join(out))

@@ -23,7 +23,7 @@ status=200 len=135279
 <form action='/mops/web/ajax_t100sb02_1' method='post' onsubmit='return false;' name='fm'>
 <input type='hidden' name='firstin' value='true'>
 <input type='hidden' name='step' value='10'>
-<input type='hidden' name='filename' value='t100sb02_1_20261025_202246193.csv'>
+<input type='hidden' name='filename' value='t100sb02_1_20261025_202321521.csv'>
 <button style='background-color:transparent;border:0;cursor:pointer;text-decoration:underline;' onclick="action='/server-java/t105sb02';submit();"><img src='images/bu_03.gif' hspace='3' ></button>
 </form>
 <form action = '/server-java/FileDownLoad' method = 'post' id='fm_fileDownload' name='fm_fileDownload'>
@@ -55,7 +55,1894 @@ status=200 len=135279
 </span>
 </div>
 <table id='myTable' class='hasBorder'>
-<thead style='position:relative;top:0px;'><tr class='tblHead'><th class='tblHead' nowrap rowspan='2'><b>公司代號</b></th><th class='tblHead' nowrap rowspan='2'><b>公司名稱</b></th><th class='tblHead' nowrap rowspan='2' data-type='date'><b>召開法人說明會日期</b></th><th class='tblHead' nowrap rowspan='2'><b>召開法人說明會時間</b></th><th class='tblHead' nowrap rowspan='2'><b>召開法人說明會地點</b></th><th class='tblHead' nowrap rowspan='2'><b>法人說明會擇要訊息</b></th><th class='tblHead' nowrap colspan='2'><b>法人說明會簡報內容</b></th><th class='tblHead' nowrap rowspan='2'><b>公司網站是否提供法人說明會相關資訊</b></th><th class='tblHead' nowrap rowspan='2'><b>影音連結資訊</b></th><th class='tblHead' nowrap rowspan='2'><b>其他應敘明事項</b></th><th class='tblHead' no
+<thead style='position:relative;top:0px;'><tr class='tblHead'><th class='tblHead' nowrap rowspan='2'><b>公司代號</b></th><th class='tblHead' nowrap rowspan='2'><b>公司名稱</b></th><th class='tblHead' nowrap rowspan='2' data-type='date'><b>召開法人說明會日期</b></th><th class='tblHead' nowrap rowspan='2'><b>召開法人說明會時間</b></th><th class='tblHead' nowrap rowspan='2'><b>召開法人說明會地點</b></th><th class='tblHead' nowrap rowspan='2'><b>法人說明會擇要訊息</b></th><th class='tblHead' nowrap colspan='2'><b>法人說明會簡報內容</b></th><th class='tblHead' nowrap rowspan='2'><b>公司網站是否提供法人說明會相關資訊</b></th><th class='tblHead' nowrap rowspan='2'><b>影音連結資訊</b></th><th class='tblHead' nowrap rowspan='2'><b>其他應敘明事項</b></th><th class='tblHead' nowrap rowspan='2'><b>歷年法人說明會</b></th></tr><tr><th class='tblHead' nowrap><b>中文檔案</b></th><th class='tblHead' nowrap><b>英文檔案</b></th></tr></thead>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>1203</td><td>味王</td>
+<td align='center'>115/10/14</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>臺灣證券交易所1樓資訊展示中心(台北市信義路五段7號)</td>
+<td style='text-align:left !important;'>公司概況、財務報告及營運概況。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="120320261013M001.pptx";document.fm_fileDownload.submit();'><font color='blue'><u>120320261013M001.pptx</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="120320261013E001.pptx";document.fm_fileDownload.submit();'><font color='blue'><u>120320261013E001.pptx</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.vewong.com/ec99/ushop20069/profile-11.asp' target='_blink'><font color='blue'><u>https://www.vewong.com/ec99/ushop20069/profile-11.asp</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='https://webpro.twse.com.tw/WebPortal/vod/101/631C532394C2-5D412F81-C79A-11F1-9C69/?categoryId=101'><font color=blue><u>https://webpro.twse.com.tw/WebPortal/vod/101/631C532394C2-5D412F81-C79A-11F1-9C69/?categoryId=101</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="1203";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>1303</td><td>南亞</td>
+<td align='center'>115/10/23</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>本公司受邀參加台新證券舉辦之法人說明會，說明本公司之營運概況</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="130320261022M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>130320261022M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="130320261022E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>130320261022E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='http://www.npc.com.tw' target='_blink'><font color='blue'><u>http://www.npc.com.tw</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>如台北市政府公告115/10/23停止上班，本說明會將順延至115/10/27 14:00(線上會議)</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="1303";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>1303</td><td>南亞</td>
+<td align='center'>115/10/13</td>
+<td align='center'>15:00</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>本公司受邀參加摩根大通舉辦之法人說明會，說明本公司之營運概況</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="130320261012M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>130320261012M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="130320261012E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>130320261012E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='http://www.npc.com.tw' target='_blink'><font color='blue'><u>http://www.npc.com.tw</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="1303";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>1319</td><td>東陽</td>
+<td align='center'>115/10/14</td>
+<td align='center'>13:00</td>
+<td style='text-align:left !important;'>台北市南京東路五段188號15樓</td>
+<td style='text-align:left !important;'>本公司受國票綜合證券邀請參加於115年10月14日舉辦之投資座談會，說明本公司之營運概況、財務及業務狀況相關事宜。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="131920261007M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>131920261007M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="131920261007E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>131920261007E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='http://www.tyg.com.tw' target='_blink'><font color='blue'><u>http://www.tyg.com.tw</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='https://drive.google.com/file/d/1AkBVYkqzBHD-FwOu7sMob6W1da8MsYMx/view?usp=sharing'><font color=blue><u>https://drive.google.com/file/d/1AkBVYkqzBHD-FwOu7sMob6W1da8MsYMx/view?usp=sharing</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="1319";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>1338</td><td>廣華-KY</td>
+<td align='center'>115/10/01</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>統一證券B2-203會議室(台北市東興路8號B2)</td>
+<td style='text-align:left !important;'>本公司受邀參加統一證券與IR Trust共同舉辦之廣華(1338)法說會，有意報名者請洽統一證券 李小姐，Email: maggie.lee@uni-psg.com</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="133820261001M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>133820261001M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="133820261001E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>133820261001E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'>無</td><td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/1338_40_20261001_ch.mp4'><font color=blue><u>http://irconference.twse.com.tw/1338_40_20261001_ch.mp4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>完整財務業務資訊請至公開資訊觀測站之法人說明會一覽表或法說會項目下查閱。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="1338";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>1402</td><td>遠東新</td>
+<td align='center'>115/10/06</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>台北南港展覽館</td>
+<td style='text-align:left !important;'>本公司受邀參加由凱基證券於2026/10/6在台北南港展覽館
+所舉辦TITAS投資人說明會，說明2026年度第二季度營運與財務概況</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="140220261005M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>140220261005M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="140220261005E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>140220261005E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='http://www.fenc.com/' target='_blink'><font color='blue'><u>http://www.fenc.com/</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='https://www.fenc.com/zh-TW/investor/presentations?infoindex=0'><font color=blue><u>https://www.fenc.com/zh-TW/investor/presentations?infoindex=0</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>法說會資料已揭露於公開資訊觀測站之法說會專區</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="1402";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>1440</td><td>南紡</td>
+<td align='center'>115/10/27</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>統一證券會議室(台北市松山區東興路8號3樓）</td>
+<td style='text-align:left !important;'>本公司受邀參加統一證券舉辦之法人說明會，說明本公司營運概況。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="144020261023M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>144020261023M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="144020261023E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>144020261023E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.tainanspin.com.tw/index.php?option=module&amp;lang=cht&amp;task=pageinfo&amp;id=39&amp;index=1' target='_blink'><font color='blue'><u>https://www.tainanspin.com.tw/index.php?option=module&amp;lang=cht&amp;task=pageinfo&amp;id=39&amp;index=1</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="1440";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>1504</td><td>東元</td>
+<td align='center'>115/10/30</td>
+<td align='center'>15:50</td>
+<td style='text-align:left !important;'>南港展覽館</td>
+<td style='text-align:left !important;'>本公司受邀參加Morgan Stanley舉辦之Morgan Stanley &amp; Hon Hai 2026 Joint Tech Day，並就本公司營運狀況做一說明。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="150420260813M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>150420260813M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="150420260813E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>150420260813E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.teco.com.tw/announce' target='_blink'><font color='blue'><u>https://www.teco.com.tw/announce</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="1504";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>1533</td><td>車王電</td>
+<td align='center'>115/10/22</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>線上法人說明會 - Webex</td>
+<td style='text-align:left !important;'>本公司受邀參加凱基證券舉辦之線上法人說明會，說明本公司營運概況及展望。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="153320261022M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>153320261022M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="153320261022E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>153320261022E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.more.com.tw/Investor/Conferences' target='_blink'><font color='blue'><u>https://www.more.com.tw/Investor/Conferences</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/1533_12_20261022_ch.mp4'><font color=blue><u>http://irconference.twse.com.tw/1533_12_20261022_ch.mp4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>完整財務業務資訊請至公開資訊觀測站之法人說明會一覽表或法說會項目下查閱。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="1533";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>1540</td><td>喬福</td>
+<td align='center'>115/10/15</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>11049台北市信義區信義路五段7號1樓(證交所(101大樓1樓資訊展示中心)</td>
+<td style='text-align:left !important;'>近期財務狀況</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="154020261009M001.pptx";document.fm_fileDownload.submit();'><font color='blue'><u>154020261009M001.pptx</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="154020261009E001.pptx";document.fm_fileDownload.submit();'><font color='blue'><u>154020261009E001.pptx</u></font></a></td>
+<td style='text-align:left !important;'>無</td><td style='text-align:left !important;'>
+同步收看網址：<a target='_blank' href='http://www.twse.com.tw'><font color=blue><u>http://www.twse.com.tw</u></font></a>
+<br>
+影音資訊網址：
+<a target='_blank' href='https://webpro.twse.com.tw/WebPortal/vod/101/4D240C2994C1-71046A49-C866-11F1-BA72/?categoryId=101'><font color=blue><u>https://webpro.twse.com.tw/WebPortal/vod/101/4D240C2994C1-71046A49-C866-11F1-BA72/?categoryId=101</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="1540";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>1590</td><td>亞德客-KY</td>
+<td align='center'>115/10/29</td>
+<td align='center'>16:00</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>本公司受邀參加瑞銀證券舉辦之線上法說會「3Q26 Results Conference Call」，說明本公司2026年第2季營運狀況。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="159020260819M006.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>159020260819M006.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="159020260819E006.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>159020260819E006.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://as-tw.airtac.com/about.aspx?c_kind=5&amp;c_kind2=134&amp;c_kind3=311' target='_blink'><font color='blue'><u>https://as-tw.airtac.com/about.aspx?c_kind=5&amp;c_kind2=134&amp;c_kind3=311</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="1590";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>1598</td><td>岱宇</td>
+<td align='center'>115/10/13</td>
+<td align='center'>09:00</td>
+<td style='text-align:left !important;'>香港Mandarin Oriental Hotel</td>
+<td style='text-align:left !important;'>本公司受邀參加115年10月13日至114年10月14日由寬量國際主辦之「20th QIC CEO Week」，說明本公司之營運概況、財務及業務相關資訊。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="159820261012M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>159820261012M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="159820261012E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>159820261012E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://dyaco.com/zh-hant/investors/investors-news' target='_blink'><font color='blue'><u>https://dyaco.com/zh-hant/investors/investors-news</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>完整財務業務資訊請至公開資訊觀測站之法人說明會一覽表或法說會項目下查閱。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="1598";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>1721</td><td>國慶科技</td>
+<td align='center'>115/10/23</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>線上法人說明會</td>
+<td style='text-align:left !important;'>本公司受邀參加永豐金證券線上法人說明會</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="172120261022M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>172120261022M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="172120261022E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>172120261022E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='http://www.sunko.com.tw' target='_blink'><font color='blue'><u>http://www.sunko.com.tw</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>活動報名網址:https://reurl.cc/QNDvv0</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="1721";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>1725</td><td>元禎</td>
+<td align='center'>115/10/13</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>證交所101辦公大樓一樓資訊展示中心(台北市信義路五段七號)</td>
+<td style='text-align:left !important;'>公司簡介與營運狀況說明。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="172520261013M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>172520261013M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="172520261013E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>172520261013E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.yuanjen.com/investor-relations/financial-information/' target='_blink'><font color='blue'><u>https://www.yuanjen.com/investor-relations/financial-information/</u></font></a></td>
+<td style='text-align:left !important;'>
+同步收看網址：<a target='_blank' href='https://webpro.twse.com.tw/WebPortal/vod/101/631C532394C2-F34E85E8-C6D1-11F1-9C69/?categoryId=101'><font color=blue><u>https://webpro.twse.com.tw/WebPortal/vod/101/631C532394C2-F34E85E8-C6D1-11F1-9C69/?categoryId=101</u></font></a>
+<br>
+影音資訊網址：
+<a target='_blank' href='https://webpro.twse.com.tw/WebPortal/vod/101/631C532394C2-F34E85E8-C6D1-11F1-9C69/?categoryId=101'><font color=blue><u>https://webpro.twse.com.tw/WebPortal/vod/101/631C532394C2-F34E85E8-C6D1-11F1-9C69/?categoryId=101</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="1725";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>1731</td><td>美吾華</td>
+<td align='center'>115/10/21</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>敦南摩天大樓(台北市敦化南路二段97號11樓)</td>
+<td style='text-align:left !important;'>本公司受台新證券邀請，舉辦實體法人說明會，由經營團隊向法人及投資者說明公司研發及展業最新狀況。   
+(一)美吾髮&#174;事業部
+美吾髮&#174;獲選為台灣百大品牌，業界唯一。經營染髮、洗髮、護髮、沐浴等系列產品，建構研發、生產到品牌行銷的完整價值鏈。
+(二)醫藥事業部
+行銷懷特生技新藥研發成功的新藥，以及國際大廠產品總代理。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="173120261021M002.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>173120261021M002.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="173120261021E002.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>173120261021E002.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.maywufa.com.tw/tw/news' target='_blink'><font color='blue'><u>https://www.maywufa.com.tw/tw/news</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/1731_13_20261021_ch.MP4'><font color=blue><u>http://irconference.twse.com.tw/1731_13_20261021_ch.MP4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>相關資訊將依規定揭露於公開資訊觀測站。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="1731";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>2008</td><td>高興昌</td>
+<td align='center'>115/10/23</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>高雄市鼓山區中華一路318號(本公司二樓)</td>
+<td style='text-align:left !important;'>本公司115年1-6月業績說明</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="200820261022M003.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>200820261022M003.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="200820261022E003.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>200820261022E003.pdf</u></font></a></td>
+<td style='text-align:left !important;'>無</td><td style='text-align:left !important;'>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>若因薔琵颱風影&#21709;,本公司115/10/23原訂法說會延後一個工作日舉辦.</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2008";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>2008</td><td>高興昌</td>
+<td align='center'>115/10/23</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>高雄市鼓山區中華一路318號(本公司二樓)</td>
+<td style='text-align:left !important;'>本公司115年1-6月業績說明</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="200820261022M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>200820261022M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="200820261022E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>200820261022E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'>無</td><td style='text-align:left !important;'>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2008";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>2010</td><td>春源</td>
+<td align='center'>115/10/08</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>臺灣證券交易所1F資訊展示中心(台北市信義區信義路五段7號1樓)</td>
+<td style='text-align:left !important;'>本公司業務及財務相關資訊</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="201020261008M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>201020261008M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="201020261008E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>201020261008E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.cysco.com.tw/investorzone-67-114-page117' target='_blink'><font color='blue'><u>https://www.cysco.com.tw/investorzone-67-114-page117</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='https://webpro.twse.com.tw/WebPortal/vod/101/DFEF4C473746-C76477F4-C2E7-11F1-8D37/?categoryId=101'><font color=blue><u>https://webpro.twse.com.tw/WebPortal/vod/101/DFEF4C473746-C76477F4-C2E7-11F1-8D37/?categoryId=101</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2010";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>2072</td><td>世紀能源</td>
+<td align='center'>115/10/13 至 115/10/14</td>
+<td align='center'>09:00</td>
+<td style='text-align:left !important;'>香港Mandarin Oriental Hotel</td>
+<td style='text-align:left !important;'>本公司受邀參加115年10月13日至115年10月14日由寬量國際主辦之「20th QIC CEO Week」，說明本公司之營運概況、財務及業務相關資訊。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="207220261012M002.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>207220261012M002.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="207220261012E002.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>207220261012E002.pdf</u></font></a></td>
+<td style='text-align:left !important;'>無</td><td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>法說會簡報與財務業務資訊，請至公開資訊觀測站「法說會」專區查閱。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2072";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>2301</td><td>光寶科</td>
+<td align='center'>115/10/30</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>本公司(臺北市內湖區瑞光路392號1樓國際會議廳)</td>
+<td style='text-align:left !important;'>本公司115年第3季財務業務情形。</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://www.liteon.com/zh-tw' target='_blink'><font color='blue'><u>https://www.liteon.com/zh-tw</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>本次法說會為實體會議，不另外進&#12175;線上直播。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2301";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>2303</td><td>聯電</td>
+<td align='center'>115/10/28</td>
+<td align='center'>17:00</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>本公司2026年第三季財務暨營運報告。</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='http://www.umc.com' target='_blink'><font color='blue'><u>http://www.umc.com</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2303";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>2308</td><td>台達電</td>
+<td align='center'>115/10/05 至 115/10/13</td>
+<td align='center'>21:00</td>
+<td style='text-align:left !important;'>美國</td>
+<td style='text-align:left !important;'>本公司受Jefferies證券邀請，將於上述時間地點，向法人投資者說明本公司115年第2季之財務報告相關資訊。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="230820260730M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>230820260730M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="230820260730E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>230820260730E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.deltaww.com/zh-TW/investors/analyst-meeting' target='_blink'><font color='blue'><u>https://www.deltaww.com/zh-TW/investors/analyst-meeting</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2308";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>2308</td><td>台達電</td>
+<td align='center'>115/10/29</td>
+<td align='center'>15:00</td>
+<td style='text-align:left !important;'>台達電子台北總部</td>
+<td style='text-align:left !important;'>本公司自辦法人說明會，說明115年第3季財務報告相關資訊</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://www.deltaww.com/zh-TW/investors/analyst-meeting' target='_blink'><font color='blue'><u>https://www.deltaww.com/zh-TW/investors/analyst-meeting</u></font></a></td>
+<td style='text-align:left !important;'>
+同步收看網址：<a target='_blank' href='https://www.deltaww.com/zh-TW/investors/analyst-meeting'><font color=blue><u>https://www.deltaww.com/zh-TW/investors/analyst-meeting</u></font></a>
+<br>
+影音資訊網址：
+<a target='_blank' href='https://www.deltaww.com/zh-TW/investors/analyst-meeting'><font color=blue><u>https://www.deltaww.com/zh-TW/investors/analyst-meeting</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2308";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>2317</td><td>鴻海</td>
+<td align='center'>115/10/15 至 115/10/20</td>
+<td align='center'>09:00</td>
+<td style='text-align:left !important;'>電話會議</td>
+<td style='text-align:left !important;'>115年10月15日受Silver Points 邀請參加投資人會議，說明本公司營運概況。
+115年10月20日受Auerbach Grayson 邀請參加投資人會議，說明本公司營運概況。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="231720260812M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>231720260812M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="231720260812E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>231720260812E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'>無</td><td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2317";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>2317</td><td>鴻海</td>
+<td align='center'>115/10/20</td>
+<td align='center'>15:00</td>
+<td style='text-align:left !important;'>凱基金融大樓</td>
+<td style='text-align:left !important;'>115年10月20日受凱基證券邀請參加投資人會議，說明本公司營運概況。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="231720260812M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>231720260812M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="231720260812E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>231720260812E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'>無</td><td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2317";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>2317</td><td>鴻海</td>
+<td align='center'>115/10/01</td>
+<td align='center'>16:00</td>
+<td style='text-align:left !important;'>台北市內湖區基湖路32號</td>
+<td style='text-align:left !important;'>115年10月1日受BofA邀請參加投資人會議，說明本公司營運概況。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="231720260812M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>231720260812M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="231720260812E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>231720260812E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'>無</td><td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2317";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>2317</td><td>鴻海</td>
+<td align='center'>115/09/22 至 115/10/01</td>
+<td align='center'>09:00</td>
+<td style='text-align:left !important;'>電話會議</td>
+<td style='text-align:left !important;'>115年9月22日受Wolfe邀請參加投資人會議，說明本公司營運概況。
+115年9月30日受康和證券邀請參加投資人會議，說明本公司營運概況。
+115年10月1日受SIG邀請參加投資人會議，說明本公司營運概況。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="231720260812M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>231720260812M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="231720260812E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>231720260812E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'>無</td><td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2317";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>2327</td><td>國巨*</td>
+<td align='center'>115/10/29</td>
+<td align='center'>16:00</td>
+<td style='text-align:left !important;'>線上電話會議</td>
+<td style='text-align:left !important;'>本公司於115/10/29受邀參加由摩根士丹利證券舉辦之線上法說會，
+說明115年第三季營運成果，並就公司營運展望及產業概況向投資機構做說明。</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://yageogroup.com/About/InvestorRelations/InvestorConference' target='_blink'><font color='blue'><u>https://yageogroup.com/About/InvestorRelations/InvestorConference</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>公司網站https://yageogroup.com/About/InvestorRelations/InvestorConference</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2327";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>2328</td><td>廣宇</td>
+<td align='center'>115/10/13</td>
+<td align='center'>09:00</td>
+<td style='text-align:left !important;'>香港Mandarin Oriental Hotel (5 Connaught Road, Central, Hong Kong)</td>
+<td style='text-align:left !important;'>本公司受邀參加寬量國際主辦之「20th QIC CEO Week」，說明本公司之營運概況、財務及業務相關資訊。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="232820261012M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>232820261012M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="232820261012E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>232820261012E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.panpi.com.tw/tw/investor_service/corporate_governance/investor_meeting' target='_blink'><font color='blue'><u>https://www.panpi.com.tw/tw/investor_service/corporate_governance/investor_meeting</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>法說會相關資訊請至公開資訊觀測站或公司網站查閱。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2328";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>2329</td><td>華泰</td>
+<td align='center'>115/10/02</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>凱基證券大樓12樓會議廳(台北市中山區明水路700號)</td>
+<td style='text-align:left !important;'>受邀參加凱基證券舉辦之法人說明會，報告本公司營運狀況。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="232920261002M002.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>232920261002M002.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="232920261002E002.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>232920261002E002.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.ose.com.tw/about/investment/shareholder#company-intro-meeting' target='_blink'><font color='blue'><u>https://www.ose.com.tw/about/investment/shareholder#company-intro-meeting</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/2329_14_20261002_ch.mp4'><font color=blue><u>http://irconference.twse.com.tw/2329_14_20261002_ch.mp4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2329";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>2330</td><td>台積電</td>
+<td align='center'>115/10/15</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>(1)公布本公司2026年第3季財務報告及2026年第4季業績展望。(2)參加方式：請參見https://investor.tsmc.com/chinese/quarterly-results/2026/q3</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="233020261015M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>233020261015M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="233020261015E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>233020261015E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://investor.tsmc.com/chinese/quarterly-results/2026/q3' target='_blink'><font color='blue'><u>https://investor.tsmc.com/chinese/quarterly-results/2026/q3</u></font></a></td>
+<td style='text-align:left !important;'>
+同步收看網址：<a target='_blank' href='https://investor.tsmc.com/chinese/quarterly-results/2026/q3'><font color=blue><u>https://investor.tsmc.com/chinese/quarterly-results/2026/q3</u></font></a>
+<br>
+影音資訊網址：
+<a target='_blank' href='https://investor.tsmc.com/chinese/quarterly-results/2026/q3'><font color=blue><u>https://investor.tsmc.com/chinese/quarterly-results/2026/q3</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2330";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>2337</td><td>旺宏</td>
+<td align='center'>115/10/27</td>
+<td align='center'>16:00</td>
+<td style='text-align:left !important;'>線上法人說明會</td>
+<td style='text-align:left !important;'>旺宏電子2026年第三季營運成果報告</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://www.mxic.com.tw/zh-tw/about/investor-relations/Pages/quarterly-results.aspx' target='_blink'><font color='blue'><u>https://www.mxic.com.tw/zh-tw/about/investor-relations/Pages/quarterly-results.aspx</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2337";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>2340</td><td>台亞</td>
+<td align='center'>115/10/14</td>
+<td align='center'>14:20</td>
+<td style='text-align:left !important;'>新竹老爺酒店 6樓會議室
+(新竹市東區仙水里光復路一段227號)</td>
+<td style='text-align:left !important;'>本公司舉辦財務業務概況座談會</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="234020261014M001.pptx";document.fm_fileDownload.submit();'><font color='blue'><u>234020261014M001.pptx</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="234020261014E001.pptx";document.fm_fileDownload.submit();'><font color='blue'><u>234020261014E001.pptx</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.tascsemi.com/investor-relations/shareholder-column/law-meeting/' target='_blink'><font color='blue'><u>https://www.tascsemi.com/investor-relations/shareholder-column/law-meeting/</u></font></a></td>
+<td style='text-align:left !important;'>
+同步收看網址：<a target='_blank' href='https://www.youtube.com/live/JAYnWu0vrZk?feature=share'><font color=blue><u>https://www.youtube.com/live/JAYnWu0vrZk?feature=share</u></font></a>
+<br>
+影音資訊網址：
+<a target='_blank' href='https://www.tascsemi.com/investor-relations/shareholder-column/law-meeting/'><font color=blue><u>https://www.tascsemi.com/investor-relations/shareholder-column/law-meeting/</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2340";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>2356</td><td>英業達</td>
+<td align='center'>115/09/11 至 115/10/13</td>
+<td align='center'>15:00</td>
+<td style='text-align:left !important;'>線上說明會</td>
+<td style='text-align:left !important;'>2026/9/11受邀參加CLSA; 2026/9/16受邀參加KeyBanc; 2026/10/13受邀參加SIG線上投資人說明會</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="235620260819M006.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>235620260819M006.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="235620260819E006.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>235620260819E006.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.inventec.com' target='_blink'><font color='blue'><u>https://www.inventec.com</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2356";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>2379</td><td>瑞昱</td>
+<td align='center'>115/10/29</td>
+<td align='center'>16:00</td>
+<td style='text-align:left !important;'>網路直播</td>
+<td style='text-align:left !important;'>瑞昱半導體將於115年10月29日(四)舉行2026年第3季線上法人說明會。 時間：4:00-5:00 pm 語言: 英文 直播網址：https://www.zucast.com/webcast/AeaFcpKL建議參與者於法說會前安裝或升級所需播放軟體，或至http://www.zucast.com/help 尋求技術支援。</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://www.realtek.com' target='_blink'><font color='blue'><u>https://www.realtek.com</u></font></a></td>
+<td style='text-align:left !important;'>
+同步收看網址：<a target='_blank' href='https://www.zucast.com/webcast/AeaFcpKL'><font color=blue><u>https://www.zucast.com/webcast/AeaFcpKL</u></font></a>
+<br>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2379";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>2399</td><td>映泰</td>
+<td align='center'>115/10/02</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>福邦證券(台北市忠孝西路一段6號14樓)</td>
+<td style='text-align:left !important;'>受邀參加福邦證券舉辦之法人說明會，就本公司已公開之財務業務資訊作說明。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="239920261001M003.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>239920261001M003.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="239920261001E003.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>239920261001E003.pdf</u></font></a></td>
+<td style='text-align:left !important;'>無</td><td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/2399_10_20261002_ch.MP4'><font color=blue><u>http://irconference.twse.com.tw/2399_10_20261002_ch.MP4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2399";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>2402</td><td>毅嘉</td>
+<td align='center'>115/10/15</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>兆豐證券大樓（台北市忠孝東路二段95號13樓1301會議室）</td>
+<td style='text-align:left !important;'>本公司受邀參加兆豐證券舉辦之法人說明會，說明本公司之財務、營運及業務相關資訊。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="240220261015M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>240220261015M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="240220261015E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>240220261015E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='www.ichia.com' target='_blink'><font color='blue'><u>www.ichia.com</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='https://video.ichiacloud.com/sv/1d42e812-1a13f3d0611/1d42e812-1a13f3d0611.mp4'><font color=blue><u>https://video.ichiacloud.com/sv/1d42e812-1a13f3d0611/1d42e812-1a13f3d0611.mp4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2402";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>2408</td><td>南亞科</td>
+<td align='center'>115/10/12</td>
+<td align='center'>15:00</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>(1)2026年第3季營運狀況說明
+(2)參加方式：請參見 https://www.nanya.com/tw/IR/13/Investor Calendar</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="240820261012M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>240820261012M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="240820261012E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>240820261012E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.nanya.com/tw/' target='_blink'><font color='blue'><u>https://www.nanya.com/tw/</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='https://www.nanya.com/tw/IR/13/Investor Calendar?Year=2026'><font color=blue><u>https://www.nanya.com/tw/IR/13/Investor Calendar?Year=2026</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2408";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>2409</td><td>友達</td>
+<td align='center'>115/10/29</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>115年第三季線上法人說明會</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://www.auo.com/zh-TW/investor_conference/index' target='_blink'><font color='blue'><u>https://www.auo.com/zh-TW/investor_conference/index</u></font></a></td>
+<td style='text-align:left !important;'>
+同步收看網址：<a target='_blank' href='https://www.auo.com/zh-TW/investor_conference/index'><font color=blue><u>https://www.auo.com/zh-TW/investor_conference/index</u></font></a>
+<br>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>影音資訊於當日會後上傳</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2409";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>2412</td><td>中華電</td>
+<td align='center'>115/10/13</td>
+<td align='center'>12:30</td>
+<td style='text-align:left !important;'>國票證券(台北市松山區南京東路五段188號15樓)</td>
+<td style='text-align:left !important;'>會議由國票證券主辦</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="241220261008M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>241220261008M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="241220261008E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>241220261008E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.cht.com.tw/chtir' target='_blink'><font color='blue'><u>https://www.cht.com.tw/chtir</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/2412_233_20261013_ch.MP4'><font color=blue><u>http://irconference.twse.com.tw/2412_233_20261013_ch.MP4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2412";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>2454</td><td>聯發科</td>
+<td align='center'>115/10/30</td>
+<td align='center'>15:00</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>&#8206;(1) 公布本公司2026年第3季財務報告及2026年第4季業績展望。 (2) 參加方式：請參見https://www.mediatek.com/zh-&#8206;tw/investor-relations/financial-information#quarterly-earnings-&#8206;release &#8206;</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://www.mediatek.com' target='_blink'><font color='blue'><u>https://www.mediatek.com</u></font></a></td>
+<td style='text-align:left !important;'>
+
+<br>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2454";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>2474</td><td>可成</td>
+<td align='center'>115/10/19</td>
+<td align='center'>12:00</td>
+<td style='text-align:left !important;'>國票證券會議室</td>
+<td style='text-align:left !important;'>本公司受邀參加國票證券舉辦之法人座談會</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="247420261016M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>247420261016M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="247420261016E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>247420261016E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'>無</td><td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2474";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>2514</td><td>龍邦</td>
+<td align='center'>115/10/22</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>本公司受邀參加元大證券舉辦之線上法說會，報告本公司營運狀況。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="251420261022M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>251420261022M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="251420261022E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>251420261022E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='http://www.longbon.com.tw' target='_blink'><font color='blue'><u>http://www.longbon.com.tw</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/2514_12_20261022_ch.mp4'><font color=blue><u>http://irconference.twse.com.tw/2514_12_20261022_ch.mp4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2514";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>2520</td><td>冠德</td>
+<td align='center'>115/10/01</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>台北市民權東路三段169號(冠德民權大樓15樓會議室)</td>
+<td style='text-align:left !important;'>本公司受邀參加國泰證券舉辦之法人說明會，說明本公司115年第2季營運成果。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="252020261001M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>252020261001M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="252020261001E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>252020261001E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='http://www.kindom.com.tw' target='_blink'><font color='blue'><u>http://www.kindom.com.tw</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='https://youtu.be/Kc82uP84rPs'><font color=blue><u>https://youtu.be/Kc82uP84rPs</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2520";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>2546</td><td>根基</td>
+<td align='center'>115/10/01</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>台北市松山區民權東路三段169號(冠德民權大樓15樓會議室)</td>
+<td style='text-align:left !important;'>本公司受邀參加國泰證券舉辦之法人說明會，說明本公司115年第2季營運成果。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="254620261001M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>254620261001M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="254620261001E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>254620261001E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.kedge.com.tw/' target='_blink'><font color='blue'><u>https://www.kedge.com.tw/</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='https://youtu.be/DCDLjZbtH4c'><font color=blue><u>https://youtu.be/DCDLjZbtH4c</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2546";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>2603</td><td>長榮</td>
+<td align='center'>115/10/08</td>
+<td align='center'>15:00</td>
+<td style='text-align:left !important;'>張榮發基金會國際會議中心11樓(台北市中正區中山南路11號11樓)</td>
+<td style='text-align:left !important;'>受邀參加永豐金證券舉辦之法說會，說明本公司之營運概況。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="260320261008M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>260320261008M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="260320261008E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>260320261008E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.evergreen-marine.com/emc/financial/jsp/EMC_InvestorConference.jsp?lang=zh-tw' target='_blink'><font color='blue'><u>https://www.evergreen-marine.com/emc/financial/jsp/EMC_InvestorConference.jsp?lang=zh-tw</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='https://www.evergreen-marine.com/emc/financial/jsp/EMC_InvestorConference.jsp?lang=zh-tw'><font color=blue><u>https://www.evergreen-marine.com/emc/financial/jsp/EMC_InvestorConference.jsp?lang=zh-tw</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>欲參加者需事先報名，請洽永豐金鄒小姐 (02)23828166或E-MAIL: ECM@sinopac.com</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2603";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>2607</td><td>榮運</td>
+<td align='center'>115/10/08</td>
+<td align='center'>16:00</td>
+<td style='text-align:left !important;'>張榮發基金會國際會議中心11樓(台北市中正區中山南路11號)</td>
+<td style='text-align:left !important;'>受邀參加永豐金證券舉辦之法人說明會，說明本公司之營運概況。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="260720261008M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>260720261008M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="260720261008E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>260720261008E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.evergreen-eitc.com.tw/eitchtdocs/zh/D05-0-Briefing.html' target='_blink'><font color='blue'><u>https://www.evergreen-eitc.com.tw/eitchtdocs/zh/D05-0-Briefing.html</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='https://www.evergreen-eitc.com.tw/eitchtdocs/zh/D05-0-Briefing.html'><font color=blue><u>https://www.evergreen-eitc.com.tw/eitchtdocs/zh/D05-0-Briefing.html</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>活動詳情請洽：永豐金證券鄒小姐TEL：(02)23828166或E-MAIL：ECM@sinopac.com</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2607";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>2630</td><td>亞航</td>
+<td align='center'>115/10/23</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>高雄市前鎮區中山二路2號九樓之一(大眾財經大樓)</td>
+<td style='text-align:left !important;'>本公司受邀參加台新證券舉辦之法人說明會，說明財務業務概況。</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='http://www.airasia.com.tw/index.php?option=module&amp;lang=cht&amp;task=showlist&amp;id=385&amp;index=3' target='_blink'><font color='blue'><u>http://www.airasia.com.tw/index.php?option=module&amp;lang=cht&amp;task=showlist&amp;id=385&amp;index=3</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2630";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>2707</td><td>晶華</td>
+<td align='center'>115/10/14</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>Webex線上會議</td>
+<td style='text-align:left !important;'>本公司受邀參加第一金證券舉辦之線上法人說明會</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="270720261014M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>270720261014M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="270720261014E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>270720261014E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://digital.silkshotelgroup.com/Investment' target='_blink'><font color='blue'><u>https://digital.silkshotelgroup.com/Investment</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/2707_60_20261014_ch.mp4'><font color=blue><u>http://irconference.twse.com.tw/2707_60_20261014_ch.mp4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2707";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>2816</td><td>旺旺保</td>
+<td align='center'>115/10/14</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>台北市大安區忠孝東路四段219號4樓會議室</td>
+<td style='text-align:left !important;'>本公司自辦法人說明會，會中就本公司已公開發布之營運及財務業務狀況作說明。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="281620261014M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>281620261014M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="281620261014E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>281620261014E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.wwunion.com/?page_id=5584' target='_blink'><font color='blue'><u>https://www.wwunion.com/?page_id=5584</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/2816_11_20261014_ch.mp4'><font color=blue><u>http://irconference.twse.com.tw/2816_11_20261014_ch.mp4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2816";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>2881</td><td>富邦金</td>
+<td align='center'>115/10/15</td>
+<td align='center'>10:00</td>
+<td style='text-align:left !important;'>台北</td>
+<td style='text-align:left !important;'>討論富邦金控財務及業務相關資訊</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="288120261014M002.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>288120261014M002.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="288120261014E002.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>288120261014E002.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://fubon.irpro.co/tw/event.php' target='_blink'><font color='blue'><u>https://fubon.irpro.co/tw/event.php</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2881";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>2881</td><td>富邦金</td>
+<td align='center'>115/10/12 至 115/10/16</td>
+<td align='center'>16:00</td>
+<td style='text-align:left !important;'>歐洲</td>
+<td style='text-align:left !important;'>討論富邦金控財務及業務相關資訊</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="288120261008M002.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>288120261008M002.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="288120261008E002.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>288120261008E002.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://fubon.irpro.co/tw/event.php' target='_blink'><font color='blue'><u>https://fubon.irpro.co/tw/event.php</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>受Citi邀約參加投資人會議</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2881";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>2889</td><td>國票金</td>
+<td align='center'>115/10/19</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>本次法說會為線上說明會。</td>
+<td style='text-align:left !important;'>本公司自辦說明會，說明公司營運概況</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="288920261019M003.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>288920261019M003.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="288920261019E003.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>288920261019E003.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.ibf.com.tw/analyst_meeting/2026' target='_blink'><font color='blue'><u>https://www.ibf.com.tw/analyst_meeting/2026</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/2889_29_20261019_ch.mp4'><font color=blue><u>http://irconference.twse.com.tw/2889_29_20261019_ch.mp4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>當日webex連線號碼為:1849465878/連結https://mibf.webex.com/meet/ibf.1703</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="2889";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>3008</td><td>大立光</td>
+<td align='center'>115/10/08</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>115年第三季營運報告及說明115年第四季營運展望</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="300820261008M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>300820261008M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="300820261008E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>300820261008E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='http://www.largan.com.tw/tw/investor/shareholder' target='_blink'><font color='blue'><u>http://www.largan.com.tw/tw/investor/shareholder</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='https://www.largan.com.tw/tw/investor/shareholder'><font color=blue><u>https://www.largan.com.tw/tw/investor/shareholder</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="3008";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>3013</td><td>晟銘電</td>
+<td align='center'>115/10/01</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>南港中信金融園區B棟13樓1302會議室(台北市南港區經貿二路188號13樓)</td>
+<td style='text-align:left !important;'>本公司受邀參加中國信託綜合證券舉辦之法人說明會。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="301320261001M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>301320261001M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="301320261001E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>301320261001E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'>無</td><td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/3013_10_20261001_ch.MP4'><font color=blue><u>http://irconference.twse.com.tw/3013_10_20261001_ch.MP4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="3013";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>3035</td><td>智原</td>
+<td align='center'>115/10/27</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>115年第三季線上法人說明會</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://www.faraday-tech.com/tw/content/IR/InvestorConference' target='_blink'><font color='blue'><u>https://www.faraday-tech.com/tw/content/IR/InvestorConference</u></font></a></td>
+<td style='text-align:left !important;'>
+同步收看網址：<a target='_blank' href='https://www.faraday-tech.com/tw/content/IR/InvestorConference'><font color=blue><u>https://www.faraday-tech.com/tw/content/IR/InvestorConference</u></font></a>
+<br>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="3035";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>3052</td><td>夆典</td>
+<td align='center'>115/10/21</td>
+<td align='center'>15:00</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>本公司受邀參加元大證券舉辦之線上法說會，報告本公司營運狀況。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="305220261020M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>305220261020M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="305220261020E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>305220261020E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.apexgrp.com.tw/web/bbs/board.php?bo_table=investor&amp;wr_id=6' target='_blink'><font color='blue'><u>https://www.apexgrp.com.tw/web/bbs/board.php?bo_table=investor&amp;wr_id=6</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/3052_10_20261021_ch.mp4'><font color=blue><u>http://irconference.twse.com.tw/3052_10_20261021_ch.mp4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="3052";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>4108</td><td>懷特</td>
+<td align='center'>115/10/21</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>敦南摩天大樓(台北市敦化南路二段97號11樓)</td>
+<td style='text-align:left !important;'>本公司受台新證券邀請，舉辦實體法說會，由經營團隊向法人及投資者說明公司研發及展業最新狀況。
+懷特新藥為台灣首家以新藥研發為核心的上市公司，成功開發兩項獲衛福部核准上市的處方新藥：「懷特血寶&#174;」為全球首項治療癌因性疲憊症的處方新藥，已納入第四期乳癌患者中重度疲憊症狀的健保給付；「懷特痛寶&#174;」為全球首款口服納布啡新藥，用於緩解急性中度至重度疼痛。公司亦開發具特定功效訴求的保健產品，積極拓展國內外營收並推進獲利目標。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="410820261021M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>410820261021M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="410820261021E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>410820261021E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.phytohealth.com.tw/tw/news/category' target='_blink'><font color='blue'><u>https://www.phytohealth.com.tw/tw/news/category</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/4108_25_20261021_ch.mp4'><font color=blue><u>http://irconference.twse.com.tw/4108_25_20261021_ch.mp4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>相關資訊將依規定揭露於公開資訊觀測站。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="4108";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>4169</td><td>泰宗</td>
+<td align='center'>115/10/27</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>凱基證券 (台北市明水路700號)</td>
+<td style='text-align:left !important;'>說明營運概況</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://www.tcmbio.com/tw/detail.php?id=241' target='_blink'><font color='blue'><u>https://www.tcmbio.com/tw/detail.php?id=241</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>原10/23法說會，因遇薔琵颱風改期至10/27。報名網址https://reurl.cc/0k0lMY</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="4169";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>4438</td><td>廣越</td>
+<td align='center'>115/10/13</td>
+<td align='center'>09:00</td>
+<td style='text-align:left !important;'>香港文華東方酒店 (地址: 5 Connaught Road, Central, Hong Kong)</td>
+<td style='text-align:left !important;'>本公司受邀參加寬量國際主辦之「20th QIC CEO Week」 ，向投資人說明本公司之營運及財務概況。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="443820261012M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>443820261012M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="443820261012E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>443820261012E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.qve.com.tw/investor/informationJuristic/Default.aspx' target='_blink'><font color='blue'><u>https://www.qve.com.tw/investor/informationJuristic/Default.aspx</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="4438";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>4560</td><td>強信-KY</td>
+<td align='center'>115/10/29</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>線上法人說明會</td>
+<td style='text-align:left !important;'>本公司受邀參加富邦證券舉辦之線上法人說明會，說明本公司之業務及營運概況。</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>無</td><td style='text-align:left !important;'>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="4560";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>4566</td><td>時碩工業</td>
+<td align='center'>115/10/16</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>台北市建國北路一段96號13樓(台北廳)</td>
+<td style='text-align:left !important;'>2026年第三季營運報告</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="456620261016M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>456620261016M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="456620261016E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>456620261016E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.globaltekww.com' target='_blink'><font color='blue'><u>https://www.globaltekww.com</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="4566";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>4722</td><td>國精化</td>
+<td align='center'>115/10/14</td>
+<td align='center'>11:00</td>
+<td style='text-align:left !important;'>香港Mandarin Oriental Hotel (5 Connaught Road, Central, Hong Kong)</td>
+<td style='text-align:left !important;'>本公司受邀參加寬量國際主辦之「20th QIC CEO Week」，說明本公司之營運概況、財務及業務相關資訊。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="472220261014M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>472220261014M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="472220261014E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>472220261014E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.qualipoly.com/zh-tw/a3-2826/%E6%B3%95%E4%BA%BA%E8%AA%AA%E6%98%8E%E6%9C%83.html' target='_blink'><font color='blue'><u>https://www.qualipoly.com/zh-tw/a3-2826/%E6%B3%95%E4%BA%BA%E8%AA%AA%E6%98%8E%E6%9C%83.html</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>法說會相關資訊請至公開資訊觀測站或公司網站查閱。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="4722";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>4766</td><td>南寶</td>
+<td align='center'>115/10/13</td>
+<td align='center'>09:00</td>
+<td style='text-align:left !important;'>香港Mandarin Oriental Hotel(5 Connaught Road, Central, Hong Kong)</td>
+<td style='text-align:left !important;'>本公司受邀參加由寬量國際舉辦之法人說明會「20th QIC CEO Week」，說明本公司之營運概況、財務及業務相關資訊。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="476620261012M001.pptx";document.fm_fileDownload.submit();'><font color='blue'><u>476620261012M001.pptx</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="476620261012E001.pptx";document.fm_fileDownload.submit();'><font color='blue'><u>476620261012E001.pptx</u></font></a></td>
+<td style='text-align:left !important;'>無</td><td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="4766";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>4919</td><td>新唐</td>
+<td align='center'>115/10/30</td>
+<td align='center'>13:30</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>本公司舉行115年第三季法人說明會，將於會中就公司115年第三季財務數字與營運概況做說明</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://www.nuvoton.com/about-nuvoton/investors/investor-conference/investor-conference-detail/' target='_blink'><font color='blue'><u>https://www.nuvoton.com/about-nuvoton/investors/investor-conference/investor-conference-detail/</u></font></a></td>
+<td style='text-align:left !important;'>
+同步收看網址：<a target='_blank' href='https://wms.gridow.com/ir/nuvoton/nuvoton_26Q3.html'><font color=blue><u>https://wms.gridow.com/ir/nuvoton/nuvoton_26Q3.html</u></font></a>
+<br>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="4919";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>4934</td><td>太極</td>
+<td align='center'>115/10/12</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>台北君悅酒店3樓凱悅二廳(台北市信義區松壽路2號)</td>
+<td style='text-align:left !important;'>盛新材料(6930)-受邀參加第一金證券舉辦之興櫃前法人說明會
+說明公司營運概況及未來展望。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="493420261012M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>493420261012M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="493420261012E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>493420261012E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.taisicmaterials.com/ir/13' target='_blink'><font color='blue'><u>https://www.taisicmaterials.com/ir/13</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='https://youtu.be/3D7Fmiwj_bs'><font color=blue><u>https://youtu.be/3D7Fmiwj_bs</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>代子公司盛新材料(6930)申報</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="4934";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>4958</td><td>臻鼎-KY</td>
+<td align='center'>115/10/13 至 115/10/14</td>
+<td align='center'>12:00</td>
+<td style='text-align:left !important;'>香港文華東方酒店 
+(地址:5 Connaught Road, Central, 香港)</td>
+<td style='text-align:left !important;'>本公司受邀參加寬量國際主辦之「20th QIC CEO Week」，
+說明PCB產業展望、公司營運績效相關資訊。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="495820261002M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>495820261002M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="495820261002E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>495820261002E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.zdtco.com/tw/investor/events' target='_blink'><font color='blue'><u>https://www.zdtco.com/tw/investor/events</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='https://drive.google.com/file/d/1vfv-FBHARNsVkSZqw6xE0ulGHGWJ8REf/view?usp=sharing'><font color=blue><u>https://drive.google.com/file/d/1vfv-FBHARNsVkSZqw6xE0ulGHGWJ8REf/view?usp=sharing</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>115/10/13(12:00~17:20)，115/10/14(9:00~17:20)</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="4958";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>4968</td><td>立積</td>
+<td align='center'>115/10/30</td>
+<td align='center'>15:30</td>
+<td style='text-align:left !important;'>網路直播</td>
+<td style='text-align:left !important;'>立積電子(4968) 2026年第三季線上法人說明會</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://www.richwave.com.tw/zh/invest_sharholder_conference.aspx' target='_blink'><font color='blue'><u>https://www.richwave.com.tw/zh/invest_sharholder_conference.aspx</u></font></a></td>
+<td style='text-align:left !important;'>
+同步收看網址：<a target='_blank' href='https://www.zucast.com/webcast/JwqSlFjJ'><font color=blue><u>https://www.zucast.com/webcast/JwqSlFjJ</u></font></a>
+<br>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>無。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="4968";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>5203</td><td>訊連</td>
+<td align='center'>115/10/28</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>訊連科技(5203)宣佈將於10月28日
+舉行線上法人說明會，屆時將於會中報告115年第三季度經營成果，敬邀各界蒞臨參加，
+詳細活動流程如下：
+                                                              
+時間	          活動流程
+2:30PM ~ 3:15PM	  說明會簡報
+3:15PM ~ 3:30PM	  Q &amp; A
+
+本次法人說明會將使用整合線上簡報、螢幕分享、支援強大直播及預錄功能的「U簡報」
+進行同步直播。投資人可透過電腦、平板及手機參與「U簡報」，PC使用者可使用Chrome
+瀏覽器開啟下列連結參與本場直播；手機或平板使用者請先下載並安裝「U」App
+即可加入該直播。
+
+線上直播網址: https://u.cyberlink.com/web/register/1527764306504975981</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://tw.cyberlink.com/prog/company/ir-index.do' target='_blink'><font color='blue'><u>https://tw.cyberlink.com/prog/company/ir-index.do</u></font></a></td>
+<td style='text-align:left !important;'>
+同步收看網址：<a target='_blank' href='https://u.cyberlink.com/web/register/1527764306504975981'><font color=blue><u>https://u.cyberlink.com/web/register/1527764306504975981</u></font></a>
+<br>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="5203";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>5469</td><td>瀚宇博</td>
+<td align='center'>115/10/23</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>宏遠證券總公司(台北市大安區信義路四段236號7樓)</td>
+<td style='text-align:left !important;'>公司營運狀況與經營結果說明</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://tw.hannstarboard.com/corporate-briefing/' target='_blink'><font color='blue'><u>https://tw.hannstarboard.com/corporate-briefing/</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>本次法人說明會將與精成科技(股)公司聯合召開</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="5469";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>5469</td><td>瀚宇博</td>
+<td align='center'>115/10/28</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>宏遠證券總公司(台北市大安區信義路四段236號7樓)</td>
+<td style='text-align:left !important;'>因颱風因素，本公司原定於115年10月23日舉辦之法人說明會延至 115年10月28日舉辦。</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://tw.hannstarboard.com/corporate-briefing/' target='_blink'><font color='blue'><u>https://tw.hannstarboard.com/corporate-briefing/</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>本次法人說明會將與精成科技(股)公司聯合召開</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="5469";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>5521</td><td>工信</td>
+<td align='center'>115/10/22</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>線上</td>
+<td style='text-align:left !important;'>本公司受邀參加台新證券舉辦之線上法說會，報告本公司營運狀況。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="552120261021M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>552120261021M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="552120261021E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>552120261021E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.kseco.com.tw/tc/legal.aspx' target='_blink'><font color='blue'><u>https://www.kseco.com.tw/tc/legal.aspx</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/5521_10_20261022_ch.mp4'><font color=blue><u>http://irconference.twse.com.tw/5521_10_20261022_ch.mp4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="5521";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>6120</td><td>達運</td>
+<td align='center'>115/10/07</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>本公司受邀參加台新證券舉辦之線上法人說明會，說明本公司之財務與營運概況。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="612020261007M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>612020261007M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="612020261007E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>612020261007E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.darwinprecisions.com/zh-tw/investors-4.php' target='_blink'><font color='blue'><u>https://www.darwinprecisions.com/zh-tw/investors-4.php</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/6120_10_20261007_ch.mp4'><font color=blue><u>http://irconference.twse.com.tw/6120_10_20261007_ch.mp4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>影音資訊於當日會後上傳。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="6120";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>6176</td><td>瑞儀</td>
+<td align='center'>115/10/29</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>線上直播 https://www.zucast.com/webcast/FHFR0R3a</td>
+<td style='text-align:left !important;'>115年第三季營運成果及公司未來展望</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://www.radiant.com.tw' target='_blink'><font color='blue'><u>https://www.radiant.com.tw</u></font></a></td>
+<td style='text-align:left !important;'>
+同步收看網址：<a target='_blank' href='https://www.zucast.com/webcast/FHFR0R3a'><font color=blue><u>https://www.zucast.com/webcast/FHFR0R3a</u></font></a>
+<br>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>無。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="6176";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>6191</td><td>精成科</td>
+<td align='center'>115/10/28</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>宏遠證券總公司(台北市大安區信義路四段236號7樓)</td>
+<td style='text-align:left !important;'>本公司原定於115年10月23日舉辦之法人說明會因受颱風影響延至115年10月28日</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://invest.gbm.com.tw/investor-conference/' target='_blink'><font color='blue'><u>https://invest.gbm.com.tw/investor-conference/</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>本次法人說明會將與瀚宇博德(股)公司聯合召開</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="6191";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>6191</td><td>精成科</td>
+<td align='center'>115/10/23</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>宏遠證券總公司(台北市大安區信義路四段236號7樓)</td>
+<td style='text-align:left !important;'>公司營運狀況與經營結果說明</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://invest.gbm.com.tw/investor-conference/' target='_blink'><font color='blue'><u>https://invest.gbm.com.tw/investor-conference/</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>本次法人說明會將與瀚宇博德(股)公司聯合召開</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="6191";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>6202</td><td>盛群</td>
+<td align='center'>115/10/29</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>本公司115年第3季財務與業務營運相關資訊報告</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://www.holtek.com.tw/page/investor_relations/Shareholders_Services/Investor_Conference' target='_blink'><font color='blue'><u>https://www.holtek.com.tw/page/investor_relations/Shareholders_Services/Investor_Conference</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>報名請洽盛群陳先生 (Email：ir@holtek.com.tw)</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="6202";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>6226</td><td>光鼎</td>
+<td align='center'>115/10/27</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>本公司受邀參加富邦綜合證券舉辦之線上法說會，報告本公司營運狀況。</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>無</td><td style='text-align:left !important;'>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>無。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="6226";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>6239</td><td>力成</td>
+<td align='center'>115/10/27</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>報告115年第三季營運成果及未來之營運展望</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://www.pti.com.tw' target='_blink'><font color='blue'><u>https://www.pti.com.tw</u></font></a></td>
+<td style='text-align:left !important;'>
+同步收看網址：<a target='_blank' href='https://www.zucast.com/webcast/cfrn8ACE'><font color=blue><u>https://www.zucast.com/webcast/cfrn8ACE</u></font></a>
+<br>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="6239";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>6257</td><td>矽格</td>
+<td align='center'>115/10/06</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>台北市中山區明水路700號</td>
+<td style='text-align:left !important;'>本公司受邀參加凱基證券舉辦之聯合法人說明會.說明本公司營運概況</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="625720261006M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>625720261006M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="625720261006E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>625720261006E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.sigurd.com.tw' target='_blink'><font color='blue'><u>https://www.sigurd.com.tw</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/6257_14_20261006_ch.mp4'><font color=blue><u>http://irconference.twse.com.tw/6257_14_20261006_ch.mp4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>會後將於公開資訊觀測站公告相關資訊</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="6257";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>6271</td><td>同欣電</td>
+<td align='center'>115/10/30</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>線上法人說明會</td>
+<td style='text-align:left !important;'>本公司受邀參加永豐金證券舉辦之法說會，簡介2026年第三季營運成果及展望。</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>無</td><td style='text-align:left !important;'>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="6271";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>6281</td><td>全國電</td>
+<td align='center'>115/10/12</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>本公司受邀參加凱基證券主辦之線上法說會，說明本公司之營運概況、財務及業務相關資訊。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="628120261008M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>628120261008M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="628120261008E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>628120261008E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'>無</td><td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/6281_19_20261012_ch.mp4'><font color=blue><u>http://irconference.twse.com.tw/6281_19_20261012_ch.mp4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="6281";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>6414</td><td>樺漢</td>
+<td align='center'>115/10/16</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>國泰證券 
+(台北市大安區敦化南路二段218號8樓會議室)</td>
+<td style='text-align:left !important;'>本公司受邀參加國泰證券舉辦之法人說明會，說明本公司營運成果及未來展望。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="641420261016M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>641420261016M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="641420261016E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>641420261016E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.ennoconn.com/ir-calendar/' target='_blink'><font color='blue'><u>https://www.ennoconn.com/ir-calendar/</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='https://www.youtube.com/watch?v=X_lnFj9vvy0'><font color=blue><u>https://www.youtube.com/watch?v=X_lnFj9vvy0</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="6414";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>6414</td><td>樺漢</td>
+<td align='center'>115/10/14</td>
+<td align='center'>09:00</td>
+<td style='text-align:left !important;'>香港Mandarin Oriental Hotel
+(5 Connaught Road, Central, Hong Kong)</td>
+<td style='text-align:left !important;'>本公司受邀參加寬量國際主辦之「20th QIC CEO Week」，說明本公司之營運概況、財務及業務相關資訊。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="641420261013M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>641420261013M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="641420261013E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>641420261013E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.ennoconn.com/ir-calendar/' target='_blink'><font color='blue'><u>https://www.ennoconn.com/ir-calendar/</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="6414";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>6438</td><td>迅得</td>
+<td align='center'>115/10/14</td>
+<td align='center'>09:00</td>
+<td style='text-align:left !important;'>香港Mandarin Oriental Hotel (5 Connaught Road, Central, Hong Kong)</td>
+<td style='text-align:left !important;'>本公司受邀參加寬量國際主辦之「20th QIC CEO Week」，說明本公司之營運概況、財務及業務相關資訊</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="643820261013M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>643820261013M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="643820261013E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>643820261013E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'>無</td><td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>法說會相關資訊請至公開資訊觀測站或公司網站查閱</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="6438";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>6515</td><td>穎崴</td>
+<td align='center'>115/10/19 至 115/10/21</td>
+<td align='center'>09:00</td>
+<td style='text-align:left !important;'>馬來西亞，新加坡</td>
+<td style='text-align:left !important;'>本公司受邀參加國泰證券舉辦之海外路演(NDR)，說明本公司營運概況</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="651520261015M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>651520261015M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="651520261015E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>651520261015E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.winwayglobal.com/earingCall' target='_blink'><font color='blue'><u>https://www.winwayglobal.com/earingCall</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="6515";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>6625</td><td>必應</td>
+<td align='center'>115/10/22</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>台北市中山區建國北路一段96號13樓 (台証金融大樓)</td>
+<td style='text-align:left !important;'>本公司受邀參加台新證券舉辦之法人說明會，報告本公司營運狀況。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="662520261022M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>662520261022M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="662520261022E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>662520261022E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.bin-live.com/' target='_blink'><font color='blue'><u>https://www.bin-live.com/</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/6625_10_20261022_ch.MP4'><font color=blue><u>http://irconference.twse.com.tw/6625_10_20261022_ch.MP4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="6625";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>6657</td><td>華安</td>
+<td align='center'>115/10/16</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>統一證券總公司301會議室 (台北市松山區東興路8號3樓)</td>
+<td style='text-align:left !important;'>本公司受邀參加統一證券舉辦法人說明會，說明本公司營運概況及未來展望。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="665720261016M002.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>665720261016M002.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="665720261016E002.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>665720261016E002.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.energenesis-biomedical.com/tw/invest/conference' target='_blink'><font color='blue'><u>https://www.energenesis-biomedical.com/tw/invest/conference</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='https://www.youtube.com/watch?v=GJKDDoMCzg0'><font color=blue><u>https://www.youtube.com/watch?v=GJKDDoMCzg0</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="6657";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>6770</td><td>力積電</td>
+<td align='center'>115/10/21</td>
+<td align='center'>15:00</td>
+<td style='text-align:left !important;'>線上</td>
+<td style='text-align:left !important;'>(1)本公司2026年第三季財務暨營運報告。
+(2)參加方式：https://www.itvcloud.org/Investor/Live/Index/psmc</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="677020261021M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>677020261021M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="677020261021E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>677020261021E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.powerchip.com/' target='_blink'><font color='blue'><u>https://www.powerchip.com/</u></font></a></td>
+<td style='text-align:left !important;'>
+同步收看網址：<a target='_blank' href='https://www.itvcloud.org/Investor/Live/Index/psmc'><font color=blue><u>https://www.itvcloud.org/Investor/Live/Index/psmc</u></font></a>
+<br>
+影音資訊網址：
+<a target='_blank' href='https://www.itvcloud.org/Investor/VOD/mov/psmc?vid=ec62bc81-1490-4802-9c77-13b8b2c5c231'><font color=blue><u>https://www.itvcloud.org/Investor/VOD/mov/psmc?vid=ec62bc81-1490-4802-9c77-13b8b2c5c231</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="6770";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>6902</td><td>GOGOLOOK</td>
+<td align='center'>115/10/22</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>線上法說會(台灣)</td>
+<td style='text-align:left !important;'>本公司受邀參加寬量國際主辦之「20th QIC CEO WEEK」，向投資人說明本公司之營運概況、財務及業務相關資訊。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="690220261015M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>690220261015M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="690220261015E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>690220261015E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.gogolook.com/zh-tw/investors/financial/conference' target='_blink'><font color='blue'><u>https://www.gogolook.com/zh-tw/investors/financial/conference</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="6902";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>6902</td><td>GOGOLOOK</td>
+<td align='center'>115/10/16</td>
+<td align='center'>10:30</td>
+<td style='text-align:left !important;'>台北市</td>
+<td style='text-align:left !important;'>本公司受邀參加寬量國際舉辦之台灣路演（NDR），說明本公司營運狀況。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="690220261015M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>690220261015M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="690220261015E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>690220261015E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.gogolook.com/zh-tw/investors/financial/conference' target='_blink'><font color='blue'><u>https://www.gogolook.com/zh-tw/investors/financial/conference</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="6902";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>7689</td><td>大鵬科CLMX</td>
+<td align='center'>115/10/01</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>富邦金融大樓(台北市大安區仁愛路四段169號15樓)</td>
+<td style='text-align:left !important;'>本公司受邀參加富邦證券舉辦之法人說明會，
+說明本公司營運概況與未來展望。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="768920261001M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>768920261001M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="768920261001E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>768920261001E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.climax.com.tw/tw/shareholder_area.php' target='_blink'><font color='blue'><u>https://www.climax.com.tw/tw/shareholder_area.php</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='https://www.youtube.com/watch?v=1zYM2wnfAzw'><font color=blue><u>https://www.youtube.com/watch?v=1zYM2wnfAzw</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="7689";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>7740</td><td>熙特爾-創</td>
+<td align='center'>115/10/13</td>
+<td align='center'>09:00</td>
+<td style='text-align:left !important;'>香港Mandarin Oriental Hotel
+(5 Connaught Road, Central, Hong Kong)</td>
+<td style='text-align:left !important;'>本公司受邀參加寬量國際主辦之「20th QIC CEO Week」，說明本公司之營運概況、財務及業務相關資訊。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="774020261012M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>774020261012M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="774020261012E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>774020261012E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.seetel-energy.com/download.php?lang=tw&amp;tb=2&amp;cid=30' target='_blink'><font color='blue'><u>https://www.seetel-energy.com/download.php?lang=tw&amp;tb=2&amp;cid=30</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="7740";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>7769</td><td>鴻勁</td>
+<td align='center'>115/10/13 至 115/10/20</td>
+<td align='center'>09:00</td>
+<td style='text-align:left !important;'>美國</td>
+<td style='text-align:left !important;'>本公司受邀參加元大證券舉辦之美國NDR，說明本公司營運概況。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="776920260730M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>776920260730M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="776920260730E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>776920260730E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.honprec.com/stock/#conference' target='_blink'><font color='blue'><u>https://www.honprec.com/stock/#conference</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="7769";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>7769</td><td>鴻勁</td>
+<td align='center'>115/10/28</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>本公司受國泰證券股份有限公司邀請參加線上法人說明會，說明本公司營運及業務狀況。</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://www.honprec.com/stock/#conference' target='_blink'><font color='blue'><u>https://www.honprec.com/stock/#conference</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>無。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="7769";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>7786</td><td>東方風能</td>
+<td align='center'>115/10/13 至 115/10/14</td>
+<td align='center'>09:00</td>
+<td style='text-align:left !important;'>香港文華東方酒店
+(5 Connaught Road, Central, Hong Kong)</td>
+<td style='text-align:left !important;'>本公司受邀參加寬量國際主辦之20th QIC CEO Week，向投資人說明本公司未來營運發展計劃、財務及業務等相關資訊。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="778620260814M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>778620260814M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="778620260814E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>778620260814E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.dfo.com.tw' target='_blink'><font color='blue'><u>https://www.dfo.com.tw</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="7786";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>7799</td><td>禾榮科</td>
+<td align='center'>115/10/13</td>
+<td align='center'>09:00</td>
+<td style='text-align:left !important;'>香港Mandarin Oriental Hotel</td>
+<td style='text-align:left !important;'>本公司受邀參加115年10月13日由寬量國際主辦之「20th QIC CEO Week」，說明本公司之營運概況、財務及業務相關資訊。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="779920261012M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>779920261012M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="779920261012E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>779920261012E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.heron-neutron.com/investors/conference' target='_blink'><font color='blue'><u>https://www.heron-neutron.com/investors/conference</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="7799";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>8215</td><td>明基材</td>
+<td align='center'>115/10/30</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>線上法說會</td>
+<td style='text-align:left !important;'>本公司受邀參加兆豐證券舉辦之線上法說會，將於會中向投資人說明115年第三季營運概況及未來展望。</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://www.benqmaterials.com/tw/' target='_blink'><font color='blue'><u>https://www.benqmaterials.com/tw/</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+未輸
+<br>
+</td>
+<td style='text-align:left !important;'>當天14:10開放登入，報名連結：https://forms.gle/7PDyeFspvvbc6JJw5</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="8215";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>8222</td><td>寶一</td>
+<td align='center'>115/10/14</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>高雄市前鎮區中山二路2號9樓之一（大眾財金大樓）</td>
+<td style='text-align:left !important;'>本公司受邀參加由台新證券舉辦之法人說明會，說明本公司之營運概況、財務及業務相關資訊。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="822220261012M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>822220261012M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="822220261012E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>822220261012E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'>無</td><td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/8222_12_20261014_ch.MP4'><font color=blue><u>http://irconference.twse.com.tw/8222_12_20261014_ch.MP4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="8222";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' >
+<td style='text-align:left !important;'>8404</td><td>百和興業-KY</td>
+<td align='center'>115/10/14</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>聯合線上法人說明會</td>
+<td style='text-align:left !important;'>本公司受邀參加富邦證券舉辦之聯合線上法人說明會，說明本公司營運成果及未來展望。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="840420261014M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>840420261014M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="840420261014E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>840420261014E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='http://www.kypaiho.com' target='_blink'><font color='blue'><u>http://www.kypaiho.com</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/8404_19_20261014_ch.mp4'><font color=blue><u>http://irconference.twse.com.tw/8404_19_20261014_ch.mp4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>相關訊息請洽富邦證券法人業務處 E-mail: karen.kj.yu@fubon.com</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="8404";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' >
+<td style='text-align:left !important;'>9908</td><td>大台北</td>
+<td align='center'>115/10/02</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>台灣證交所一樓資訊展示中心(台北市信義路5段7號)</td>
+<td style='text-align:left !important;'>本公司近期財務及營運概況說明</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="990820261002M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>990820261002M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="990820261002E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>990820261002E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.taipeigas.com.tw/IR/shareholder_2' target='_blink'><font color='blue'><u>https://www.taipeigas.com.tw/IR/shareholder_2</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='https://webpro.twse.com.tw/WebPortal/vod/101/8B2ED93DFC11-C39DFD0C-BE2E-11F1-B2F5/?categoryId=101'><font color=blue><u>https://webpro.twse.com.tw/WebPortal/vod/101/8B2ED93DFC11-C39DFD0C-BE2E-11F1-B2F5/?categoryId=101</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="9908";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' data-page='none;'>
+<td style='text-align:left !important;'>9919</td><td>康那香</td>
+<td align='center'>115/10/06</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>凱基證券線上法人說明會</td>
+<td style='text-align:left !important;'>本公司受邀參加凱基證券舉辦之線上法人說明會，進行本公司民國115年第二季營運概況說明。</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="991920261002M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>991920261002M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="991920261002E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>991920261002E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.knh.com.tw/share3-10.html' target='_blink'><font color='blue'><u>https://www.knh.com.tw/share3-10.html</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/9919_27_20261006_ch.mp4'><font color=blue><u>http://irconference.twse.com.tw/9919_27_20261006_ch.mp4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>無。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="9919";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='even' data-type='body' data-page='none;'>
+<td style='text-align:left !important;'>9919</td><td>康那香</td>
+<td align='center'>115/10/06</td>
+<td align='center'>14:30</td>
+<td style='text-align:left !important;'>凱基證券線上法人說明會</td>
+<td style='text-align:left !important;'>本公司受邀參加凱基證券舉辦之線上法人說明會，進行本公司民國115年第二季營運概況說明。</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'>內容檔案於當日會後公告於公開資訊觀測站</td>
+<td style='text-align:left !important;'><a href='https://www.knh.com.tw/share3-10.html' target='_blink'><font color='blue'><u>https://www.knh.com.tw/share3-10.html</u></font></a></td>
+<td style='text-align:left !important;'>&nbsp;</td>
+<td style='text-align:left !important;'>無。</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="9919";openWindow(this.form ,"");'>
+</td>
+</tr>
+<tr class='odd' data-type='body' data-page='none;'>
+<td style='text-align:left !important;'>9938</td><td>百和</td>
+<td align='center'>115/10/14</td>
+<td align='center'>14:00</td>
+<td style='text-align:left !important;'>聯合線上法人說明會</td>
+<td style='text-align:left !important;'>本公司受邀參加富邦證券舉辦之聯合線上法人說明會，說明本公司財務業務狀況及經營績效</td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="993820261013M001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>993820261013M001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='#' onclick='document.fm_fileDownload.fileName.value="993820261013E001.pdf";document.fm_fileDownload.submit();'><font color='blue'><u>993820261013E001.pdf</u></font></a></td>
+<td style='text-align:left !important;'><a href='https://www.paiho.com' target='_blink'><font color='blue'><u>https://www.paiho.com</u></font></a></td>
+<td style='text-align:left !important;'>
+影音資訊網址：
+<a target='_blank' href='http://irconference.twse.com.tw/9938_50_20261014_ch.mp4'><font color=blue><u>http://irconference.twse.com.tw/9938_50_20261014_ch.mp4</u></font></a>
+<br>
+</td>
+<td style='text-align:left !important;'>相關訊息請洽富邦證券法人業務處 E-mail:Karen.kj.yu@fubon.com</td>
+<td align='center'><input type='button' value='查詢' onclick='document.form_t100sb02_1.co_id.value="9938";openWindow(this.form ,"");'>
+</td>
+</tr>
+</table>
+<br>
+<div class='pageBtn'>
+<input type='button' value='1' style='margin:15px 5px; cursor:pointer;background: #165c98;color: #fff;border: 1px solid #000000;border-radius: 2px;' onclick='page(0);' />
+<input type='button' value='2' style='margin:15px 5px; cursor:pointer;' onclick='page(1);' />
+</div>
+</form>
+<style>
+tr[data-page="none;"]{
+	display: none;
+}
+</style>
+<form action='/mops/web/ajax_t100sb02_1' method='post' onsubmit='return false;' name='fm1'>
+<input type='hidden' name='firstin' value='true'>
+<input type='hidden' name='step' value='10'>
+<input type='hidden' name='filename' value='t100sb02_1_20261025_202321521.csv'>
+<button style='background-color:transparent;border:0;cursor:pointer;text-decoration:underline;' onclick="action='/server-java/t105sb02';submit();"><img src='images/bu_03.gif' hspace='3' ></button>
+</form>
+
+</div>
+
+
+</body>
+
+
+
+<script>
+	try {
+		if(!document.querySelector('#table01')){
+			var table01 = document.createElement("div");
+			table01.id = "table01"; 
+			document.body.appendChild(table01);
+			if(document.querySelector("#div01")){
+				table01.appendChild(div01);
+			};
+		};
+
+		if (document.autoForm!=null && document.autoForm!=undefined && document.autoForm.run.value==''){
+			ajax1(document.autoForm,'div01');
+			document.querySelector('form[name=autoForm]').remove();
+		};
+
+		if (document.autoForm1!=null && document.autoForm1!=undefined && document.autoForm1.run.value==''){
+			ajax1(document.autoForm1,'div01');
+			document.querySelector('form[name=autoForm1]').remove();
+		};
+
+		if (document.autoRunScript!=null && document.autoRunScript!=undefined && document.autoRunScript.run!=null && document.autoRunScript.run.value!=''){
+			let s = document.autoRunScript.run.value;
+			let script = document.createElement("script");
+
+			script.innerText = s;
+			document.body.appendChild(script);
+			document.querySelector('form[name=autoRunScript] > input[name=run]').remove();
+		};
+
+		if (document.autoRunScript1!=null && document.autoRunScript1!=undefined){
+			if (document.autoRunScript1.count!=null && document.autoRunScript1.count!=undefined && document.autoRunScript1.count.value!=''){
+				var count = parseInt(document.autoRunScript1.count.value);
+				for (var i=0;i<count;i++){
+					var run = eval("document.autoRunScript1.run"+i);
+					if (run!=null && run!=undefined && run.value!=''){
+						var s = run.value;
+
+						var script = document.createElement("script");
+						script.textContent = s;
+						document.querySelector("body").appendChild(script);
+
+						run.remove();
+					};
+				};
+			}else if (document.autoRunScript1.run!=null && document.autoRunScript1.run!=undefined && document.autoRunScript1.run.value!=''){
+				var s = document.autoRunScript1.run.value;
+				s = htmlEncode(s);
+				var script = document.createElement("script");
+				script.textContent = s;
+				document.querySelector("body").appendChild(script);
+
+				document.querySelector('form[name=autoRunScript1] > input[name=run]').remove();
+			};
+		};
+	} catch (error) {
+		console.error("Script Error:", error);
+	};
+</script>
+
+
+
+</html>
+
 
 ## mopsov ajax_t100sb02_1 otc
 status=200 len=76181
@@ -82,58 +1969,4 @@ status=200 len=76181
 <form action='/mops/web/ajax_t100sb02_1' method='post' onsubmit='return false;' name='fm'>
 <input type='hidden' name='firstin' value='true'>
 <input type='hidden' name='step' value='10'>
-<input type='hidden' name='filename' value='t100sb02_1_20261025_202247578.csv'>
-<button style='background-color:transparent;border:0;cursor:pointer;text-decoration:underline;' onclick="action='/server-java/t105sb02';submit();"><img src='images/bu_03.gif' hspace='3' ></button>
-</form>
-<form action = '/server-java/FileDownLoad' method = 'post' id='fm_fileDownload' name='fm_fileDownload'>
-<input type = 'hidden' name = 'step' id = 'step' value = '9'/>
-<input type = 'hidden' name = 'filePath' id = 'filePath' value = '/home/html/nas/STR/'/>
-<input type = 'hidden' name = 'fileName' id = 'fileName' value = ''/>
-<input type = 'hidden' name = 'functionName' id = 'functionName' value = 't100sb02_1'/>
-</form>
-<form name='form_t100sb02_1' action='/mops/web/ajax_t100sb02_1' method='post' onsubmit='return false;'>
-<input type='hidden' name='step' value='0'>
-<input type='hidden' name='firstin' value='true'>
-<input type='hidden' name='TYPEK' value='otc'>
-<input type='hidden' name='colorchg' value=''>
-<input type='hidden' name='co_id'>
-<input type='hidden' id='URL' name='URL'>
-<input type='hidden' id='from' name='from'>
-<input type='hidden' id='COMPANY_ID' name='COMPANY_ID'>
-<input type='hidden' id='SEQ_NO' name='SEQ_NO'>
-<div class='sortBlock'>
-<span>請選擇排列方式：
-<input type='radio' id='sortMyTable1' name='sortMyTable' value='1' onclick='ChangeSortTable(0);' checked />證券代號
-<input type='radio' id='sortMyTable2' name='sortMyTable' value='2' onclick='ChangeSortTable(2);' />召開法人說明會日期
-</span>
-<br>
-<span>請選擇排列順序：
-<input type='hidden' id='changeAsc' value='1' />
-<input type='radio' id='seq1' name='seq' value='1' onclick='sortTable(0,"");' checked />資料由小到大/舊到新
-<input type='radio' id='seq2' name='seq' value='2' onclick='sortTable(0,1);' />資料由大到小/新到舊
-</span>
-</div>
-<table id='myTable' class='hasBorder'>
-<thead style='position:relative;top:0px;'><tr class='tblHead'><th class='tblHead' nowrap rowspan='2'><b>公司代號</b></th><th class='tblHead' nowrap rowspan='2'><b>公司名稱</b></th><th class='tblHead' nowrap rowspan='2' data-type='date'><b>召開法人說明會日期</b></th><th class='tblHead' nowrap rowspan='2'><b>召開法人說明會時間</b></th><th class='tblHead' nowrap rowspan='2'><b>召開法人說明會地點</b></th><th class='tblHead' nowrap rowspan='2'><b>法人說明會擇要訊息</b></th><th class='tblHead' nowrap colspan='2'><b>法人說明會簡報內容</b></th><th class='tblHead' nowrap rowspan='2'><b>公司網站是否提供法人說明會相關資訊</b></th><th class='tblHead' nowrap rowspan='2'><b>影音連結資訊</b></th><th class='tblHead' nowrap rowspan='2'><b>其他應敘明事項</b></th><th class='tblHead' no
-
-## mops new api t100sb02_1
-status=200 len=65
-<script>
-  location.href = location.origin + "/mops";
-</script>
-
-## mops new api t100sb02_1 b
-status=200 len=65
-<script>
-  location.href = location.origin + "/mops";
-</script>
-
-## mops new api t100sb02_1 single 2330
-status=200 len=65
-<script>
-  location.href = location.origin + "/mops";
-</script>
-
-## twse openapi list
-status=200 len=309960
-{"swagger":"2.0","info":{"description":"\u672c\u5e73\u81fa\u63d0\u4f9b\u81fa\u7063\u8b49\u5238\u4ea4\u6613\u6240\u670d\u52d9API\uff0c\u6b61\u8fce\u5404\u4f4d\u4ecb\u63a5\u4f7f\u7528\u3002<br><br>[\u4f7f\u7528\u689d\u6b3e](https://www.twse.com.tw/zh/page/terms/use.html)  [\u6388\u6b0a\u8aaa\u660e\u7db2\u5740](https://data.gov.tw/license)","version":"1.0","title":"\u81fa\u7063\u8b49\u5238\u4ea4\u6613\u6240 OpenAPI"},"host":"openapi.twse.com.tw","basePath":"/v1","tags":[{"name":"\u516c\u53f8\u6cbb\u7406"},{"name":"\u8b49\u5238\u4ea4\u6613"},{"name":"\u8ca1\u52d9\u5831\u8868"},{"name":"\u6307\u6578"},{"name":"\u6b0a\u8b49"},{"name":"\u5176\u4ed6"},{"name":"\u5238\u5546\u8cc7\u6599"}],"schemes":["https"],"paths":{"/opendata/t187ap46_L_21":{"get":{"tags":["\u516c\u53f8\u6cbb\u7406"],"summary":"\u4e0a\u5e02\u516c\u53f8\u4f01\u696dESG\u8cc7\u8a0a\u63ed\u9732\u5f59\u7e3d\u8cc7\u6599-\u8077\u696d\u5b89\u5168\u885b\u751f","description":"\u4e0a\u5e02\u516c\u53f8\u4f01\u696dESG\u8cc7\u8a0a\u63ed\u9732\u5f59\u7e3d\u8cc7\u6599-\u8077\u696d\u5b89\u5168\u885b\u751f(\u81fa\u7063\u8b49\u5238\u4ea4\u6613\u6240)","produces":["application/json","text/csv"],"responses":{"200":{"description":"OK","schema":{"type":"object","properties":{"\u51fa\u8868\u65e5\u671f":{"type":"string","description":"\u51fa\u8868\u65e5\u671f"},"\u5831\u544a\u5e74\u5ea6":{"type":"string","description":"\u5831\u544a\u5e74\u5ea6"},"\u516c\u53f8\u4ee3\u865f":{"type":"string","description":"\u516c\u53f8\u4ee3\u865f"},"\u516c\u53f8\u540d\u7a31":{"type":"string","description":"\u516c\u53f8\u540d\u7a31"},"\u8077\u696d\u707d\u5bb3\u4eba\u6578\u53ca\u6bd4\u7387-\u4eba\u6578":{"type":"string","description":"\u8077\u696d\u707d\u5bb3\u4eba\u6578\u53ca\u6bd4\u7387-\u4eba\u6578"},"\u8077\u696d\u707d\u5bb3\u4eba\u6578\u53ca\u6bd4\u7387-\u6bd4\u7387":{"type":"string","description":"\u8077\u696d\u707d\u5bb3\u4eba\u6578\u53ca\u6bd4\u7387-\u6bd4\u7387"},"\u706b\u707d\u4ef6\u6578(\u4ef6)":{"type":"string","description":"\u706b\u707d\u4ef6\u6578(\u4ef6)"},"\u706b\u707d\u6b7b\u50b7\u4eba\u6578(\u4eba)":{"type":"string","description":"\u706b\u707d\u6b7b\u50b7\u4eba\u6578(\u4eba)"},"\u706b\u707d\u6b7b\u50b7\u4eba\u6578\u5360\u54e1\u5de5\u7e3d\u4eba\u6578\u6bd4\u7387":{"type":"string","description":"\u706b\u707d\u6b7b\u50b7\u4eba\u6578\u5360\u54e1\u5de5\u7e3d\u4eba\u6578\u6bd4\u7387"}}}}}}},"/opendata/t187ap45_L":{"get":{"tags":["\u516c\u53f8\u6cbb\u7406"],"summary":"\u4e0a\u5e02\u516c\u53f8\u80a1\u5229\u5206\u6d3e\u60c5\u5f62","description":"\u4e0a\u5e02\u516c\u53f8\u80a1\u5229\u5206\u6d3e\u60c5\u5f62","produces":["application/json","text/csv"],"responses":{"200":{"description":"OK","schema":{"type":"object","properties":{"\u51fa\u8868\u65e5\u671f":{"type":"string","description":"\u51fa\u8868\u65e5\u671f"},"\u516c\u53f8\u4ee3\u865f":{"type":"string","description":"\u516c\u53f8\u4ee3\u865f"},"\u516c\u53f8\u540d\u7a31":{"type":"string","description":"\u516c\u53f8\u540d\u7a31"},"\u6c7a\u8b70\uff08\u64ec\u8b70\uff09\u9032
+<input type='hidden' name='fil

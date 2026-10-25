@@ -302,6 +302,8 @@ th[data-tip]{text-decoration:underline dotted var(--ink-3);text-underline-offset
 .vb-cheap{background:var(--down-soft);color:var(--down)} .vb-low{background:var(--down-soft);color:var(--down);opacity:.8}
 .vb-mid{background:var(--line-2);color:var(--ink-2)} .vb-high{background:var(--warn-soft);color:var(--warn)} .vb-exp{background:var(--up-soft);color:var(--up)}
 /* 明細分頁 */
+.dtabs .wl-del{margin-left:auto;font-size:12.5px;color:var(--ink-3);border:1px solid transparent;background:none;border-radius:8px;padding:4px 10px;cursor:pointer;white-space:nowrap}
+.dtabs .wl-del:hover{color:var(--up);border-color:var(--line)}
 .dtabs{display:flex;gap:4px;padding:12px 16px 0;border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap}
 .dtabs button{border:0;background:transparent;font:inherit;font-size:14px;color:var(--ink-2);padding:8px 12px;border-bottom:2px solid transparent;cursor:pointer}
 .dtabs button.on{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
@@ -2013,6 +2015,8 @@ html.embed .to-top{display:none}
       <div class="hint2">資料存在這台瀏覽器；開啟「☁ 雲端同步」時會用你的同步密碼加密後存到 GitHub，沒有密碼的人看不到內容。損益以最新收盤價計算，未扣手續費與證交稅。</div>`;
   }
   $("#tbody").addEventListener("click", e => {
+    const del = e.target.closest("[data-wldel]");
+    if (del){ removeFromWatchlist(del.dataset.wldel, del); return; }
     const tab = e.target.closest(".dtabs button");
     if (tab){ state.tab = tab.dataset.t; render(); return; }
     if (e.target.closest("[data-kcandle]")){ try { localStorage.setItem("k_candle", kCandle() ? "0" : "1"); } catch(_){} render(); return; }
@@ -2067,7 +2071,7 @@ html.embed .to-top{display:none}
     const tabs = [["kline","K 線與法人"],["chips","籌碼分數"],["fund","基本面"],["hold", "我的持股" + (state.holdings[s.code] ? " ●" : "")]];
     const t = state.tab || "kline";
     const body = t === "chips" ? chipsPane(s) : t === "fund" ? fundPane(s) : t === "hold" ? holdPane(s) : klinePane(s);
-    return `<tr class="detail"><td colspan="14"><div class="dwrap"><div class="dtabs">${tabs.map(([k, l]) => `<button data-t="${k}" class="${k === t ? "on" : ""}">${l}</button>`).join("")}</div><div class="dpane">${body}</div></div></td></tr>`;
+    return `<tr class="detail"><td colspan="14"><div class="dwrap"><div class="dtabs">${tabs.map(([k, l]) => `<button data-t="${k}" class="${k === t ? "on" : ""}">${l}</button>`).join("")}${EMBED ? "" : `<button class="wl-del" data-wldel="${esc(s.code)}" title="從追蹤清單移除這檔">🗑 從追蹤清單移除</button>`}</div><div class="dpane">${body}</div></div></td></tr>`;
   }
 
   // ── 事件 ──
@@ -2237,6 +2241,30 @@ html.embed .to-top{display:none}
   function progress(text, on){ $("#progText").textContent = text || ""; $("#spin").classList.toggle("on", !!on); }
   const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+  // ── 直接從追蹤清單移除一檔（不用打開「管理自選股」） ──
+  async function removeFromWatchlist(code, btn){
+    const s = state.data && state.data.stocks.find(x => x.code === code), nm = s ? s.name : code;
+    if (!getToken()){ alert("需要先設定 GitHub 金鑰：請按右上角「＋ 管理自選股」設定一次，之後就能直接移除。"); return; }
+    if (!confirm(`從追蹤清單移除「${nm}（${code}）」？` + (state.holdings[code] ? "\n\n你的持股紀錄會保留，只是不再追蹤籌碼資料。" : ""))) return;
+    btn.disabled = true; btn.textContent = "移除中…";
+    try {
+      const f = await gh("/contents/watchlist.txt?ref=main&t=" + Date.now());
+      const lines = b64dec(f.content).split("\n");
+      const keep = lines.filter(l => (l.trim().split(/[\s#]/)[0] || "").toUpperCase() !== code.toUpperCase());
+      if (keep.length === lines.length){ alert("清單裡找不到這檔，可能已經移除了。"); }
+      else {
+        await gh("/contents/watchlist.txt", { method: "PUT", body: JSON.stringify({ message: "更新自選股（網頁）", content: b64enc(keep.join("\n")), sha: f.sha }) });
+        mgr.sha = null;   // 下次開「管理自選股」重新讀取
+      }
+      state.open = null; state.lcmp = state.lcmp.filter(c => c !== code);
+      state.data = { ...state.data, stocks: state.data.stocks.filter(x => x.code !== code) };
+      render();
+      if (window.Ledger) Ledger.toast(`已從追蹤清單移除「${esc(nm)}」。`, { link: false, ms: 4000 });
+    } catch(e){
+      btn.disabled = false; btn.textContent = "🗑 從追蹤清單移除";
+      alert(e.status === 401 || e.status === 403 ? "金鑰無效或沒有寫入權限，請到「管理自選股」重新設定。" : "移除失敗：" + e.message);
+    }
+  }
   $("#wlSave").addEventListener("click", async () => {
     const lines = ["# 自選股清單：一行一檔（可在網站上的「管理自選股」修改）", ""]
       .concat(mgr.list.map(c => (c.padEnd(6) + " # " + (nameOf(c) || "")).trim()));

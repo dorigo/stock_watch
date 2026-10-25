@@ -302,6 +302,7 @@ th[data-tip]{text-decoration:underline dotted var(--ink-3);text-underline-offset
 .vb-cheap{background:var(--down-soft);color:var(--down)} .vb-low{background:var(--down-soft);color:var(--down);opacity:.8}
 .vb-mid{background:var(--line-2);color:var(--ink-2)} .vb-high{background:var(--warn-soft);color:var(--warn)} .vb-exp{background:var(--up-soft);color:var(--up)}
 /* 明細分頁 */
+tr.ev-done td{opacity:.55}
 .dtabs .wl-del{margin-left:auto;font-size:12.5px;color:var(--ink-3);border:1px solid transparent;background:none;border-radius:8px;padding:4px 10px;cursor:pointer;white-space:nowrap}
 .dtabs .wl-del:hover{color:var(--up);border-color:var(--line)}
 .dtabs{display:flex;gap:4px;padding:12px 16px 0;border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap}
@@ -533,6 +534,7 @@ html.embed .to-top{display:none}
   <section class="hold" id="holdings"></section>
 
   <section class="divs" id="divs"></section>
+  <section class="divs" id="events"></section>
 
   <section class="risers" id="risers"></section>
 
@@ -769,6 +771,7 @@ html.embed .to-top{display:none}
     await Promise.all([
       getJSON("data/charts.json").then(j => state.charts = j).catch(() => {}),
       getJSON("data/fundamentals.json").then(j => state.fund = j).catch(() => {}),
+      getJSON("data/events.json").then(j => state.events = j).catch(() => {}),
       EMBED ? null : getJSON("data/market.json").then(renderMarket).catch(() => {})
     ]);
     await load("data/latest.json");
@@ -1087,6 +1090,7 @@ html.embed .to-top{display:none}
     renderXAlert();
     renderHoldings();
     renderDivs();
+    renderEvents();
     renderRisers(all);
     markSort("#list", state.sort === "perAsc" ? "per" : state.sort, state.sort === "perAsc" ? "asc" : (state.sort === "code" && !state.sortClicked ? "asc" : state.dir));
     const list = filtered();
@@ -1784,6 +1788,34 @@ html.embed .to-top{display:none}
   function daysUntil(d){ if (!d) return null; const t = todayTW(); t.setHours(0,0,0,0); return Math.round((new Date(d + "T00:00:00") - t) / 864e5); }
   function prevTradingDay(d){ const x = new Date(d + "T00:00:00"); do { x.setDate(x.getDate() - 1); } while (x.getDay() === 0 || x.getDay() === 6); return x; }
   const md = x => `${x.getMonth() + 1}/${x.getDate()}（${WD[x.getDay()]}）`;
+  // ── 法說會日曆（資料：公開資訊觀測站「法人說明會一覽表」） ──
+  function renderEvents(){
+    const el = $("#events"); if (!el) return;
+    const E = state.events && state.events.items;
+    if (!E || !state.data){ el.innerHTML = ""; return; }
+    const mine = new Set(state.data.stocks.map(s => s.code).concat(Object.keys(state.holdings)));
+    const today = tpeNow().iso;
+    const list = E.filter(e => mine.has(e.code)).sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+    const up = list.filter(e => e.date >= today), past = list.filter(e => e.date < today).slice(-5);
+    const head = `<div class="hold-head"><h2>法說會日曆</h2><span style="font-size:13px;color:var(--ink-3)">自選股與持股已公告的法人說明會</span></div>`;
+    const tips = `<div class="hint2" style="padding:0 16px 14px">法說會是公司向法人說明營運狀況和展望的會議，前後幾天股價常波動較大。公司通常在法說會前 1～2 週才公告，所以這裡大多只看得到近期的場次。資料來自公開資訊觀測站${state.events.updated ? "，" + esc(state.events.updated.slice(5, 16).replace("T", " ")) + " 更新" : ""}。</div>`;
+    if (!up.length && !past.length){ el.innerHTML = `<div class="card">${head}<div class="hold-empty">近期沒有已公告的法說會。公司公告後會自動出現在這裡。</div>${tips}</div>`; return; }
+    const nm = c => { const s = stockOf(c); return s ? s.name : ((state.holdings[c] || {}).name || c); };
+    const row = (e, done) => {
+      const n = daysUntil(e.date), h = state.holdings[e.code];
+      const links = [e.video ? `<a href="${esc(e.video)}" target="_blank" rel="noopener">影音</a>` : "", e.site ? `<a href="${esc(e.site)}" target="_blank" rel="noopener">公司網站</a>` : ""].filter(Boolean).join(" · ");
+      return `<tr${done ? ' class="ev-done"' : ""}>
+        <td><div class="dday"><b>${md(new Date(e.date + "T00:00:00"))}</b><span class="${!done && n <= 7 ? "soon" : ""}">${done ? "已舉行" : n === 0 ? "今天" : n + " 天後"}</span></div></td>
+        <td style="text-align:left"><b>${esc(e.name || nm(e.code))}</b> <span class="num" style="color:var(--ink-3);font-size:12px">${esc(e.code)}</span>${h ? ` <span class="tag held">持有</span>` : ""}</td>
+        <td class="num">${esc(e.time || "—")}</td>
+        <td style="text-align:left;white-space:normal;min-width:260px">${esc(e.summary || "")}${e.note ? `<span class="sub">${esc(e.note)}</span>` : ""}</td>
+        <td style="text-align:left;white-space:normal;min-width:120px;color:var(--ink-2)">${esc(e.place || "")}</td>
+        <td style="text-align:left">${links || `<span style="color:var(--ink-3)">—</span>`}</td></tr>`;
+    };
+    el.innerHTML = `<div class="card">${head}<div class="table-wrap"><table style="min-width:900px">
+      <thead><tr><th>日期</th><th>股票</th><th>時間</th><th>內容</th><th>地點</th><th>連結</th></tr></thead>
+      <tbody>${up.map(e => row(e, false)).join("")}${past.map(e => row(e, true)).join("")}</tbody></table></div>${tips}</div>`;
+  }
   function renderDivs(){
     const el = $("#divs"), F = state.fund && state.fund.stocks;
     if (!F || !state.data){ el.innerHTML = ""; return; }

@@ -16,6 +16,7 @@
 import csv
 import datetime as dt
 import io
+import html as html_mod
 import json
 import os
 import random
@@ -863,6 +864,10 @@ def main():
         "stocks": stocks,
     }
     fund = update_fundamentals(codes)
+    try:
+        update_events()
+    except Exception as e:  # noqa: BLE001  法說會失敗不影響主要資料
+        log(f"  ! 法說會日曆失敗：{e!r}")
     enrich(stocks, fund)
     save_json(DATA / "charts.json", {"date": report["date"], "stocks": build_charts()})
     try:
@@ -896,6 +901,67 @@ def enrich(stocks, fund):
             s["tags"].insert(0, "週線突破季線")
         if mc.get("dn20") and mc["dn20"]["ago"] <= 5:
             s["tags"].insert(0, "月線跌破季線")
+
+
+# ───────────────────────── 法說會日曆（公開資訊觀測站） ─────────────────────────
+def _cell_text(h):
+    h = re.sub(r"<br\s*/?>", " ", h, flags=re.I)
+    return html_mod.unescape(re.sub(r"<[^>]+>", "", h)).replace("\xa0", " ").strip()
+
+
+def mops_conferences(typek, roc_year, month):
+    """公開資訊觀測站「法人說明會一覽表」某市場某月份的資料"""
+    body = urllib.parse.urlencode({"encodeURIComponent": 1, "step": 1, "firstin": 1, "off": 1, "TYPEK": typek,
+                                   "year": roc_year, "month": f"{month:02d}", "co_id": ""}).encode()
+    req = urllib.request.Request("https://mopsov.twse.com.tw/mops/web/ajax_t100sb02_1", data=body,
+                                 headers={"User-Agent": UA, "Content-Type": "application/x-www-form-urlencoded"})
+    with urllib.request.urlopen(req, timeout=40) as r:
+        t = r.read().decode("utf-8", "replace")
+    out = []
+    for row in re.findall(r"<tr[^>]*data-type='body'[^>]*>(.*?)</tr>", t, flags=re.S | re.I):
+        cells = re.findall(r"<td[^>]*>(.*?)</td>", row, flags=re.S | re.I)
+        if len(cells) < 10:
+            continue
+        code, name, date, tm = (_cell_text(c) for c in cells[:4])
+        m = re.match(r"(\d{2,3})/(\d{1,2})/(\d{1,2})", date)
+        if not m or not re.match(r"^[0-9A-Z]{4,6}$", code):
+            continue
+        iso = f"{int(m[1]) + 1911}-{int(m[2]):02d}-{int(m[3]):02d}"
+        links = re.findall(r"href='(https?://[^']+)'", cells[9]) + re.findall(r'href="(https?://[^"]+)"', cells[9])
+        site = re.findall(r"href='(https?://[^']+)'", cells[8])
+        out.append({"code": code, "name": name, "date": iso, "time": tm, "place": _cell_text(cells[4])[:80],
+                    "summary": _cell_text(cells[5])[:160], "video": links[0] if links else None,
+                    "site": site[0] if site else None, "note": (lambda n: "" if n.rstrip("。.") in ("無", "-", "") else n)(_cell_text(cells[10])[:120] if len(cells) > 10 else "")})
+    return out
+
+
+def update_events():
+    """抓這個月和下個月的法說會（上市＋上櫃），只留最近 7 天到之後的場次"""
+    today = now_tw().date()
+    months = [(today.year, today.month)]
+    ny, nm = (today.year + 1, 1) if today.month == 12 else (today.year, today.month + 1)
+    months.append((ny, nm))
+    items, ok = [], 0
+    for y, mth in months:
+        for typek in ("sii", "otc"):
+            try:
+                items += mops_conferences(typek, y - 1911, mth)
+                ok += 1
+            except Exception as e:  # noqa: BLE001
+                log(f"  ! 法說會 {typek} {y}-{mth:02d} 讀取失敗：{e!r}")
+            time.sleep(1.5)
+    path = DATA / "events.json"
+    if not ok:
+        return
+    since = (today - dt.timedelta(days=7)).isoformat()
+    seen, keep = set(), []
+    for it in sorted(items, key=lambda x: (x["date"], x["time"], x["code"])):
+        k = (it["code"], it["date"], it["time"])
+        if it["date"] >= since and k not in seen:
+            seen.add(k)
+            keep.append(it)
+    save_json(path, {"updated": now_tw().isoformat(timespec="minutes"), "items": keep})
+    log(f"• 法說會日曆：{len(keep)} 場（{since} 之後）")
 
 
 # ───────────────────────── 自選股增減（快速） ─────────────────────────

@@ -2102,7 +2102,7 @@ html.embed .to-top{display:none}
     </div>`;
   }
   function detail(s){
-    const tabs = [["kline","K 線與法人"],["chips","籌碼分數"],["fund","基本面"],["hold", "我的持股" + (state.holdings[s.code] ? " ●" : "")]];
+    const tabs = [["kline","K 線與法人"],["chips","籌碼分數"],["fund","基本面"],["hold", "我的持股" + (state.holdings[s.code] ? "（持有中）" : "")]];
     const t = state.tab || "kline";
     const body = t === "chips" ? chipsPane(s) : t === "fund" ? fundPane(s) : t === "hold" ? holdPane(s) : klinePane(s);
     return `<tr class="detail"><td colspan="14"><div class="dwrap"><div class="dtabs">${tabs.map(([k, l]) => `<button data-t="${k}" class="${k === t ? "on" : ""}">${l}</button>`).join("")}${EMBED ? "" : `<button class="wl-del" data-wldel="${esc(s.code)}" title="從追蹤清單移除這檔">🗑 從追蹤清單移除</button>`}</div><div class="dpane">${body}</div></div></td></tr>`;

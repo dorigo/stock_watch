@@ -10,7 +10,12 @@ on:
     - cron: "23 22 * * 1-5"  # 台北 週二～週六 06:23（只更新大盤，補上前一晚美股收盤）
     - cron: "13 23 * * 1-5"  # 台北 週二～週六 07:13（備援：06:23 那次延遲或漏跑時補美股）
     - cron: "3 0 * * 2-6"    # 台北 週二～週六 08:03（再備援一次，開盤前一定要有美股收盤）
-  workflow_dispatch:          # 可在 Actions 頁面手動執行
+  workflow_dispatch:          # 可在 Actions 頁面手動執行；Cloudflare 定時器也是用這個準時觸發
+    inputs:
+      mode:
+        description: "full＝完整更新、market＝只更新大盤"
+        required: false
+        default: "full"
   push:
     branches: [main]
     paths:
@@ -43,6 +48,7 @@ jobs:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
         run: |
           case "${{ github.event.schedule }}" in "47 5 * * 1-5"|"23 22 * * 1-5"|"13 23 * * 1-5"|"3 0 * * 2-6") MKT=1;; *) MKT=0;; esac
+          [ "${{ github.event.inputs.mode }}" = "market" ] && MKT=1
           if [ "$MKT" = 1 ]; then
             python scripts/fetch.py --market || echo "FETCH_FAILED=1" >> "$GITHUB_ENV"
             echo "MARKET_ONLY=1" >> "$GITHUB_ENV"

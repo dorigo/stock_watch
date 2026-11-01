@@ -86,12 +86,20 @@ def load_holdings():
         log("! HOLDINGS 不是正確的 JSON")
         return {}
     out = {}
+    watch = obj.pop("__watch", None) or {}
     for c, h in obj.items():
         if not isinstance(h, dict):
             continue
         lv = {k: num(h.get(k)) for k in KINDS}
         if any(lv.values()):
             out[str(c)] = {"name": h.get("name") or "", "cost": num(h.get("cost")), "shares": num(h.get("shares")) or 0, **lv}
+    # 觀測價（不需要持股）
+    for c, w in watch.items():
+        if not isinstance(w, dict) or not (num(w.get("hi")) or num(w.get("lo"))):
+            continue
+        o = out.setdefault(str(c), {"name": w.get("name") or "", "cost": None, "shares": 0, **{k: None for k in KINDS}})
+        o["watchHi"], o["watchLo"] = num(w.get("hi")), num(w.get("lo"))
+        o["name"] = o["name"] or w.get("name") or ""
     return out
 
 
@@ -185,18 +193,18 @@ def send(hits, url):
 <div style="font-size:26px;font-weight:900;color:{cc(chg)}">{fnum(h["p"])} <span style="font-size:14px">{sg(chg)}（{sg(pct)}%）</span></div>
 <table cellpadding="0" cellspacing="0" style="font-size:13px;color:#5b6070;margin-top:8px;line-height:1.8">
 <tr><td style="padding-right:14px">{short}</td><td><b>{fnum(h["th"])}</b></td></tr>
-<tr><td style="padding-right:14px">買進均價</td><td><b>{fnum(h["cost"])}</b>{f'　持有 {h["shares"]:,.0f} 股' if h["shares"] else ""}</td></tr>
-<tr><td style="padding-right:14px">未實現損益</td><td><b style="color:{cc(pnl)}">{sg(pnl, 0)} 元（{sg(pnl_pct)}%）</b></td></tr>
+{f"""<tr><td style="padding-right:14px">買進均價</td><td><b>{fnum(h["cost"])}</b>{f'　持有 {h["shares"]:,.0f} 股' if h["shares"] else ""}</td></tr>
+<tr><td style="padding-right:14px">未實現損益</td><td><b style="color:{cc(pnl)}">{sg(pnl, 0)} 元（{sg(pnl_pct)}%）</b></td></tr>""" if h["cost"] else ""}
 <tr><td style="padding-right:14px">今日最高／最低</td><td>{fnum(h["h"])}／{fnum(h["l"])}</td></tr>
 </table></td></tr></table></td></tr>''')
-        lines.append(f"{lab}：{h['name']} {h['code']} 現價 {fnum(h['p'])}（{short} {fnum(h['th'])}，買進均價 {fnum(h['cost'])}）")
+        lines.append(f"{lab}：{h['name']} {h['code']} 現價 {fnum(h['p'])}（{short} {fnum(h['th'])}{'，買進均價 ' + fnum(h['cost']) if h['cost'] else ''}）")
     body = f'''<!doctype html><html><body style="margin:0;background:#f5f3ee;font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;color:#1b1d22">
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f3ee;padding:20px 12px"><tr><td align="center">
 <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px">
 <tr><td style="padding:0 0 12px;font-size:13px;color:#8b90a0">盤中到價通知 · {now():%m/%d %H:%M}</td></tr>
 {"".join(cards)}
 <tr><td style="padding:4px 0;font-size:14px"><a href="{url}realtime.html" style="color:#1f3a5f;font-weight:700">打開盤中即時看板 →</a></td></tr>
-<tr><td style="padding:14px 0 0;font-size:12px;color:#8b90a0;line-height:1.7">這是你在「我的持股」設定的目標價／觀測價提醒，每天每檔每種各通知一次；修改價格後會重新提醒。<br>
+<tr><td style="padding:14px 0 0;font-size:12px;color:#8b90a0;line-height:1.7">這是你在網站上設定的目標價／觀測價提醒，每天每檔每種各通知一次；修改價格後會重新提醒。<br>
 價格來自證交所即時報價，每分鐘檢查一次，可能和你看到的有幾十秒差距。本通知不構成投資建議。</td></tr>
 </table></td></tr></table></body></html>'''
     msg = EmailMessage()

@@ -135,6 +135,8 @@
     field: "holdings", label: "持股", msg: "同步持股（加密）", empty: () => ({}), count: o => Object.keys(o || {}).length });
   window.SimSync = makeSync({ url: fileUrl("data/sim.enc"), data: "sim_v1", upd: "sim_updated", st: "cloud_sync_sim_v1",
     field: "sim", label: "模擬交易", msg: "同步模擬投資（加密）", empty: () => null, count: o => (o && o.trades ? o.trades.length : 0) });
+  window.WatchSync = makeSync({ url: fileUrl("data/watch.enc"), data: "watch_v1", upd: "watch_updated", st: "cloud_sync_watch_v1",
+    field: "watch", label: "觀測價", msg: "同步觀測價（加密）", empty: () => ({}), count: o => Object.keys(o || {}).length });
   window.LedgerSync = makeSync({ url: fileUrl("data/ledger.enc"), data: "ledger_v1", upd: "ledger_updated", st: "cloud_sync_ledger_v1",
     field: "ledger", label: "帳本紀錄", msg: "同步股票帳本（加密）", empty: () => null, count: o => (o && o.sales ? o.sales.length : 0) });
 })();

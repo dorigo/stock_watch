@@ -1295,8 +1295,8 @@ html.embed .to-top{display:none}
     try {
       await loadSealbox();
       const k = await gh("/actions/secrets/public-key");
-      await gh("/actions/secrets/HOLDINGS", { method: "PUT", body: JSON.stringify({ encrypted_value: window.sealBox(k.key, JSON.stringify(state.holdings)), key_id: k.key_id }) });
-      setSyncInfo({ ok: true, at: new Date().toISOString(), n: Object.keys(state.holdings).length, sig: JSON.stringify(state.holdings) });
+      await gh("/actions/secrets/HOLDINGS", { method: "PUT", body: JSON.stringify({ encrypted_value: window.sealBox(k.key, secretPayload()), key_id: k.key_id }) });
+      setSyncInfo({ ok: true, at: new Date().toISOString(), n: Object.keys(state.holdings).length, sig: secretPayload() });
       pingAlert().catch(() => {});
       if (manual) alert(`已同步 ${Object.keys(state.holdings).length} 檔持股到 Email 日報。之後在這裡修改持股，會自動同步。`);
     } catch(e){
@@ -1321,7 +1321,7 @@ html.embed .to-top{display:none}
   loadAlertStatus(); setInterval(() => { if (!document.hidden) loadAlertStatus(); }, 120000);
   // 交易日盤中改了目標價／停損價：寫入 alert.txt，讓「盤中到價通知」用新設定重新啟動（當天就生效）
   async function pingAlert(){
-    const sig = JSON.stringify(Object.entries(state.holdings).filter(([, h]) => h && (h.target || h.watchHi || h.watchLo)).map(([c, h]) => [c, h.target || 0, h.watchHi || 0, h.watchLo || 0]).sort());
+    const sig = JSON.stringify(Object.entries(state.holdings).filter(([, h]) => h && h.target).map(([c, h]) => [c, h.target]).sort().concat(Object.entries(state.watch || {}).map(([c, w]) => ["w" + c, w.hi || 0, w.lo || 0]).sort()));
     let last = ""; try { last = localStorage.getItem("alert_sig") || ""; } catch(e){}
     if (sig === last) return;
     const t = tpeNow();
@@ -1363,6 +1363,7 @@ html.embed .to-top{display:none}
     if (r && r.changed){ state.holdings = loadH(); render(); queueSync(); }
     if (window.SimSync && SimSync.enabled()) SimSync.sync({ silent: true }).catch(() => {});
     if (window.LedgerSync && LedgerSync.enabled()) LedgerSync.sync({ silent: true }).catch(() => {});
+    if (window.WatchSync && WatchSync.enabled()) WatchSync.sync({ silent: true }).then(x => { if (x && x.changed){ state.watch = loadW(); render(); queueSync(); } }).catch(() => {});
     renderCloudChip();
     return r;
   }
@@ -1404,8 +1405,18 @@ html.embed .to-top{display:none}
     HoldSync.setPass(null); renderCloudChip(); closeCloud();
   });
   // 第一次使用，或持股在其他頁（盤中即時看板賣出等）改過、Email 日報還沒更新 → 自動同步
-  setTimeout(() => { const i = syncInfo(); if (hasTok() && ((!i && Object.keys(state.holdings).length) || (i && i.ok && i.sig != null && i.sig !== JSON.stringify(state.holdings)))) queueSync(); }, 0);
+  setTimeout(() => { const i = syncInfo(); if (hasTok() && ((!i && Object.keys(state.holdings).length) || (i && i.ok && i.sig != null && i.sig !== secretPayload()))) queueSync(); }, 0);
   state.holdings = loadH();
+  // ── 觀測價（不需要持股）：{ 代號: { hi, lo, name } }，存在 watch_v1，跟持股一起加密送到 Secret「HOLDINGS」給到價通知用 ──
+  const WKEY = "watch_v1";
+  function loadW(){ try { return JSON.parse(localStorage.getItem(WKEY) || "{}") || {}; } catch(e){ return {}; } }
+  state.watch = loadW();
+  // 舊版把觀測價存在持股裡 → 搬過來
+  { let moved = false; for (const [c, h] of Object.entries(state.holdings)){ if (h && (h.watchHi || h.watchLo)){ state.watch[c] = { hi: h.watchHi || null, lo: h.watchLo || null, name: h.name || "" }; delete h.watchHi; delete h.watchLo; moved = true; } }
+    if (moved){ try { localStorage.setItem(WKEY, JSON.stringify(state.watch)); localStorage.setItem(HKEY, JSON.stringify(state.holdings)); } catch(e){} } }
+  function saveW(){ try { localStorage.setItem(WKEY, JSON.stringify(state.watch)); localStorage.setItem("watch_updated", new Date().toISOString()); } catch(e){} if (window.WatchSync) WatchSync.markChanged(); queueSync(); }
+  function secretPayload(){ return JSON.stringify(Object.keys(state.watch || {}).length ? { ...state.holdings, __watch: state.watch } : state.holdings); }
+  addEventListener("storage", e => { if (e.key === WKEY){ state.watch = loadW(); render(); } });
   // ── 賣出：記到股票帳本，並扣掉持有股數 ──
   function openSell(code){
     if (!window.Ledger) return;
@@ -1468,7 +1479,7 @@ html.embed .to-top{display:none}
         <td class="num ${k ? cls(k.pct) : ""}">${k ? sgn(k.pct, 2) + "%" : (s ? "—" : "不在自選股")}</td>
         <td class="num">${h.stop ? fmt(h.stop, 2) : "未設定"}</td>
         <td class="num ${k && k.toStop != null && k.toStop < 3 ? "down" : ""}">${k && k.toStop != null ? (k.stopHit ? "已跌破" : fmt(k.toStop, 1) + "%") : "—"}</td>
-        <td class="num">${h.target ? `${fmt(h.target, 2)}<span class="sub ${k && k.targetHit ? "up" : ""}">${k ? (k.targetHit ? "已達到" : "差 " + fmt(k.toTarget, 1) + "%") : ""}</span>` : `<span style="color:var(--ink-3)">未設定</span>`}${h.watchHi || h.watchLo ? `<span class="sub">觀測 ${h.watchLo ? "↓" + fmt(h.watchLo, 2) : ""}${h.watchHi && h.watchLo ? " " : ""}${h.watchHi ? "↑" + fmt(h.watchHi, 2) : ""}</span>` : ""}</td>
+        <td class="num">${h.target ? `${fmt(h.target, 2)}<span class="sub ${k && k.targetHit ? "up" : ""}">${k ? (k.targetHit ? "已達到" : "差 " + fmt(k.toTarget, 1) + "%") : ""}</span>` : `<span style="color:var(--ink-3)">未設定</span>`}</td>
         <td class="sell-td"><button class="btn sell-btn" data-sell="${esc(c)}" title="賣出這檔，記到股票帳本">賣出</button></td>
       </tr>`;
     }).join("");
@@ -1484,7 +1495,7 @@ html.embed .to-top{display:none}
           ${state.cmp.length ? `<button class="btn ghost" data-hact="cmpclear">清除</button>` : ""}</div>
       </div>
       <div class="table-wrap"><table>
-        <thead><tr><th class="no-th">#</th><th class="cmp-th" title="勾選 2～4 檔後按「比較」">比較</th><th class="nm-th" data-sort="name">股票</th><th data-sort="shares">股數</th><th data-sort="cost">買進均價</th><th data-sort="close">最新收盤</th><th data-sort="val">市值</th><th data-tip="pnl" data-sort="pnl">損益</th><th data-tip="pnl" data-sort="pct">報酬率</th><th data-tip="stop" data-sort="stop">停損價</th><th data-sort="toStop">距停損</th><th data-tip="target" data-sort="target">目標價／觀測價</th><th class="sell-th">賣出</th></tr></thead>
+        <thead><tr><th class="no-th">#</th><th class="cmp-th" title="勾選 2～4 檔後按「比較」">比較</th><th class="nm-th" data-sort="name">股票</th><th data-sort="shares">股數</th><th data-sort="cost">買進均價</th><th data-sort="close">最新收盤</th><th data-sort="val">市值</th><th data-tip="pnl" data-sort="pnl">損益</th><th data-tip="pnl" data-sort="pct">報酬率</th><th data-tip="stop" data-sort="stop">停損價</th><th data-sort="toStop">距停損</th><th data-tip="target" data-sort="target">目標價</th><th class="sell-th">賣出</th></tr></thead>
         <tbody>${rows}</tbody></table></div>
       <div class="hint2" style="padding:0 16px 14px">以最新收盤價計算，未扣手續費與證交稅。點標題可排序，點任一列可修改；賣出時按「賣出」，損益會記到<a href="ledger.html">股票帳本</a>，股數自動扣掉。資料存在這台瀏覽器；按「☁ 雲端同步」可讓多台電腦自動同步（加密後存到 GitHub），也可用「匯出／匯入」。</div></div>`;
   }
@@ -2028,6 +2039,19 @@ html.embed .to-top{display:none}
   }
 
   // ════════ 我的持股分頁 ════════
+  function watchPane(s){
+    const w = state.watch[s.code] || {}, c = s.close;
+    const st = v => v ? `（現價 ${fmt(c, 2)}，${v > c ? "還差 +" + fmt((v - c) / c * 100, 1) + "%" : "已低於現價 " + fmt((c - v) / c * 100, 1) + "%"}）` : "";
+    return `<div class="hform" style="grid-template-columns:repeat(2,minmax(0,1fr));max-width:600px">
+        <label><span data-tip="watch" style="text-decoration:underline dotted">高於觀測價（元）</span><input type="number" step="0.01" min="0" id="wHi" value="${w.hi || ""}" placeholder="漲過這個價格通知我">
+          <span class="quick">${[3, 5, 10].map(p => `<button type="button" data-wq="hi" data-p="${p}">現價 +${p}%</button>`).join("")}</span></label>
+        <label><span data-tip="watch" style="text-decoration:underline dotted">低於觀測價（元）</span><input type="number" step="0.01" min="0" id="wLo" value="${w.lo || ""}" placeholder="跌破這個價格通知我">
+          <span class="quick">${[3, 5, 10].map(p => `<button type="button" data-wq="lo" data-p="${p}">現價 -${p}%</button>`).join("")}</span></label>
+      </div>
+      ${state.watch[s.code] ? `<div class="hcalc">目前監測中：${w.hi ? `漲過 <b class="num up">${fmt(w.hi, 2)}</b>` : ""}${w.hi && w.lo ? "、" : ""}${w.lo ? `跌破 <b class="num down">${fmt(w.lo, 2)}</b>` : ""} 時寄 Email 通知你。</div>` : ""}
+      <div class="hint2 alert-note">📧 <b>觀測價提醒</b>：不需要持股，填一個或兩個價格就會開始監測。開盤時間每分鐘檢查一次，股價<b class="up">漲過高於觀測價</b>或<b class="down">跌破低於觀測價</b>時寄 Email（每天每種一次，改了價格會重新通知）。需要先開啟「📧 同步到 Email 日報」。</div>
+      <div class="hbtns"><button class="btn primary" data-ws="save">儲存</button>${state.watch[s.code] ? `<button class="btn ghost" data-ws="del">停止監測</button>` : ""}</div>`;
+  }
   function holdPane(s){
     const h = state.holdings[s.code] || {}, k = holdCalc(s.close, h);
     const calc = k ? `<div class="hcalc">
@@ -2043,10 +2067,8 @@ html.embed .to-top{display:none}
           <span class="quick">${[5, 10, 15].map(p => `<button type="button" data-hq="${p}">買價 -${p}%</button>`).join("")}</span></label>
         <label><span data-tip="target" style="text-decoration:underline dotted">目標價（元）</span><input type="number" step="0.01" min="0" id="hTarget" value="${h.target || ""}" placeholder="漲到就通知我">
           <span class="quick">${[5, 10, 15].map(p => `<button type="button" data-ht="${p}">買價 +${p}%</button>`).join("")}</span></label>
-        <label><span data-tip="watch" style="text-decoration:underline dotted">高於觀測價（元）</span><input type="number" step="0.01" min="0" id="hWatchHi" value="${h.watchHi || ""}" placeholder="漲過這個價格通知我"></label>
-        <label><span data-tip="watch" style="text-decoration:underline dotted">低於觀測價（元）</span><input type="number" step="0.01" min="0" id="hWatchLo" value="${h.watchLo || ""}" placeholder="跌破這個價格通知我"></label>
       </div>
-      <div class="hint2 alert-note">📧 <b>盤中到價寄信</b>：開盤時間每分鐘檢查一次，股價<b class="up">漲到目標價</b>、<b class="up">高於觀測價</b>或<b class="down">低於觀測價</b>時寄 Email 給你（每天每檔每種一次，改了價格會重新通知）。需要先開啟「📧 同步到 Email 日報」。</div>
+      <div class="hint2 alert-note">📧 <b>盤中到價寄信</b>：開盤時間每分鐘檢查一次，股價<b class="up">漲到目標價</b>時寄 Email 給你（每天每檔一次，改了價格會重新通知）。想在某個價位提醒、不一定有持股？用「觀測價」分頁。需要先開啟「📧 同步到 Email 日報」。</div>
       ${calc}
       <div class="hbtns"><button class="btn primary" data-hs="save">儲存</button>${state.holdings[s.code] ? `<button class="btn sell-btn" data-hs="sell" title="賣出後損益記到股票帳本，持有股數自動扣掉">賣出</button><button class="btn ghost" data-hs="del">刪除這筆持股</button>` : ""}</div>
       <div class="hint2">資料存在這台瀏覽器；開啟「☁ 雲端同步」時會用你的同步密碼加密後存到 GitHub，沒有密碼的人看不到內容。損益以最新收盤價計算，未扣手續費與證交稅。</div>`;
@@ -2060,6 +2082,20 @@ html.embed .to-top{display:none}
     if (e.target.closest("[data-kclose]")){ try { localStorage.setItem("k_close", kClose() ? "0" : "1"); } catch(_){} render(); return; }
     const q = e.target.closest("[data-hq]");
     if (q){ const c = parseFloat($("#hCost").value); if (c > 0) $("#hStop").value = (c * (1 - q.dataset.hq / 100)).toFixed(2); else $("#hCost").focus(); return; }
+    const wq = e.target.closest("[data-wq]");
+    if (wq && state.open){ const s0 = stockOf(state.open); if (s0 && s0.close){ const f = 1 + (wq.dataset.wq === "hi" ? 1 : -1) * wq.dataset.p / 100; $(wq.dataset.wq === "hi" ? "#wHi" : "#wLo").value = (s0.close * f).toFixed(2); } return; }
+    const ws = e.target.closest("[data-ws]");
+    if (ws && state.open){
+      const code = state.open, s0 = stockOf(code), nm = s0 ? s0.name : code;
+      if (ws.dataset.ws === "del"){ delete state.watch[code]; saveW(); render(); if (window.Ledger) Ledger.toast(`已停止監測「${esc(nm)}」的觀測價。`, { link: false, ms: 4000 }); return; }
+      const hi = parseFloat($("#wHi").value), lo = parseFloat($("#wLo").value);
+      if (!(hi > 0) && !(lo > 0)){ alert("請至少填一個觀測價"); return; }
+      if (hi > 0 && lo > 0 && hi <= lo){ alert("高於觀測價要比低於觀測價高"); return; }
+      state.watch[code] = { hi: hi > 0 ? hi : null, lo: lo > 0 ? lo : null, name: nm };
+      saveW(); render();
+      if (window.Ledger) Ledger.toast(`已開始監測「${esc(nm)}」：${hi > 0 ? "漲過 " + fmt(hi, 2) : ""}${hi > 0 && lo > 0 ? "、" : ""}${lo > 0 ? "跌破 " + fmt(lo, 2) : ""} 時寄信${hasTok() ? "" : "（這台沒有 GitHub 金鑰，Email 不會生效）"}`, { link: false, ms: 5000 });
+      return;
+    }
     const qt = e.target.closest("[data-ht]");
     if (qt){ const c = parseFloat($("#hCost").value); if (c > 0) $("#hTarget").value = (c * (1 + qt.dataset.ht / 100)).toFixed(2); else $("#hCost").focus(); return; }
     const hs = e.target.closest("[data-hs]");
@@ -2067,17 +2103,14 @@ html.embed .to-top{display:none}
       const code = state.open;
       if (hs.dataset.hs === "sell"){ openSell(code); return; }
       if (hs.dataset.hs === "del"){ if (confirm("刪除這筆持股？\n\n（如果是賣掉了，建議改按「賣出」，損益會記到股票帳本。）")){ delete state.holdings[code]; saveH(); render(); if (window.Ledger) Ledger.toast("已刪除這筆持股。", { link: false, ms: 4000 }); } return; }
-      const cost = parseFloat($("#hCost").value), shares = parseInt($("#hShares").value, 10), stop = parseFloat($("#hStop").value), target = parseFloat($("#hTarget").value),
-            wHi = parseFloat($("#hWatchHi").value), wLo = parseFloat($("#hWatchLo").value);
+      const cost = parseFloat($("#hCost").value), shares = parseInt($("#hShares").value, 10), stop = parseFloat($("#hStop").value), target = parseFloat($("#hTarget").value);
       if (!(cost > 0) || !(shares > 0)){ alert("請輸入買進均價與持有股數"); return; }
       const s = stockOf(code);
       if (target > 0 && stop > 0 && target <= stop){ alert("目標價要比停損價高"); return; }
-      if (wHi > 0 && wLo > 0 && wHi <= wLo){ alert("高於觀測價要比低於觀測價高"); return; }
       const isNew = !state.holdings[code];
-      state.holdings[code] = { ...(state.holdings[code] || {}), cost, shares, stop: stop > 0 ? stop : null, target: target > 0 ? target : null,
-        watchHi: wHi > 0 ? wHi : null, watchLo: wLo > 0 ? wLo : null, name: s ? s.name : "" };
+      state.holdings[code] = { ...(state.holdings[code] || {}), cost, shares, stop: stop > 0 ? stop : null, target: target > 0 ? target : null, name: s ? s.name : "" };
       saveH(); render();
-      if (window.Ledger) Ledger.toast(`已${isNew ? "新增" : "儲存"}「${esc(s ? s.name : code)}」：${fmt(shares)} 股、均價 ${fmt(cost, 2)}、停損 ${stop > 0 ? fmt(stop, 2) : "未設定"}、目標 ${target > 0 ? fmt(target, 2) : "未設定"}${wHi > 0 ? "、高於 " + fmt(wHi, 2) : ""}${wLo > 0 ? "、低於 " + fmt(wLo, 2) : ""}${hasTok() ? "（會自動同步到 Email 日報與到價通知）" : ""}`, { link: false, ms: 5000 });
+      if (window.Ledger) Ledger.toast(`已${isNew ? "新增" : "儲存"}「${esc(s ? s.name : code)}」：${fmt(shares)} 股、均價 ${fmt(cost, 2)}、停損 ${stop > 0 ? fmt(stop, 2) : "未設定"}、目標 ${target > 0 ? fmt(target, 2) : "未設定"}${hasTok() ? "（會自動同步到 Email 日報與到價通知）" : ""}`, { link: false, ms: 5000 });
     }
   }, true);
 
@@ -2108,9 +2141,9 @@ html.embed .to-top{display:none}
     </div>`;
   }
   function detail(s){
-    const tabs = [["kline","K 線與法人"],["chips","籌碼分數"],["fund","基本面"],["hold", "我的持股" + (state.holdings[s.code] ? "（持有中）" : "")]];
+    const tabs = [["kline","K 線與法人"],["chips","籌碼分數"],["fund","基本面"],["watch", "觀測價" + (state.watch[s.code] ? "（監測中）" : "")],["hold", "我的持股" + (state.holdings[s.code] ? "（持有中）" : "")]];
     const t = state.tab || "kline";
-    const body = t === "chips" ? chipsPane(s) : t === "fund" ? fundPane(s) : t === "hold" ? holdPane(s) : klinePane(s);
+    const body = t === "chips" ? chipsPane(s) : t === "fund" ? fundPane(s) : t === "hold" ? holdPane(s) : t === "watch" ? watchPane(s) : klinePane(s);
     return `<tr class="detail"><td colspan="14"><div class="dwrap"><div class="dtabs">${tabs.map(([k, l]) => `<button data-t="${k}" class="${k === t ? "on" : ""}">${l}</button>`).join("")}${EMBED ? "" : `<button class="wl-del" data-wldel="${esc(s.code)}" title="從追蹤清單移除這檔">🗑 從追蹤清單移除</button>`}</div><div class="dpane">${body}</div></div></td></tr>`;
   }
 

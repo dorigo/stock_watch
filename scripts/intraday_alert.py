@@ -6,7 +6,7 @@
 
 需要的 GitHub Secrets（和 Email 日報共用）：
   MAIL_USER / MAIL_PASS / MAIL_TO（選填）/ MAIL_SERVER（選填）/ MAIL_PORT（選填）
-  HOLDINGS   網站「我的持股」自動同步的持股（含目標價 target）
+  HOLDINGS   網站「我的持股」自動同步的持股（含目標價 target、高於觀測價 watchHi、低於觀測價 watchLo）
 
 這個 repo 是公開的，執行紀錄任何人都看得到：所以紀錄裡只寫「幾檔、寄了幾封」，不寫股票代號與價格；
 避免重複通知的狀態檔 data/alert_state.json 也只存雜湊值。
@@ -71,6 +71,14 @@ def site_url():
     return f"https://{owner.lower()}.github.io/{name}/"
 
 
+# 通知種類：欄位名 → (說明, 圖示, 往上碰到(True)/往下碰到(False))
+KINDS = {
+    "target": ("漲到目標價", "🎯", True),
+    "watchHi": ("高於觀測價", "📈", True),
+    "watchLo": ("低於觀測價", "📉", False),
+}
+
+
 def load_holdings():
     try:
         obj = json.loads(os.environ.get("HOLDINGS", "").strip() or "{}") or {}
@@ -81,10 +89,9 @@ def load_holdings():
     for c, h in obj.items():
         if not isinstance(h, dict):
             continue
-        target, stop = num(h.get("target")), None   # 只通知目標價
-        if target:
-            out[str(c)] = {"name": h.get("name") or "", "cost": num(h.get("cost")), "shares": num(h.get("shares")) or 0,
-                           "target": target, "stop": stop}
+        lv = {k: num(h.get(k)) for k in KINDS}
+        if any(lv.values()):
+            out[str(c)] = {"name": h.get("name") or "", "cost": num(h.get("cost")), "shares": num(h.get("shares")) or 0, **lv}
     return out
 
 
@@ -156,14 +163,15 @@ def send(hits, url):
     server, port = os.environ.get("MAIL_SERVER") or "smtp.gmail.com", int(os.environ.get("MAIL_PORT") or 465)
     UP, DOWN = "#d1342f", "#11865a"
     first = hits[0]
-    subj = ("🎯 " if first["kind"] == "target" else "⚠ ") + f"{first['name']} {first['code']} " + \
-        ("漲到目標價" if first["kind"] == "target" else "跌破停損價") + f" {fnum(first['th'])}（現價 {fnum(first['p'])}）"
+    lab, icon, _ = KINDS[first["kind"]]
+    subj = f"{icon} {first['name']} {first['code']} {lab} {fnum(first['th'])}（現價 {fnum(first['p'])}）"
     if len(hits) > 1:
         subj += f" 等 {len(hits)} 檔"
     cards, lines = [], []
     for h in hits:
-        is_t = h["kind"] == "target"
-        color = UP if is_t else DOWN
+        lab, icon, is_up = KINDS[h["kind"]]
+        color = UP if is_up else DOWN
+        short = lab[-3:]   # 目標價／觀測價
         chg = (h["p"] - h["y"]) if h["y"] else None
         pct = chg / h["y"] * 100 if chg is not None else None
         pnl = (h["p"] - h["cost"]) * h["shares"] if h["cost"] and h["shares"] else None
@@ -172,23 +180,23 @@ def send(hits, url):
         sg = lambda v, d=2: "—" if v is None else ("+" if v > 0 else "−" if v < 0 else "") + f"{abs(v):,.{d}f}"
         cards.append(f'''<tr><td style="padding:0 0 12px"><table width="100%" cellpadding="0" cellspacing="0" style="border:2px solid {color};border-radius:12px">
 <tr><td style="padding:14px 16px">
-<div style="font-size:13px;font-weight:700;color:{color}">{("🎯 今天曾漲到目標價（最高 " + fnum(h["h"]) + "，現在已回落）") if h.get("touched") else "🎯 漲到目標價" if is_t else "⚠ 跌破停損價"}　{html.escape(h["t"][:5])}</div>
+<div style="font-size:13px;font-weight:700;color:{color}">{(f"{icon} 今天曾{'漲到' if is_up else '跌到'}{short}（{'最高' if is_up else '最低'} " + fnum(h["h"] if is_up else h["l"]) + "，現在已回" + ("落" if is_up else "升") + "）") if h.get("touched") else f"{icon} {lab}"}　{html.escape(h["t"][:5])}</div>
 <div style="font-size:20px;font-weight:900;margin:4px 0 2px">{html.escape(h["name"])} <span style="font-size:13px;color:#8b90a0">{h["code"]}</span></div>
 <div style="font-size:26px;font-weight:900;color:{cc(chg)}">{fnum(h["p"])} <span style="font-size:14px">{sg(chg)}（{sg(pct)}%）</span></div>
 <table cellpadding="0" cellspacing="0" style="font-size:13px;color:#5b6070;margin-top:8px;line-height:1.8">
-<tr><td style="padding-right:14px">{"目標價" if is_t else "停損價"}</td><td><b>{fnum(h["th"])}</b></td></tr>
+<tr><td style="padding-right:14px">{short}</td><td><b>{fnum(h["th"])}</b></td></tr>
 <tr><td style="padding-right:14px">買進均價</td><td><b>{fnum(h["cost"])}</b>{f'　持有 {h["shares"]:,.0f} 股' if h["shares"] else ""}</td></tr>
 <tr><td style="padding-right:14px">未實現損益</td><td><b style="color:{cc(pnl)}">{sg(pnl, 0)} 元（{sg(pnl_pct)}%）</b></td></tr>
 <tr><td style="padding-right:14px">今日最高／最低</td><td>{fnum(h["h"])}／{fnum(h["l"])}</td></tr>
 </table></td></tr></table></td></tr>''')
-        lines.append(f"{'漲到目標價' if is_t else '跌破停損價'}：{h['name']} {h['code']} 現價 {fnum(h['p'])}（{'目標' if is_t else '停損'} {fnum(h['th'])}，買進均價 {fnum(h['cost'])}）")
+        lines.append(f"{lab}：{h['name']} {h['code']} 現價 {fnum(h['p'])}（{short} {fnum(h['th'])}，買進均價 {fnum(h['cost'])}）")
     body = f'''<!doctype html><html><body style="margin:0;background:#f5f3ee;font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;color:#1b1d22">
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f3ee;padding:20px 12px"><tr><td align="center">
 <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px">
 <tr><td style="padding:0 0 12px;font-size:13px;color:#8b90a0">盤中到價通知 · {now():%m/%d %H:%M}</td></tr>
 {"".join(cards)}
 <tr><td style="padding:4px 0;font-size:14px"><a href="{url}realtime.html" style="color:#1f3a5f;font-weight:700">打開盤中即時看板 →</a></td></tr>
-<tr><td style="padding:14px 0 0;font-size:12px;color:#8b90a0;line-height:1.7">這是你在「我的持股」設定的目標價提醒，每天每檔通知一次；修改目標價後會重新提醒。<br>
+<tr><td style="padding:14px 0 0;font-size:12px;color:#8b90a0;line-height:1.7">這是你在「我的持股」設定的目標價／觀測價提醒，每天每檔每種各通知一次；修改價格後會重新提醒。<br>
 價格來自證交所即時報價，每分鐘檢查一次，可能和你看到的有幾十秒差距。本通知不構成投資建議。</td></tr>
 </table></td></tr></table></body></html>'''
     msg = EmailMessage()
@@ -225,7 +233,7 @@ def main():
     mk, url = market_of(), site_url()
     codes = sorted(H)
     sent = load_state(day)
-    log(f"• 監看 {len(codes)} 檔目標價，今天已通知 {len(sent)} 次")
+    log(f"• 監看 {len(codes)} 檔（目標價／觀測價），今天已通知 {len(sent)} 次")
     errors, n_mail, seen_today = 0, 0, False
     last_px = {}                            # 冷門股常常這一分鐘沒有成交（z 是 "-"），沿用上一筆成交價
     status = {"date": day, "started": t.strftime("%H:%M"), "watching": len(codes), "sent_today": len(sent), "mails": 0,
@@ -262,21 +270,22 @@ def main():
             p = x["z"] or last_px.get(c) or x.get("b") or x.get("a")    # 沒有成交價時用上一筆成交價，再沒有就用委買價
             if x["z"]:
                 last_px[c] = x["z"]
-            # 今天最高價碰到目標價也算（每分鐘才查一次，中間短暫漲上去又回落時不會漏掉）
-            touched = h["target"] and x["h"] and x["h"] >= h["target"]
-            if p is None and not touched:
-                continue
-            for kind, th, hit in (("target", h["target"], h["target"] and ((p and p >= h["target"]) or touched)),
-                                  ("stop", h["stop"], h["stop"] and p <= h["stop"])):
-                if not hit:
+            for kind, (_, _, up) in KINDS.items():
+                th = h.get(kind)
+                if not th:
+                    continue
+                # 今天最高（最低）價碰到也算：每分鐘才查一次，中間短暫碰到又回去時不會漏掉
+                touched = bool(x["h"] and x["h"] >= th) if up else bool(x["l"] and x["l"] <= th)
+                now_hit = bool(p and (p >= th if up else p <= th))
+                if not (now_hit or touched):
                     continue
                 k = key(day, c, kind, th)
                 if k in sent:
                     continue
-                hits.append({"kind": kind, "code": c, "name": h["name"] or x["n"] or (mk.get(c) or (c,))[0] or c, "th": th, "p": p or x["h"], "touched": bool(kind == "target" and not (p and p >= th)),
+                hits.append({"kind": kind, "code": c, "name": h["name"] or x["n"] or (mk.get(c) or (c,))[0] or c, "th": th, "p": p or (x["h"] if up else x["l"]), "touched": not now_hit,
                              "y": x["y"], "h": x["h"], "l": x["l"], "t": x["t"], "cost": h["cost"], "shares": h["shares"], "k": k})
         if hits:
-            hits.sort(key=lambda z: z["kind"] != "stop")     # 停損排前面
+            hits.sort(key=lambda z: list(KINDS).index(z["kind"]))
             try:
                 send(hits, url)
                 n_mail += 1

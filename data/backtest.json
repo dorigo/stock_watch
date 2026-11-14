@@ -1,7 +1,7 @@
 {
- "generated": "2026-11-07T16:56+08:00",
- "start": "2024-09-23",
- "end": "2026-11-06",
+ "generated": "2026-11-14T17:11+08:00",
+ "start": "2024-09-30",
+ "end": "2026-11-13",
  "stocks": 43,
  "horizons": [
   5,
@@ -10,16 +10,16 @@
  "cooldown": 5,
  "baseline": {
   "5": {
-   "n": 21270,
-   "mean": 0.81,
-   "median": 0.19,
-   "win": 50.6
+   "n": 21275,
+   "mean": 0.84,
+   "median": 0.2,
+   "win": 50.7
   },
   "20": {
-   "n": 20625,
-   "mean": 4.9,
-   "median": 1.88,
-   "win": 57.3
+   "n": 20630,
+   "mean": 4.74,
+   "median": 1.79,
+   "win": 56.9
   }
  },
  "signals": [
@@ -30,25 +30,25 @@
    "desc": "籌碼在短時間內明顯轉好（網站的「分數大增」標籤）",
    "stats": {
     "5": {
-     "n": 1685,
-     "mean": 0.86,
+     "n": 1676,
+     "mean": 0.85,
      "median": 0.0,
-     "win": 49.9,
-     "excess": 0.05,
+     "win": 49.6,
+     "excess": 0.01,
      "ci": [
-      -0.33,
-      0.42
+      -0.36,
+      0.38
      ]
     },
     "20": {
-     "n": 1636,
-     "mean": 5.34,
-     "median": 1.96,
-     "win": 57.9,
-     "excess": 0.43,
+     "n": 1631,
+     "mean": 5.25,
+     "median": 1.87,
+     "win": 57.3,
+     "excess": 0.51,
      "ci": [
-      -0.38,
-      1.29
+      -0.33,
+      1.37
      ]
     }
    }
@@ -60,25 +60,25 @@
    "desc": "買盤持續聚集（網站的「分數連升」標籤）",
    "stats": {
     "5": {
-     "n": 532,
+     "n": 533,
      "mean": 0.58,
      "median": 0.21,
-     "win": 51.1,
-     "excess": -0.23,
+     "win": 51.0,
+     "excess": -0.26,
      "ci": [
-      -0.91,
-      0.47
+      -0.93,
+      0.42
      ]
     },
     "20": {
-     "n": 518,
-     "mean": 5.7,
-     "median": 2.44,
-     "win": 59.5,
-     "excess": 0.8,
+     "n": 519,
+     "mean": 5.69,
+     "median": 2.5,
+     "win": 59.3,
+     "excess": 0.95,
      "ci": [
-      -0.61,
-      2.37
+      -0.65,
+      2.5
      ]
     }
    }
@@ -90,25 +90,25 @@
    "desc": "多項籌碼訊號同時偏多",
    "stats": {
     "5": {
-     "n": 1289,
-     "mean": 0.75,
+     "n": 1287,
+     "mean": 0.78,
      "median": 0.0,
-     "win": 48.7,
+     "win": 49.3,
      "excess": -0.06,
      "ci": [
-      -0.45,
+      -0.47,
       0.34
      ]
     },
     "20": {
-     "n": 1248,
-     "mean": 5.8,
-     "median": 2.2,
-     "win": 58.9,
-     "excess": 0.9,
+     "n": 1251,
+     "mean": 5.72,
+     "median": 2.19,
+     "win": 58.8,
+     "excess": 0.98,
      "ci": [
-      -0.09,
-      1.8
+      0.04,
+      1.98
      ]
     }
    }
@@ -120,25 +120,25 @@
    "desc": "籌碼在短時間內明顯轉壞（網站的「分數大減」標籤）",
    "stats": {
     "5": {
-     "n": 1699,
-     "mean": 1.09,
-     "median": 0.47,
-     "win": 53.7,
-     "excess": 0.28,
+     "n": 1704,
+     "mean": 1.1,
+     "median": 0.46,
+     "win": 53.5,
+     "excess": 0.26,
      "ci": [
-      -0.08,
-      0.65
+      -0.1,
+      0.64
      ]
     },
     "20": {
-     "n": 1645,
-     "mean": 5.09,
-     "median": 2.32,
-     "win": 58.1,
-     "excess": 0.19,
+     "n": 1654,
+     "mean": 4.8,
+     "median": 2.15,
+     "win": 57.4,
+     "excess": 0.06,
      "ci": [
-      -0.52,
-      0.98
+      -0.68,
+      0.88
      ]
     }
    }
@@ -150,25 +150,25 @@
    "desc": "「法人在撤、散戶在接」的組合",
    "stats": {
     "5": {
-     "n": 1125,
-     "mean": 0.99,
-     "median": 0.34,
-     "win": 52.4,
-     "excess": 0.18,
+     "n": 1117,
+     "mean": 0.91,
+     "median": 0.3,
+     "win": 52.0,
+     "excess": 0.07,
      "ci": [
-      -0.22,
-      0.6
+      -0.35,
+      0.48
      ]
     },
     "20": {
-     "n": 1093,
-     "mean": 3.95,
-     "median": 1.45,
-     "win": 55.4,
-     "excess": -0.96,
+     "n": 1088,
+     "mean": 3.62,
+     "median": 1.32,
+     "win": 54.6,
+     "excess": -1.12,
      "ci": [
-      -1.86,
-      -0.03
+      -2.03,
+      -0.17
      ]
     }
    }
@@ -180,25 +180,25 @@
    "desc": "原本有買盤，突然完全消失",
    "stats": {
     "5": {
-     "n": 1119,
-     "mean": 1.14,
-     "median": 0.62,
-     "win": 54.7,
-     "excess": 0.33,
+     "n": 1123,
+     "mean": 1.11,
+     "median": 0.6,
+     "win": 54.2,
+     "excess": 0.27,
      "ci": [
-      -0.11,
-      0.76
+      -0.16,
+      0.72
      ]
     },
     "20": {
-     "n": 1086,
-     "mean": 4.8,
-     "median": 2.24,
-     "win": 58.4,
-     "excess": -0.1,
+     "n": 1085,
+     "mean": 4.7,
+     "median": 2.3,
+     "win": 58.2,
+     "excess": -0.04,
      "ci": [
-      -1.04,
-      0.82
+      -0.95,
+      0.87
      ]
     }
    }
@@ -211,8 +211,8 @@
    "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 41,
-     "mean20": 3.35
+     "n": 40,
+     "mean20": 3.28
     },
     "up3": {
      "n": 9,
@@ -224,15 +224,15 @@
     },
     "chg5_dn20": {
      "n": 44,
-     "mean20": 2.59
+     "mean20": 2.33
     },
     "inst_sell3_margin_up": {
      "n": 31,
-     "mean20": 4.42
+     "mean20": 3.96
     },
     "score_low": {
      "n": 27,
-     "mean20": 3.21
+     "mean20": 2.76
     }
    }
   },
@@ -243,27 +243,27 @@
    "signals": {
     "chg5_up20": {
      "n": 37,
-     "mean20": 3.29
+     "mean20": 3.12
     },
     "up3": {
      "n": 10,
      "mean20": -3.3
     },
     "score50": {
-     "n": 34,
-     "mean20": 4.58
+     "n": 35,
+     "mean20": 4.37
     },
     "chg5_dn20": {
      "n": 41,
-     "mean20": 1.91
+     "mean20": 1.71
     },
     "inst_sell3_margin_up": {
      "n": 25,
-     "mean20": -3.79
+     "mean20": -3.69
     },
     "score_low": {
-     "n": 17,
-     "mean20": -2.21
+     "n": 18,
+     "mean20": -2.12
     }
    }
   },
@@ -274,10 +274,10 @@
    "signals": {
     "chg5_up20": {
      "n": 36,
-     "mean20": 3.53
+     "mean20": 3.67
     },
     "up3": {
-     "n": 10,
+     "n": 11,
      "mean20": 5.81
     },
     "score50": {
@@ -286,11 +286,11 @@
     },
     "chg5_dn20": {
      "n": 38,
-     "mean20": 2.23
+     "mean20": 1.77
     },
     "inst_sell3_margin_up": {
-     "n": 36,
-     "mean20": 7.6
+     "n": 37,
+     "mean20": 7.05
     },
     "score_low": {
      "n": 27,
@@ -305,19 +305,19 @@
    "signals": {
     "chg5_up20": {
      "n": 45,
-     "mean20": 2.53
+     "mean20": 2.16
     },
     "up3": {
      "n": 13,
      "mean20": 0.66
     },
     "score50": {
-     "n": 37,
-     "mean20": 2.48
+     "n": 36,
+     "mean20": 2.2
     },
     "chg5_dn20": {
-     "n": 42,
-     "mean20": 3.04
+     "n": 41,
+     "mean20": 2.78
     },
     "inst_sell3_margin_up": {
      "n": 27,
@@ -336,11 +336,11 @@
    "signals": {
     "chg5_up20": {
      "n": 39,
-     "mean20": 4.18
+     "mean20": 4.1
     },
     "up3": {
      "n": 13,
-     "mean20": 0.2
+     "mean20": 0.13
     },
     "score50": {
      "n": 37,
@@ -348,14 +348,14 @@
     },
     "chg5_dn20": {
      "n": 41,
-     "mean20": 3.09
+     "mean20": 2.78
     },
     "inst_sell3_margin_up": {
      "n": 23,
      "mean20": 2.68
     },
     "score_low": {
-     "n": 23,
+     "n": 24,
      "mean20": 2.64
     }
    }
@@ -367,11 +367,11 @@
    "signals": {
     "chg5_up20": {
      "n": 36,
-     "mean20": 3.18
+     "mean20": 3.12
     },
     "up3": {
-     "n": 11,
-     "mean20": 4.73
+     "n": 10,
+     "mean20": 5.16
     },
     "score50": {
      "n": 23,
@@ -379,7 +379,7 @@
     },
     "chg5_dn20": {
      "n": 34,
-     "mean20": 2.85
+     "mean20": 2.45
     },
     "inst_sell3_margin_up": {
      "n": 49,
@@ -398,19 +398,19 @@
    "signals": {
     "chg5_up20": {
      "n": 34,
-     "mean20": 1.59
+     "mean20": 1.76
     },
     "up3": {
      "n": 17,
      "mean20": 2.05
     },
     "score50": {
-     "n": 33,
-     "mean20": 0.06
+     "n": 34,
+     "mean20": 0.28
     },
     "chg5_dn20": {
-     "n": 36,
-     "mean20": 1.59
+     "n": 37,
+     "mean20": 1.61
     },
     "inst_sell3_margin_up": {
      "n": 33,
@@ -418,7 +418,7 @@
     },
     "score_low": {
      "n": 22,
-     "mean20": 1.61
+     "mean20": 2.01
     }
    }
   },
@@ -429,27 +429,27 @@
    "signals": {
     "chg5_up20": {
      "n": 41,
-     "mean20": 3.24
+     "mean20": 3.26
     },
     "up3": {
      "n": 15,
-     "mean20": 0.76
+     "mean20": 0.77
     },
     "score50": {
-     "n": 31,
-     "mean20": 1.44
+     "n": 30,
+     "mean20": 1.54
     },
     "chg5_dn20": {
-     "n": 42,
-     "mean20": 1.86
+     "n": 41,
+     "mean20": 1.58
     },
     "inst_sell3_margin_up": {
      "n": 23,
-     "mean20": 1.92
+     "mean20": 1.4
     },
     "score_low": {
      "n": 27,
-     "mean20": 3.63
+     "mean20": 3.11
     }
    }
   },
@@ -471,16 +471,16 @@
      "mean20": 9.31
     },
     "chg5_dn20": {
-     "n": 43,
-     "mean20": 7.35
+     "n": 42,
+     "mean20": 6.77
     },
     "inst_sell3_margin_up": {
-     "n": 24,
-     "mean20": 1.88
+     "n": 23,
+     "mean20": 1.0
     },
     "score_low": {
-     "n": 17,
-     "mean20": 8.76
+     "n": 16,
+     "mean20": 9.92
     }
    }
   },
@@ -490,8 +490,8 @@
    "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 39,
-     "mean20": 7.56
+     "n": 38,
+     "mean20": 7.61
     },
     "up3": {
      "n": 9,
@@ -507,7 +507,7 @@
     },
     "inst_sell3_margin_up": {
      "n": 29,
-     "mean20": 1.52
+     "mean20": 0.22
     },
     "score_low": {
      "n": 28,
@@ -521,8 +521,8 @@
    "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 46,
-     "mean20": 0.97
+     "n": 45,
+     "mean20": 0.58
     },
     "up3": {
      "n": 13,
@@ -534,14 +534,14 @@
     },
     "chg5_dn20": {
      "n": 44,
-     "mean20": 2.84
+     "mean20": 2.4
     },
     "inst_sell3_margin_up": {
      "n": 24,
-     "mean20": 2.78
+     "mean20": 1.36
     },
     "score_low": {
-     "n": 30,
+     "n": 31,
      "mean20": -2.33
     }
    }
@@ -552,8 +552,8 @@
    "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 40,
-     "mean20": 5.4
+     "n": 39,
+     "mean20": 4.34
     },
     "up3": {
      "n": 12,
@@ -564,12 +564,12 @@
      "mean20": 5.5
     },
     "chg5_dn20": {
-     "n": 38,
+     "n": 39,
      "mean20": 3.73
     },
     "inst_sell3_margin_up": {
      "n": 30,
-     "mean20": 1.17
+     "mean20": -0.34
     },
     "score_low": {
      "n": 26,
@@ -584,27 +584,27 @@
    "signals": {
     "chg5_up20": {
      "n": 42,
-     "mean20": 6.43
+     "mean20": 5.79
     },
     "up3": {
      "n": 11,
      "mean20": 10.77
     },
     "score50": {
-     "n": 27,
-     "mean20": 7.59
+     "n": 26,
+     "mean20": 8.03
     },
     "chg5_dn20": {
      "n": 40,
-     "mean20": 2.99
+     "mean20": 2.26
     },
     "inst_sell3_margin_up": {
-     "n": 27,
-     "mean20": 9.93
+     "n": 26,
+     "mean20": 10.15
     },
     "score_low": {
-     "n": 30,
-     "mean20": 7.41
+     "n": 29,
+     "mean20": 7.53
     }
    }
   },
@@ -615,10 +615,10 @@
    "signals": {
     "chg5_up20": {
      "n": 38,
-     "mean20": 6.08
+     "mean20": 6.11
     },
     "up3": {
-     "n": 13,
+     "n": 14,
      "mean20": 2.81
     },
     "score50": {
@@ -631,7 +631,7 @@
     },
     "inst_sell3_margin_up": {
      "n": 27,
-     "mean20": 5.78
+     "mean20": 4.92
     },
     "score_low": {
      "n": 23,
@@ -662,7 +662,7 @@
     },
     "inst_sell3_margin_up": {
      "n": 41,
-     "mean20": 0.25
+     "mean20": -0.02
     },
     "score_low": {
      "n": 19,
@@ -677,27 +677,27 @@
    "signals": {
     "chg5_up20": {
      "n": 38,
-     "mean20": 0.82
+     "mean20": 1.21
     },
     "up3": {
      "n": 14,
-     "mean20": 0.31
+     "mean20": 1.02
     },
     "score50": {
      "n": 41,
-     "mean20": 0.16
+     "mean20": 0.49
     },
     "chg5_dn20": {
-     "n": 40,
-     "mean20": 1.56
+     "n": 39,
+     "mean20": 1.42
     },
     "inst_sell3_margin_up": {
      "n": 22,
      "mean20": 1.24
     },
     "score_low": {
-     "n": 26,
-     "mean20": 1.98
+     "n": 25,
+     "mean20": 1.89
     }
    }
   },
@@ -708,7 +708,7 @@
    "signals": {
     "chg5_up20": {
      "n": 36,
-     "mean20": 6.12
+     "mean20": 6.02
     },
     "up3": {
      "n": 12,
@@ -716,15 +716,15 @@
     },
     "score50": {
      "n": 32,
-     "mean20": 7.09
+     "mean20": 6.31
     },
     "chg5_dn20": {
      "n": 37,
-     "mean20": 6.97
+     "mean20": 6.13
     },
     "inst_sell3_margin_up": {
-     "n": 26,
-     "mean20": 7.51
+     "n": 25,
+     "mean20": 7.78
     },
     "score_low": {
      "n": 22,
@@ -750,16 +750,16 @@
      "mean20": 9.03
     },
     "chg5_dn20": {
-     "n": 49,
-     "mean20": 5.41
+     "n": 48,
+     "mean20": 5.13
     },
     "inst_sell3_margin_up": {
-     "n": 19,
-     "mean20": 0.29
+     "n": 20,
+     "mean20": -0.89
     },
     "score_low": {
-     "n": 38,
-     "mean20": 3.22
+     "n": 37,
+     "mean20": 2.85
     }
    }
   },
@@ -769,28 +769,28 @@
    "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 42,
+     "n": 43,
      "mean20": 15.51
     },
     "up3": {
-     "n": 14,
+     "n": 15,
      "mean20": 13.8
     },
     "score50": {
      "n": 20,
-     "mean20": 25.44
+     "mean20": 22.67
     },
     "chg5_dn20": {
      "n": 42,
-     "mean20": 10.39
+     "mean20": 9.4
     },
     "inst_sell3_margin_up": {
-     "n": 26,
-     "mean20": 10.54
+     "n": 25,
+     "mean20": 10.29
     },
     "score_low": {
      "n": 29,
-     "mean20": 6.97
+     "mean20": 5.93
     }
    }
   },
@@ -801,26 +801,26 @@
    "signals": {
     "chg5_up20": {
      "n": 40,
-     "mean20": 1.38
+     "mean20": 0.65
     },
     "up3": {
      "n": 16,
-     "mean20": -3.25
+     "mean20": -3.08
     },
     "score50": {
      "n": 41,
      "mean20": 0.09
     },
     "chg5_dn20": {
-     "n": 40,
-     "mean20": 2.54
+     "n": 41,
+     "mean20": 2.12
     },
     "inst_sell3_margin_up": {
      "n": 27,
-     "mean20": 2.29
+     "mean20": 1.56
     },
     "score_low": {
-     "n": 25,
+     "n": 26,
      "mean20": 2.05
     }
    }
@@ -831,7 +831,7 @@
    "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 41,
+     "n": 42,
      "mean20": 2.21
     },
     "up3": {
@@ -847,8 +847,8 @@
      "mean20": 4.95
     },
     "inst_sell3_margin_up": {
-     "n": 29,
-     "mean20": 4.3
+     "n": 28,
+     "mean20": 4.67
     },
     "score_low": {
      "n": 32,
@@ -875,15 +875,15 @@
     },
     "chg5_dn20": {
      "n": 40,
-     "mean20": 11.3
+     "mean20": 10.44
     },
     "inst_sell3_margin_up": {
      "n": 20,
-     "mean20": 1.63
+     "mean20": 0.93
     },
     "score_low": {
      "n": 28,
-     "mean20": 7.34
+     "mean20": 6.28
     }
    }
   },
@@ -893,8 +893,8 @@
    "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 40,
-     "mean20": 7.0
+     "n": 41,
+     "mean20": 6.62
     },
     "up3": {
      "n": 15,
@@ -906,15 +906,15 @@
     },
     "chg5_dn20": {
      "n": 48,
-     "mean20": 9.31
+     "mean20": 8.76
     },
     "inst_sell3_margin_up": {
-     "n": 21,
-     "mean20": 10.35
+     "n": 20,
+     "mean20": 10.28
     },
     "score_low": {
      "n": 25,
-     "mean20": 7.32
+     "mean20": 6.29
     }
    }
   },
@@ -932,16 +932,16 @@
      "mean20": 8.57
     },
     "score50": {
-     "n": 41,
-     "mean20": 5.63
+     "n": 42,
+     "mean20": 5.37
     },
     "chg5_dn20": {
-     "n": 40,
+     "n": 41,
      "mean20": 5.81
     },
     "inst_sell3_margin_up": {
-     "n": 26,
-     "mean20": 4.9
+     "n": 25,
+     "mean20": 5.32
     },
     "score_low": {
      "n": 26,
@@ -956,27 +956,27 @@
    "signals": {
     "chg5_up20": {
      "n": 37,
-     "mean20": 1.48
+     "mean20": 1.52
     },
     "up3": {
      "n": 12,
      "mean20": 2.31
     },
     "score50": {
-     "n": 22,
-     "mean20": 2.47
+     "n": 21,
+     "mean20": 2.8
     },
     "chg5_dn20": {
      "n": 43,
-     "mean20": 2.49
+     "mean20": 2.09
     },
     "inst_sell3_margin_up": {
      "n": 39,
-     "mean20": 5.01
+     "mean20": 4.25
     },
     "score_low": {
      "n": 30,
-     "mean20": 0.51
+     "mean20": -0.08
     }
    }
   },
@@ -986,8 +986,8 @@
    "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 45,
-     "mean20": 1.72
+     "n": 46,
+     "mean20": 1.67
     },
     "up3": {
      "n": 13,
@@ -995,19 +995,19 @@
     },
     "score50": {
      "n": 42,
-     "mean20": 3.69
+     "mean20": 3.79
     },
     "chg5_dn20": {
-     "n": 47,
-     "mean20": 2.8
+     "n": 46,
+     "mean20": 2.82
     },
     "inst_sell3_margin_up": {
-     "n": 26,
-     "mean20": 3.41
+     "n": 25,
+     "mean20": 3.51
     },
     "score_low": {
-     "n": 27,
-     "mean20": 3.99
+     "n": 26,
+     "mean20": 4.07
     }
    }
   },
@@ -1017,8 +1017,8 @@
    "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 45,
-     "mean20": 3.43
+     "n": 44,
+     "mean20": 3.49
     },
     "up3": {
      "n": 18,
@@ -1030,15 +1030,15 @@
     },
     "chg5_dn20": {
      "n": 42,
-     "mean20": 4.96
+     "mean20": 4.78
     },
     "inst_sell3_margin_up": {
-     "n": 19,
-     "mean20": 10.53
+     "n": 18,
+     "mean20": 11.1
     },
     "score_low": {
      "n": 34,
-     "mean20": 4.62
+     "mean20": 4.5
     }
    }
   },
@@ -1048,7 +1048,7 @@
    "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 41,
+     "n": 42,
      "mean20": 1.34
     },
     "up3": {
@@ -1057,19 +1057,19 @@
     },
     "score50": {
      "n": 30,
-     "mean20": 1.69
+     "mean20": 1.16
     },
     "chg5_dn20": {
      "n": 44,
-     "mean20": 2.15
+     "mean20": 2.02
     },
     "inst_sell3_margin_up": {
      "n": 29,
      "mean20": 6.57
     },
     "score_low": {
-     "n": 33,
-     "mean20": 2.09
+     "n": 32,
+     "mean20": 2.31
     }
    }
   },
@@ -1080,7 +1080,7 @@
    "signals": {
     "chg5_up20": {
      "n": 36,
-     "mean20": 3.97
+     "mean20": 3.83
     },
     "up3": {
      "n": 12,
@@ -1092,15 +1092,15 @@
     },
     "chg5_dn20": {
      "n": 40,
-     "mean20": 5.53
+     "mean20": 4.62
     },
     "inst_sell3_margin_up": {
-     "n": 26,
-     "mean20": 6.68
+     "n": 27,
+     "mean20": 5.12
     },
     "score_low": {
      "n": 24,
-     "mean20": 6.76
+     "mean20": 5.2
     }
    }
   },
@@ -1110,8 +1110,8 @@
    "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 38,
-     "mean20": 7.72
+     "n": 37,
+     "mean20": 7.33
     },
     "up3": {
      "n": 13,
@@ -1123,11 +1123,11 @@
     },
     "chg5_dn20": {
      "n": 39,
-     "mean20": 14.46
+     "mean20": 13.24
     },
     "inst_sell3_margin_up": {
      "n": 26,
-     "mean20": 5.54
+     "mean20": 4.98
     },
     "score_low": {
      "n": 26,
@@ -1141,7 +1141,7 @@
    "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 36,
+     "n": 37,
      "mean20": 8.53
     },
     "up3": {
@@ -1154,15 +1154,15 @@
     },
     "chg5_dn20": {
      "n": 38,
-     "mean20": 6.36
+     "mean20": 5.17
     },
     "inst_sell3_margin_up": {
      "n": 33,
-     "mean20": 0.83
+     "mean20": 0.71
     },
     "score_low": {
      "n": 31,
-     "mean20": 5.68
+     "mean20": 4.64
     }
    }
   },
@@ -1172,24 +1172,24 @@
    "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 39,
+     "n": 40,
      "mean20": 7.07
     },
     "up3": {
-     "n": 9,
+     "n": 10,
      "mean20": 5.96
     },
     "score50": {
-     "n": 19,
+     "n": 20,
      "mean20": 2.3
     },
     "chg5_dn20": {
      "n": 33,
-     "mean20": 4.08
+     "mean20": 4.25
     },
     "inst_sell3_margin_up": {
-     "n": 31,
-     "mean20": 1.05
+     "n": 30,
+     "mean20": 0.06
     },
     "score_low": {
      "n": 29,
@@ -1203,19 +1203,19 @@
    "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 30,
-     "mean20": 2.59
+     "n": 29,
+     "mean20": 2.8
     },
     "up3": {
      "n": 6,
-     "mean20": 1.95
+     "mean20": 1.85
     },
     "score50": {
-     "n": 27,
-     "mean20": 0.53
+     "n": 26,
+     "mean20": 0.63
     },
     "chg5_dn20": {
-     "n": 28,
+     "n": 29,
      "mean20": 0.92
     },
     "inst_sell3_margin_up": {
@@ -1223,7 +1223,7 @@
      "mean20": -0.43
     },
     "score_low": {
-     "n": 18,
+     "n": 19,
      "mean20": -0.29
     }
    }
@@ -1234,11 +1234,11 @@
    "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 42,
+     "n": 43,
      "mean20": 6.42
     },
     "up3": {
-     "n": 13,
+     "n": 14,
      "mean20": -0.07
     },
     "score50": {
@@ -1246,16 +1246,16 @@
      "mean20": 4.84
     },
     "chg5_dn20": {
-     "n": 45,
-     "mean20": 3.26
+     "n": 44,
+     "mean20": 3.63
     },
     "inst_sell3_margin_up": {
-     "n": 22,
-     "mean20": 1.02
+     "n": 21,
+     "mean20": 1.65
     },
     "score_low": {
-     "n": 33,
-     "mean20": 4.51
+     "n": 32,
+     "mean20": 4.98
     }
    }
   },
@@ -1266,7 +1266,7 @@
    "signals": {
     "chg5_up20": {
      "n": 41,
-     "mean20": 9.18
+     "mean20": 9.07
     },
     "up3": {
      "n": 14,
@@ -1278,7 +1278,7 @@
     },
     "chg5_dn20": {
      "n": 43,
-     "mean20": 5.45
+     "mean20": 5.37
     },
     "inst_sell3_margin_up": {
      "n": 20,
@@ -1296,28 +1296,28 @@
    "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 43,
-     "mean20": 4.72
+     "n": 44,
+     "mean20": 4.29
     },
     "up3": {
      "n": 9,
      "mean20": 6.32
     },
     "score50": {
-     "n": 33,
-     "mean20": 2.73
+     "n": 32,
+     "mean20": 2.37
     },
     "chg5_dn20": {
-     "n": 44,
-     "mean20": 3.7
+     "n": 43,
+     "mean20": 3.83
     },
     "inst_sell3_margin_up": {
      "n": 15,
      "mean20": 0.03
     },
     "score_low": {
-     "n": 35,
-     "mean20": 2.27
+     "n": 34,
+     "mean20": 2.39
     }
    }
   },
@@ -1327,8 +1327,8 @@
    "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 47,
-     "mean20": 10.94
+     "n": 46,
+     "mean20": 11.68
     },
     "up3": {
      "n": 15,
@@ -1339,16 +1339,16 @@
      "mean20": 11.13
     },
     "chg5_dn20": {
-     "n": 40,
+     "n": 41,
      "mean20": 7.33
     },
     "inst_sell3_margin_up": {
      "n": 19,
-     "mean20": 7.47
+     "mean20": 6.84
     },
     "score_low": {
      "n": 30,
-     "mean20": 11.85
+     "mean20": 13.03
     }
    }
   },
@@ -1366,20 +1366,20 @@
      "mean20": 16.78
     },
     "score50": {
-     "n": 28,
-     "mean20": 14.35
+     "n": 27,
+     "mean20": 15.27
     },
     "chg5_dn20": {
-     "n": 45,
-     "mean20": 11.2
+     "n": 44,
+     "mean20": 11.56
     },
     "inst_sell3_margin_up": {
      "n": 23,
      "mean20": 8.73
     },
     "score_low": {
-     "n": 42,
-     "mean20": 9.34
+     "n": 41,
+     "mean20": 9.67
     }
    }
   },
@@ -1389,8 +1389,8 @@
    "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 39,
-     "mean20": 6.44
+     "n": 38,
+     "mean20": 6.74
     },
     "up3": {
      "n": 12,
@@ -1402,11 +1402,11 @@
     },
     "chg5_dn20": {
      "n": 38,
-     "mean20": 3.14
+     "mean20": 2.58
     },
     "inst_sell3_margin_up": {
      "n": 22,
-     "mean20": 9.84
+     "mean20": 8.55
     },
     "score_low": {
      "n": 23,
@@ -1420,7 +1420,7 @@
    "days": 509,
    "signals": {
     "chg5_up20": {
-     "n": 43,
+     "n": 44,
      "mean20": 9.05
     },
     "up3": {
@@ -1428,43 +1428,43 @@
      "mean20": 12.81
     },
     "score50": {
-     "n": 27,
-     "mean20": 15.45
+     "n": 28,
+     "mean20": 14.28
     },
     "chg5_dn20": {
-     "n": 49,
-     "mean20": 11.37
+     "n": 48,
+     "mean20": 11.54
     },
     "inst_sell3_margin_up": {
-     "n": 29,
-     "mean20": 8.94
+     "n": 28,
+     "mean20": 9.36
     },
     "score_low": {
-     "n": 27,
-     "mean20": 8.86
+     "n": 26,
+     "mean20": 9.31
     }
    }
   },
   {
    "code": "00403A",
    "name": "主動統一升級50",
-   "days": 122,
+   "days": 127,
    "signals": {
     "chg5_up20": {
-     "n": 11,
+     "n": 12,
      "mean20": 0.11
     },
     "up3": {
      "n": 6,
-     "mean20": -4.89
+     "mean20": -7.48
     },
     "score50": {
      "n": 11,
-     "mean20": -2.36
+     "mean20": -4.0
     },
     "chg5_dn20": {
      "n": 11,
-     "mean20": 6.11
+     "mean20": 3.17
     },
     "inst_sell3_margin_up": {
      "n": 9,
@@ -1483,7 +1483,7 @@
    "signals": {
     "chg5_up20": {
      "n": 41,
-     "mean20": 6.09
+     "mean20": 6.07
     },
     "up3": {
      "n": 8,
@@ -1495,11 +1495,11 @@
     },
     "chg5_dn20": {
      "n": 44,
-     "mean20": 10.65
+     "mean20": 9.98
     },
     "inst_sell3_margin_up": {
-     "n": 26,
-     "mean20": 8.97
+     "n": 25,
+     "mean20": 9.56
     },
     "score_low": {
      "n": 26,
@@ -1514,118 +1514,127 @@
    "signals": {
     "chg5_up20": {
      "n": 41,
-     "mean20": 0.98
+     "mean20": 0.94
     },
     "up3": {
      "n": 18,
-     "mean20": 0.44
+     "mean20": 0.98
     },
     "score50": {
      "n": 44,
-     "mean20": 0.73
+     "mean20": 0.93
     },
     "chg5_dn20": {
-     "n": 39,
-     "mean20": 1.14
+     "n": 38,
+     "mean20": 1.16
     },
     "inst_sell3_margin_up": {
-     "n": 25,
-     "mean20": 0.99
+     "n": 24,
+     "mean20": 1.04
     },
     "score_low": {
-     "n": 25,
-     "mean20": 1.08
+     "n": 24,
+     "mean20": 1.1
     }
    }
   }
  ],
  "recent": [
   {
-   "code": "2357",
-   "name": "華碩",
+   "code": "2454",
+   "name": "聯發科",
    "signal": "chg5_up20",
-   "date": "2026-11-06",
-   "score": 33.0,
+   "date": "2026-11-13",
+   "score": 40.6,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "2454",
+   "name": "聯發科",
+   "signal": "up3",
+   "date": "2026-11-13",
+   "score": 40.6,
    "r5": null,
    "r20": null
   },
   {
    "code": "0050",
    "name": "元大台灣50",
-   "signal": "inst_sell3_margin_up",
-   "date": "2026-11-06",
-   "score": 0,
+   "signal": "chg5_up20",
+   "date": "2026-11-13",
+   "score": 40.0,
    "r5": null,
    "r20": null
   },
   {
-   "code": "2345",
-   "name": "智邦",
+   "code": "2356",
+   "name": "英業達",
    "signal": "chg5_dn20",
-   "date": "2026-11-06",
-   "score": 1.9,
+   "date": "2026-11-13",
+   "score": 0,
    "r5": null,
    "r20": null
   },
   {
    "code": "3481",
    "name": "群創",
+   "signal": "chg5_dn20",
+   "date": "2026-11-13",
+   "score": 11.5,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "3260",
+   "name": "威剛",
    "signal": "chg5_up20",
-   "date": "2026-11-06",
-   "score": 43.5,
+   "date": "2026-11-13",
+   "score": 37.1,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "3260",
+   "name": "威剛",
+   "signal": "up3",
+   "date": "2026-11-13",
+   "score": 37.1,
    "r5": null,
    "r20": null
   },
   {
    "code": "3017",
    "name": "奇鋐",
-   "signal": "chg5_dn20",
-   "date": "2026-11-06",
-   "score": 15.0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "2887",
-   "name": "台新新光金",
    "signal": "chg5_up20",
-   "date": "2026-11-06",
-   "score": 69.8,
+   "date": "2026-11-13",
+   "score": 44.9,
    "r5": null,
    "r20": null
   },
   {
    "code": "2409",
    "name": "友達",
+   "signal": "chg5_dn20",
+   "date": "2026-11-13",
+   "score": 10.3,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "2881",
+   "name": "富邦金",
    "signal": "chg5_up20",
-   "date": "2026-11-06",
-   "score": 35.3,
+   "date": "2026-11-13",
+   "score": 75.0,
    "r5": null,
    "r20": null
   },
   {
-   "code": "2412",
-   "name": "中華電",
-   "signal": "score50",
-   "date": "2026-11-06",
-   "score": 60.0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "3711",
-   "name": "日月光投控",
-   "signal": "inst_sell3_margin_up",
-   "date": "2026-11-05",
-   "score": 0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "6505",
-   "name": "台塑化",
+   "code": "4938",
+   "name": "和碩",
    "signal": "score_low",
-   "date": "2026-11-05",
+   "date": "2026-11-13",
    "score": 0,
    "r5": null,
    "r20": null
@@ -1633,71 +1642,35 @@
   {
    "code": "2059",
    "name": "川湖",
-   "signal": "up3",
-   "date": "2026-11-05",
-   "score": 75.0,
+   "signal": "inst_sell3_margin_up",
+   "date": "2026-11-13",
+   "score": 0,
    "r5": null,
    "r20": null
   },
   {
-   "code": "2059",
-   "name": "川湖",
+   "code": "2317",
+   "name": "鴻海",
+   "signal": "chg5_up20",
+   "date": "2026-11-12",
+   "score": 52.4,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "2317",
+   "name": "鴻海",
    "signal": "score50",
-   "date": "2026-11-05",
-   "score": 75.0,
+   "date": "2026-11-12",
+   "score": 52.4,
    "r5": null,
    "r20": null
   },
   {
-   "code": "2412",
-   "name": "中華電",
-   "signal": "up3",
-   "date": "2026-11-05",
-   "score": 58.0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "2330",
-   "name": "台積電",
+   "code": "2356",
+   "name": "英業達",
    "signal": "inst_sell3_margin_up",
-   "date": "2026-11-04",
-   "score": 0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "3231",
-   "name": "緯創",
-   "signal": "inst_sell3_margin_up",
-   "date": "2026-11-04",
-   "score": 0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "2357",
-   "name": "華碩",
-   "signal": "chg5_dn20",
-   "date": "2026-11-04",
-   "score": 11.0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "1504",
-   "name": "東元",
-   "signal": "chg5_dn20",
-   "date": "2026-11-04",
-   "score": 0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "2345",
-   "name": "智邦",
-   "signal": "score_low",
-   "date": "2026-11-04",
+   "date": "2026-11-12",
    "score": 0,
    "r5": null,
    "r20": null
@@ -1706,34 +1679,34 @@
    "code": "2356",
    "name": "英業達",
    "signal": "score_low",
-   "date": "2026-11-04",
+   "date": "2026-11-12",
    "score": 0,
    "r5": null,
    "r20": null
   },
   {
-   "code": "2449",
-   "name": "京元電子",
-   "signal": "score_low",
-   "date": "2026-11-04",
+   "code": "6770",
+   "name": "力積電",
+   "signal": "inst_sell3_margin_up",
+   "date": "2026-11-12",
    "score": 0,
    "r5": null,
    "r20": null
   },
   {
-   "code": "3260",
-   "name": "威剛",
-   "signal": "chg5_dn20",
-   "date": "2026-11-04",
-   "score": 0,
+   "code": "2408",
+   "name": "南亞科",
+   "signal": "up3",
+   "date": "2026-11-12",
+   "score": 45.2,
    "r5": null,
    "r20": null
   },
   {
-   "code": "3711",
-   "name": "日月光投控",
-   "signal": "chg5_dn20",
-   "date": "2026-11-04",
+   "code": "2344",
+   "name": "華邦電",
+   "signal": "inst_sell3_margin_up",
+   "date": "2026-11-12",
    "score": 0,
    "r5": null,
    "r20": null
@@ -1742,124 +1715,97 @@
    "code": "2881",
    "name": "富邦金",
    "signal": "score50",
-   "date": "2026-11-04",
-   "score": 52.3,
+   "date": "2026-11-12",
+   "score": 50.7,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "1301",
+   "name": "台塑",
+   "signal": "chg5_up20",
+   "date": "2026-11-12",
+   "score": 29.7,
    "r5": null,
    "r20": null
   },
   {
    "code": "3661",
    "name": "世芯-KY",
-   "signal": "chg5_dn20",
-   "date": "2026-11-04",
-   "score": 0,
+   "signal": "up3",
+   "date": "2026-11-12",
+   "score": 66.8,
    "r5": null,
    "r20": null
   },
   {
    "code": "6505",
    "name": "台塑化",
-   "signal": "chg5_dn20",
-   "date": "2026-11-04",
-   "score": 27.4,
+   "signal": "chg5_up20",
+   "date": "2026-11-12",
+   "score": 45.2,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "6505",
+   "name": "台塑化",
+   "signal": "up3",
+   "date": "2026-11-12",
+   "score": 45.2,
    "r5": null,
    "r20": null
   },
   {
    "code": "3443",
    "name": "創意",
-   "signal": "chg5_dn20",
-   "date": "2026-11-04",
-   "score": 0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "3443",
-   "name": "創意",
-   "signal": "score_low",
-   "date": "2026-11-04",
-   "score": 0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "1409",
-   "name": "新纖",
-   "signal": "chg5_dn20",
-   "date": "2026-11-04",
-   "score": 0,
+   "signal": "chg5_up20",
+   "date": "2026-11-12",
+   "score": 41.9,
    "r5": null,
    "r20": null
   },
   {
    "code": "2059",
    "name": "川湖",
-   "signal": "chg5_up20",
-   "date": "2026-11-04",
-   "score": 73.8,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "8299",
-   "name": "群聯",
    "signal": "score_low",
-   "date": "2026-11-04",
-   "score": 2.4,
+   "date": "2026-11-12",
+   "score": 0,
    "r5": null,
    "r20": null
   },
   {
-   "code": "00403A",
-   "name": "主動統一升級50",
+   "code": "2357",
+   "name": "華碩",
+   "signal": "score_low",
+   "date": "2026-11-11",
+   "score": 3.0,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "5904",
+   "name": "寶雅*",
    "signal": "chg5_dn20",
-   "date": "2026-11-04",
-   "score": 0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "00403A",
-   "name": "主動統一升級50",
-   "signal": "inst_sell3_margin_up",
-   "date": "2026-11-04",
-   "score": 0,
+   "date": "2026-11-11",
+   "score": 48.4,
    "r5": null,
    "r20": null
   },
   {
    "code": "1504",
    "name": "東元",
-   "signal": "score_low",
-   "date": "2026-11-03",
-   "score": 0,
+   "signal": "chg5_up20",
+   "date": "2026-11-11",
+   "score": 25.2,
    "r5": null,
    "r20": null
   },
   {
-   "code": "3260",
-   "name": "威剛",
-   "signal": "score_low",
-   "date": "2026-11-03",
-   "score": 0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "6770",
-   "name": "力積電",
-   "signal": "chg5_dn20",
-   "date": "2026-11-03",
-   "score": 0,
-   "r5": null,
-   "r20": null
-  },
-  {
-   "code": "6770",
-   "name": "力積電",
-   "signal": "score_low",
-   "date": "2026-11-03",
+   "code": "2345",
+   "name": "智邦",
+   "signal": "inst_sell3_margin_up",
+   "date": "2026-11-11",
    "score": 0,
    "r5": null,
    "r20": null
@@ -1867,17 +1813,17 @@
   {
    "code": "2408",
    "name": "南亞科",
-   "signal": "chg5_dn20",
-   "date": "2026-11-03",
-   "score": 0,
+   "signal": "chg5_up20",
+   "date": "2026-11-11",
+   "score": 23.0,
    "r5": null,
    "r20": null
   },
   {
-   "code": "2408",
-   "name": "南亞科",
-   "signal": "score_low",
-   "date": "2026-11-03",
+   "code": "2382",
+   "name": "廣達",
+   "signal": "inst_sell3_margin_up",
+   "date": "2026-11-11",
    "score": 0,
    "r5": null,
    "r20": null
@@ -1886,17 +1832,71 @@
    "code": "2382",
    "name": "廣達",
    "signal": "score_low",
-   "date": "2026-11-03",
-   "score": 4.9,
+   "date": "2026-11-11",
+   "score": 0,
    "r5": null,
    "r20": null
   },
   {
    "code": "3008",
    "name": "大立光",
-   "signal": "chg5_dn20",
-   "date": "2026-11-03",
+   "signal": "chg5_up20",
+   "date": "2026-11-11",
+   "score": 35.6,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "2887",
+   "name": "台新新光金",
+   "signal": "score50",
+   "date": "2026-11-11",
+   "score": 54.9,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "2308",
+   "name": "台達電",
+   "signal": "inst_sell3_margin_up",
+   "date": "2026-11-11",
    "score": 0,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "8150",
+   "name": "南茂",
+   "signal": "chg5_up20",
+   "date": "2026-11-11",
+   "score": 21.8,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "3661",
+   "name": "世芯-KY",
+   "signal": "score50",
+   "date": "2026-11-11",
+   "score": 64.0,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "1409",
+   "name": "新纖",
+   "signal": "chg5_up20",
+   "date": "2026-11-11",
+   "score": 25.9,
+   "r5": null,
+   "r20": null
+  },
+  {
+   "code": "00403A",
+   "name": "主動統一升級50",
+   "signal": "chg5_up20",
+   "date": "2026-11-11",
+   "score": 21.5,
    "r5": null,
    "r20": null
   }

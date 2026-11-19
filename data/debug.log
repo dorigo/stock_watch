@@ -1,4 +1,4 @@
-執行時間 2026-11-20T03:39:34+08:00
+執行時間 2026-11-20T06:09:45+08:00
 自選股 43 檔：2330, 2317, 2454, 3231, 2357, 0050, 5904, 1504, 2303, 2345, 2356, 2449, 3481, 3260, 0056, 2618, 3711, 6770, 2408, 2382, 3008, 2344, 3017, 2887, 2409, 2881, 4967, 1301, 2308, 3037, 8150, 3661, 4938, 6505, 3443, 1409, 2059, 8046, 8299, 1303, 00403A, 4958, 2412
 • 股價 / 三大法人 / 融資（FinMind）
   ↳ 2330
@@ -308,10 +308,7 @@
           len=2401365 head='資料日期,證券代號,持股分級,人數,股數,占集保庫存數比例%\r\n20261113,000218,1,0,0,0.00\r\n20261113,000218,2,0,0,0.00\r\n20261113,000218,3,0,0,0.00\r\n20261113,000218,4,0,0,0.00\r\n20261113,000218,5,0,0,0.00\r\n20261113,000218,6,0,0,0.00\r\n20261113,000218,7,0,0,0.00\r\n20261113,000218,8,0,0,0.00\r\n20261113,000218,9,0,0,0.00\r\n20261113,000218,10,0,0,0.00\r\n20261113,000218,11,0,0,0.00\r\n20261113,000218,12,0,0,0.00\r\n20261113,000218,13,0,0,0.00\r\n20261113,000218,14,0,0,0.00\r\n20261113,000218,15,1,422278902,100.00\r\n20261113,000218,16,0,0,0.00\r\n20261113,000218,17,1,422278902,100.00\r\n20261113,000560,1,0,0,0.00\r\n20261113,000560,2,0,0,0.00\r\n20261113'
   · 已是最新（20261113）
 • 基本面：今日已更新，沿用快取
-  ! 法說會 sii 2026-11 讀取失敗：<HTTPError 307: 'Temporary Redirect'>
-  ! 法說會 otc 2026-11 讀取失敗：<HTTPError 307: 'Temporary Redirect'>
-  ! 法說會 sii 2026-12 讀取失敗：<HTTPError 307: 'Temporary Redirect'>
-  ! 法說會 otc 2026-12 讀取失敗：<HTTPError 307: 'Temporary Redirect'>
+• 法說會日曆：459 場（2026-11-13 之後）
     [GET] https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id=TAIEX&start_date=2026-09-11
           len=9284 head='{"msg":"success","status":200,"data":[{"date":"2026-09-11","stock_id":"TAIEX","Trading_Volume":10111607761,"Trading_money":762245189934,"open":46651.21,"max":46651.21,"min":45942.44,"close":46184.85,"spread":-755.64,"Trading_turnover":4824572},{"date":"2026-09-14","stock_id":"TAIEX","Trading_Volume":8822022033,"Trading_money":665316266033,"open":46010.74,"max":46050.24,"min":45398.43,"close":45862.52,"spread":-322.33,"Trading_turnover":4064716},{"date":"2026-09-15","stock_id":"TAIEX","Trading_Volume":8228715551,"Trading_money":634706804618,"open":45847.27,"max":46009.85,"min":45491.97,"close":'
     [GET] https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id=TPEx&start_date=2026-09-11
@@ -328,7 +325,6 @@
           len=8806 head='{"msg":"success","status":200,"data":[{"date":"2026-09-11","stock_id":"Plastics","Trading_Volume":128945840,"Trading_money":14260944130,"open":401.22,"max":401.22,"min":388.53,"close":388.94,"spread":-12.28,"Trading_turnover":79205},{"date":"2026-09-14","stock_id":"Plastics","Trading_Volume":143109765,"Trading_money":16352890429,"open":388.94,"max":388.94,"min":367.68,"close":384.78,"spread":-4.16,"Trading_turnover":88912},{"date":"2026-09-15","stock_id":"Plastics","Trading_Volume":129221583,"Trading_money":15534890987,"open":384.78,"max":384.78,"min":367.28,"close":368.77,"spread":-16.01,"Tra'
     [GET] https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id=FinancialInsurance&start_date=2026-09-11
           len=9450 head='{"msg":"success","status":200,"data":[{"date":"2026-09-11","stock_id":"FinancialInsurance","Trading_Volume":524891418,"Trading_money":21916547974,"open":3516.23,"max":3559.69,"min":3468.64,"close":3555.7,"spread":39.47,"Trading_turnover":201381},{"date":"2026-09-14","stock_id":"FinancialInsurance","Trading_Volume":557426646,"Trading_money":23685687026,"open":3555.7,"max":3630.4,"min":3513.64,"close":3624.57,"spread":68.87,"Trading_turnover":227453},{"date":"2026-09-15","stock_id":"FinancialInsurance","Trading_Volume":517089709,"Trading_money":23997933802,"open":3624.57,"max":3647.69,"min":3567'
-    ! 即時指數讀取失敗：HTTP Error 502: Bad Gateway
     [GET] https://api.finmindtrade.com/api/v4/data?dataset=USStockPrice&data_id=%5EDJI&start_date=2026-09-11
           len=7068 head='{"msg":"success","status":200,"data":[{"date":"2026-09-11","stock_id":"^DJI","Adj_Close":52573.29,"Close":52573.29,"High":52720.24,"Low":52204.46,"Open":52204.46,"Volume":354460000},{"date":"2026-09-14","stock_id":"^DJI","Adj_Close":52421.2,"Close":52421.2,"High":52750.88,"Low":52278.89,"Open":52750.88,"Volume":442650000},{"date":"2026-09-15","stock_id":"^DJI","Adj_Close":52093.11,"Close":52093.11,"High":52336.61,"Low":51875.65,"Open":52303.24,"Volume":374460000},{"date":"2026-09-16","stock_id":"^DJI","Adj_Close":51461.9,"Close":51461.9,"High":52173.7,"Low":51186.67,"Open":52115.4,"Volume":395'
     [GET] https://api.finmindtrade.com/api/v4/data?dataset=USStockPrice&data_id=%5EGSPC&start_date=2026-09-11
@@ -337,5 +333,5 @@
           len=7175 head='{"msg":"success","status":200,"data":[{"date":"2026-09-11","stock_id":"^IXIC","Adj_Close":26333.04,"Close":26333.04,"High":26431.22,"Low":26283.11,"Open":26289.41,"Volume":6587900000},{"date":"2026-09-14","stock_id":"^IXIC","Adj_Close":26186.41,"Close":26186.41,"High":26329.98,"Low":25992.55,"Open":26018.5,"Volume":7179780000},{"date":"2026-09-15","stock_id":"^IXIC","Adj_Close":25981.57,"Close":25981.57,"High":26172.12,"Low":25943.31,"Open":26140.23,"Volume":7934200000},{"date":"2026-09-16","stock_id":"^IXIC","Adj_Close":25978.43,"Close":25978.43,"High":26225.09,"Low":25802.96,"Open":26108.46,'
     [GET] https://api.finmindtrade.com/api/v4/data?dataset=USStockPrice&data_id=%5ESOX&start_date=2026-09-11
           len=6642 head='{"msg":"success","status":200,"data":[{"date":"2026-09-11","stock_id":"^SOX","Adj_Close":11824.0,"Close":11824.0,"High":11910.2,"Low":11711.33,"Open":11753.87,"Volume":0},{"date":"2026-09-14","stock_id":"^SOX","Adj_Close":11131.28,"Close":11131.28,"High":11285.3,"Low":11110.11,"Open":11191.82,"Volume":0},{"date":"2026-09-15","stock_id":"^SOX","Adj_Close":11175.55,"Close":11175.55,"High":11304.24,"Low":11128.88,"Open":11233.04,"Volume":0},{"date":"2026-09-16","stock_id":"^SOX","Adj_Close":11246.11,"Close":11246.11,"High":11413.46,"Low":11132.26,"Open":11347.68,"Volume":0},{"date":"2026-09-17","'
-• 大盤行情：台股 2026-11-19，美股 2026-11-18
+• 大盤行情：台股 2026-11-19，美股 2026-11-19
 ✓ 完成：2026-11-19，43 檔

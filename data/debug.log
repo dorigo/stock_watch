@@ -1,4 +1,4 @@
-執行時間 2026-11-28T12:44:26+08:00
+執行時間 2026-11-28T15:32:20+08:00
 自選股 43 檔：2330, 2317, 2454, 3231, 2357, 0050, 5904, 1504, 2303, 2345, 2356, 2449, 3481, 3260, 0056, 2618, 3711, 6770, 2408, 2382, 3008, 2344, 3017, 2887, 2409, 2881, 4967, 1301, 2308, 3037, 8150, 3661, 4938, 6505, 3443, 1409, 2059, 8046, 8299, 1303, 00403A, 4958, 2412
     [GET] https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id=TAIEX&start_date=2026-09-19
           len=9288 head='{"msg":"success","status":200,"data":[{"date":"2026-09-21","stock_id":"TAIEX","Trading_Volume":10478763517,"Trading_money":866817533778,"open":47207.3,"max":47750.98,"min":47207.3,"close":47718.84,"spread":538.09,"Trading_turnover":4365384},{"date":"2026-09-22","stock_id":"TAIEX","Trading_Volume":13191583700,"Trading_money":1078776313348,"open":47981.04,"max":48601.53,"min":47800.17,"close":47800.17,"spread":81.33,"Trading_turnover":5371821},{"date":"2026-09-23","stock_id":"TAIEX","Trading_Volume":10473893046,"Trading_money":894650683140,"open":47894.77,"max":48341.56,"min":47894.77,"close":48'
